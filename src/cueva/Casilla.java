@@ -1,124 +1,98 @@
-
-/*
- * CLASE Casilla
-
-realización: Juan Montes de Oca
-*/
-
 package cueva;
 
+/**
+ *
+ * @author Laura del Mar y Antonio Borrás
+ */
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.geom.Rectangle2D;
+import java.io.File;
+import javax.imageio.ImageIO;
+
 class Casilla {
-    //DECLARACIÓN DE ATRIBUTOS
-    private boolean ocupada,salida;
-    private char norte,sur,este,oeste;
-    private  int x,y;
-    
-    //MÉTODOS CONSTRUCTORES
-    public Casilla() {
-        ocupada=false;
-        salida=false;
-    }
-    
-    public Casilla(int x,int y) {
-        ocupada=false;
-        salida=false;
-        this.x=x;
-        this.y=y;
-    }   
-    
-    //MÉTODO QUE LIBERA UNA CASILLA
-    public void setLiberada() {
-        ocupada=false;
-    }
-    
-    //MÉTODO QUE DEVUELVE EL ESTADO DE UNA CASILLA
-    public boolean estado() {
-        return ocupada;
-    }
-    
-    //MÉTODO QUE CAMBIA EL ESTADO A OCUPADA DE UNA CASILLA 
-    public void setOcupada() {
-        ocupada=true;
-    }
-    
-    //MÉTODO QUE CAMCIA EL ESTADO DE UNA CASILLA
-    public void cambiarEstado() {
-        ocupada=!ocupada;
-    }
-    
-    //MÉTODO DE MODIFICA LA COORDENADA X DE UNA CASILLA
-    public void setX(int x) {
-        this.x=x;
-    }
-    
-    //MÉTODO DE MODIFICA LA COORDENADA Y DE UNA CASILLA
-    public void setY(int y) {
-        this.y=y;
-    }  
-    
-    //MÉTODO DE DA ACCESO A LA COORDENADA X DE UNA CASILLA
-    public int getX() {
-        return x;
-    }
-    
-    //MÉTODO DE DA ACCESO A LA COORDENADA Y DE UNA CASILLA
-    public int getY() {
-        return y;
-    }    
 
-    public boolean isOcupada() {
-        return ocupada;
+    //ATRIBUTOS
+    private Rectangle2D.Float rec;
+
+    private Boolean hoyo;
+    private Boolean monster;
+    private Boolean tesoro;
+    private int numTesoros;
+    private int numHoyos;
+    private int numMonsters;
+
+    public Casilla(Rectangle2D.Float r, Color c) {
+        this.rec = r;
+        this.hoyo = false;
+        this.monster = false;
+        this.tesoro = false;
+        numHoyos = 0;
+        numMonsters = 0;
+        numTesoros = 0;
     }
 
-    public void setOcupada(boolean ocupada) {
-        this.ocupada = ocupada;
+    //Metodo que pinta una casilla segun sus valores booleanos
+    public void paintComponent(Graphics g) {
+        Graphics2D g2d = (Graphics2D) g;
+
+        try {
+
+            g.drawImage(ImageIO.read(new File("img/tierra.png")), (int) rec.x, (int) rec.y, null);
+
+        } catch (Exception e) {
+
+        }
+
     }
 
-    public char getNorte() {
-        return norte;
+    public Boolean getHoyo() {
+        return hoyo;
     }
 
-    public void setNorte(char norte) {
-        this.norte = norte;
+    public void setHoyo(Boolean hoyo) {
+        this.hoyo = hoyo;
     }
 
-    public char getSur() {
-        return sur;
+    public Boolean getMonster() {
+        return monster;
     }
 
-    public void setSur(char sur) {
-        this.sur = sur;
+    public void setMonster(Boolean monster) {
+        this.monster = monster;
     }
 
-    public char getEste() {
-        return este;
+    public Boolean getTesoro() {
+        return tesoro;
     }
 
-    public void setEste(char este) {
-        this.este = este;
+    public void setTesoro(Boolean tesoro) {
+        this.tesoro = tesoro;
     }
 
-    public char getOeste() {
-        return oeste;
+    public int getNumTesoros() {
+        return numTesoros;
     }
 
-    public void setOeste(char oeste) {
-        this.oeste = oeste;
-    }
-    
-    @Override
-    public String toString(){
-        return "Norte: " + norte + " este: " + este+ " sur: " + sur  + " oeste: " + oeste;
+    public void setNumTesoros(int numTesoros) {
+        this.numTesoros = numTesoros;
     }
 
-    public boolean isSalida() {
-        return salida;
+    public int getNumHoyos() {
+        return numHoyos;
     }
 
-    public void setSalida(boolean salida) {
-        this.salida = salida;
+    public void setNumHoyos(int numHoyos) {
+        this.numHoyos = numHoyos;
     }
-    
-    
+
+    public int getNumMonsters() {
+        return numMonsters;
+    }
+
+    public void setNumMonsters(int numMonsters) {
+        this.numMonsters = numMonsters;
+    }
 
 }

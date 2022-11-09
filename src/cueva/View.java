@@ -3,6 +3,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package cueva;
+
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
 import java.awt.Image;
 import javax.swing.*;
 
@@ -11,68 +14,34 @@ import javax.swing.*;
  * @author toniborras
  */
 public class View extends javax.swing.JFrame {
-
-    
+    private Tablero t;
     /**
      * Creates new form View
      */
     public View(Main p) {
+
+        this.prog = p;
+        t = new Tablero();
         initComponents();
-        Tablero t= new Tablero();
+       
         this.jPanel3.add(t);
-        this.mostrar();
+        this.jPanel3.setSize(t.getPreferredSize());
+        
     }
-    
-     public void mostrar() {
+
+    public void mostrar() {
         this.pack();
 
         setLocationRelativeTo(null);
-        setTitle("Ascensor");
-        //setSize(769,610);
-
-        ImageIcon wallpaper = new ImageIcon("src/img/cerrado.png");
-//        Icon icono = new ImageIcon(wallpaper.getImage().getScaledInstance(this.Ascensor.getWidth(), this.Ascensor.getHeight(), Image.SCALE_DEFAULT));
-//        Icon icono1 = new ImageIcon(rojo.getImage().getScaledInstance(this.bajPrimero.getWidth(), this.bajPrimero.getHeight(), Image.SCALE_DEFAULT));
-//        Icon icono2 = new ImageIcon(rojo.getImage().getScaledInstance(this.bajSegundo.getWidth(), this.bajSegundo.getHeight(), Image.SCALE_DEFAULT));
-//        Icon icono3 = new ImageIcon(rojo.getImage().getScaledInstance(this.bajtercero.getWidth(), this.bajtercero.getHeight(), Image.SCALE_DEFAULT));
-//        Icon icono4 = new ImageIcon(rojo.getImage().getScaledInstance(this.bajCuarto.getWidth(), this.bajCuarto.getHeight(), Image.SCALE_DEFAULT));
-//        Icon icono5 = new ImageIcon(rojo.getImage().getScaledInstance(this.subPrimero.getWidth(), this.subPrimero.getHeight(), Image.SCALE_DEFAULT));
-//        Icon icono6 = new ImageIcon(rojo.getImage().getScaledInstance(this.subSegundo.getWidth(), this.subSegundo.getHeight(), Image.SCALE_DEFAULT));
-//        Icon icono7 = new ImageIcon(rojo.getImage().getScaledInstance(this.subTercero.getWidth(), this.subTercero.getHeight(), Image.SCALE_DEFAULT));
-//        Icon icono8 = new ImageIcon(rojo.getImage().getScaledInstance(this.subBajo.getWidth(), this.subBajo.getHeight(), Image.SCALE_DEFAULT));
-//
-//        Icon icono11 = new ImageIcon(rojo.getImage().getScaledInstance(this.jLabel2.getWidth(), this.jLabel2.getHeight(), Image.SCALE_DEFAULT));
-//        Icon icono22 = new ImageIcon(rojo.getImage().getScaledInstance(this.jLabel3.getWidth(), this.jLabel3.getHeight(), Image.SCALE_DEFAULT));
-//        Icon icono33 = new ImageIcon(rojo.getImage().getScaledInstance(this.jLabel4.getWidth(), this.jLabel4.getHeight(), Image.SCALE_DEFAULT));
-//        Icon icono44 = new ImageIcon(rojo.getImage().getScaledInstance(this.jLabel5.getWidth(), this.jLabel5.getHeight(), Image.SCALE_DEFAULT));
-//        Icon icono55 = new ImageIcon(rojo.getImage().getScaledInstance(this.jLabel6.getWidth(), this.jLabel6.getHeight(), Image.SCALE_DEFAULT));
-
-//        this.Ascensor.setIcon(icono);
-//        this.subBajo.setIcon(icono8);
-//        this.bajPrimero.setIcon(icono1);
-//        this.bajSegundo.setIcon(icono2);
-//        this.bajtercero.setIcon(icono3);
-//        this.bajCuarto.setIcon(icono4);
-//        this.subPrimero.setIcon(icono5);
-//        this.subSegundo.setIcon(icono6);
-//        this.subTercero.setIcon(icono7);
-
-//        this.jLabel2.setIcon(icono11);
-//        this.jLabel3.setIcon(icono22);
-//        this.jLabel4.setIcon(icono33);
-//        this.jLabel5.setIcon(icono44);
-//        this.jLabel6.setIcon(icono55);
-        try {
-            Thread.sleep(500);
-        } catch (Exception e) {
-        }
+        setTitle("Cueva del monstruo");
 
         this.setResizable(false);
         this.revalidate();
-        //this.repaint();
+//        this.repaint();
         this.setVisible(true);
+//        t.repaint();
 
-//        animacion(0);
+
     }
 
     /**
@@ -201,7 +170,7 @@ public class View extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    
+    private Main prog;
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;

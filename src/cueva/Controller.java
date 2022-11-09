@@ -23,6 +23,7 @@ public class Controller extends Thread {
         this.vista = p.getVista();
     }
 
+    @Override
     public void run() {
         int aviso = 0;
         int salidas = 0;
