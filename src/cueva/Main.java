@@ -10,12 +10,12 @@ package cueva;
  */
 public class Main {
     private Agente charmander;    // Punter al Model del patró
-    private View vis;    // Punter a la Vista del patró
+    private View2 vis;    // Punter a la Vista del patró
     private Controller con;  // punter al Control del patró
     
     private void inicio() {
         charmander = new Agente(this);
-        vis = new View(this);
+        vis = new View2(this,10);
         vis.mostrar();
         con = new Controller(this);
         con.start();       
@@ -34,7 +34,7 @@ public class Main {
     }
 
     //metodo para devolver la vista 
-    public View getVista() {
+    public View2 getVista() {
         return this.vis;
     }
 

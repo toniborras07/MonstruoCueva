@@ -15,7 +15,7 @@ public class Controller extends Thread {
     private static Main prog;
     private boolean acabar = false;
     Agente charmander;
-    View vista;
+    View2 vista;
 
     public Controller(Main p) {
         this.prog = p;

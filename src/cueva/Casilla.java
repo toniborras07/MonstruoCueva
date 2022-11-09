@@ -7,45 +7,45 @@ package cueva;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
 import javax.imageio.ImageIO;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 
-class Casilla {
+class Casilla extends JLabel {
 
     //ATRIBUTOS
-    private Rectangle2D.Float rec;
-
+    private ImageIcon tierra = new ImageIcon("src/img/tierra.png");
+    private Icon icono;
     private Boolean hoyo;
     private Boolean monster;
     private Boolean tesoro;
+    private Boolean entrada;
     private int numTesoros;
     private int numHoyos;
     private int numMonsters;
+    private int size;
 
-    public Casilla(Rectangle2D.Float r, Color c) {
-        this.rec = r;
+    public Casilla(int size) {
+        this.size=size;
+        this.setSize(size, size);
+        icono = new ImageIcon(tierra.getImage().getScaledInstance(this.getWidth(), this.getHeight(), Image.SCALE_DEFAULT));
         this.hoyo = false;
         this.monster = false;
         this.tesoro = false;
+        this.entrada = false;
         numHoyos = 0;
         numMonsters = 0;
         numTesoros = 0;
     }
-
-    //Metodo que pinta una casilla segun sus valores booleanos
-    public void paintComponent(Graphics g) {
-        Graphics2D g2d = (Graphics2D) g;
-
-        try {
-
-            g.drawImage(ImageIO.read(new File("img/tierra.png")), (int) rec.x, (int) rec.y, null);
-
-        } catch (Exception e) {
-
-        }
-
+    
+    public void ponerImagen(){
+            this.setIcon(icono);
     }
+
 
     public Boolean getHoyo() {
         return hoyo;
@@ -94,5 +94,15 @@ class Casilla {
     public void setNumMonsters(int numMonsters) {
         this.numMonsters = numMonsters;
     }
+
+    public Boolean getEntrada() {
+        return entrada;
+    }
+
+    public void setEntrada(Boolean entrada) {
+        this.entrada = entrada;
+    }
+    
+    
 
 }
