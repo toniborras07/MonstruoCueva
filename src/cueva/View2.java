@@ -14,26 +14,32 @@ import javax.swing.ImageIcon;
  *
  * @author toniborras
  */
-public class View2 extends javax.swing.JFrame implements MouseListener{
+public class View2 extends javax.swing.JFrame implements MouseListener {
 
     private int dimension;
     private Casilla[][] mapa;
-
+    private boolean selTesoro;
+    private boolean selMosnter;
+    private boolean selFoso;
+    private boolean selCamino;
     private ImageIcon tierra = new ImageIcon("src/img/monstruo.png");
     private ImageIcon charm = new ImageIcon("src/img/charmander.png");
     private ImageIcon verde = new ImageIcon("src/img/foso.png");
     private ImageIcon tesoroimg = new ImageIcon("src/img/tesoro.png");
     private ImageIcon camino = new ImageIcon("src/img/piedra.jpg");
+
     /**
      * Creates new form View
      */
     public View2(Main p, int dim) {
-
+        this.selCamino = false;
+        this.selFoso = false;
+        this.selMosnter = false;
+        this.selTesoro = false;
         this.prog = p;
-        this.dimension=dim;
-        mapa= new Casilla[dimension][dimension];
+        this.dimension = dim;
+        mapa = new Casilla[dimension][dimension];
         initComponents();
-        
 
     }
 
@@ -124,64 +130,64 @@ public class View2 extends javax.swing.JFrame implements MouseListener{
         javax.swing.GroupLayout opcionesLayout = new javax.swing.GroupLayout(opciones);
         opciones.setLayout(opcionesLayout);
         opcionesLayout.setHorizontalGroup(
-            opcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, opcionesLayout.createSequentialGroup()
-                .addGroup(opcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(opcionesLayout.createSequentialGroup()
-                        .addGap(20, 20, 20)
-                        .addGroup(opcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(tesoro, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(foso, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(opcionesLayout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, opcionesLayout.createSequentialGroup()
-                        .addGap(19, 19, 19)
-                        .addGroup(opcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, opcionesLayout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addGroup(opcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(tesoroo, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(monster, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(monstruo, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(opcionesLayout.createSequentialGroup()
-                                .addComponent(init, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE))))
-                    .addGroup(opcionesLayout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(125, 125, 125)
-                .addComponent(fosoo, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                opcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, opcionesLayout.createSequentialGroup()
+                                .addGroup(opcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addGroup(opcionesLayout.createSequentialGroup()
+                                                .addGap(20, 20, 20)
+                                                .addGroup(opcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                                        .addComponent(tesoro, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                        .addComponent(foso, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                        .addGroup(opcionesLayout.createSequentialGroup()
+                                                                .addGap(0, 0, Short.MAX_VALUE)
+                                                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, opcionesLayout.createSequentialGroup()
+                                                .addGap(19, 19, 19)
+                                                .addGroup(opcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                        .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, opcionesLayout.createSequentialGroup()
+                                                                .addGap(0, 0, Short.MAX_VALUE)
+                                                                .addGroup(opcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                                        .addComponent(tesoroo, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                        .addComponent(monster, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                        .addComponent(monstruo, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                                        .addGroup(opcionesLayout.createSequentialGroup()
+                                                                .addComponent(init, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                .addGap(0, 0, Short.MAX_VALUE))))
+                                        .addGroup(opcionesLayout.createSequentialGroup()
+                                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(125, 125, 125)
+                                .addComponent(fosoo, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap())
         );
         opcionesLayout.setVerticalGroup(
-            opcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(opcionesLayout.createSequentialGroup()
-                .addGap(25, 25, 25)
-                .addComponent(init)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(monstruo, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(monster, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(tesoroo, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(opcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, opcionesLayout.createSequentialGroup()
-                        .addComponent(fosoo, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(90, 90, 90))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, opcionesLayout.createSequentialGroup()
-                        .addComponent(tesoro)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(foso)
-                        .addGap(14, 14, 14))))
+                opcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(opcionesLayout.createSequentialGroup()
+                                .addGap(25, 25, 25)
+                                .addComponent(init)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
+                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButton1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(monstruo, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(monster, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(tesoroo, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(opcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, opcionesLayout.createSequentialGroup()
+                                                .addComponent(fosoo, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(90, 90, 90))
+                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, opcionesLayout.createSequentialGroup()
+                                                .addComponent(tesoro)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(foso)
+                                                .addGap(14, 14, 14))))
         );
 
         getContentPane().add(opciones, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 150, 600));
@@ -195,26 +201,26 @@ public class View2 extends javax.swing.JFrame implements MouseListener{
         pack();
     }// </editor-fold>                        
 
-    private void monsterActionPerformed(java.awt.event.ActionEvent evt) {                                        
+    private void monsterActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
-    }                                       
+    }
 
-    private void tesoroActionPerformed(java.awt.event.ActionEvent evt) {                                       
+    private void tesoroActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
-    }                                      
+    }
 
-    private void fosoActionPerformed(java.awt.event.ActionEvent evt) {                                     
+    private void fosoActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
-    }                                    
+    }
 
-    public void pintarMapa(){
+    public void pintarMapa() {
         for (int i = 0; i < dimension; i++) {
             for (int j = 0; j < dimension; j++) {
-                mapa[i][j]= new Casilla(this.principal.getWidth()/dimension);
+                mapa[i][j] = new Casilla(this.principal.getWidth() / dimension);
                 principal.add(mapa[i][j]);
                 mapa[i][j].ponerImagen();
             }
-            
+
         }
     }
     /**
@@ -249,18 +255,36 @@ public class View2 extends javax.swing.JFrame implements MouseListener{
 
     @Override
     public void mouseReleased(MouseEvent arg0) {
-       
-        int x = 0, y = 0, i = 0, j = 0;
+        
+        int x = 0, y = 0, xCasilla, yCasilla;
         //Algoritmo encargado de destapar una casilla si se encontraba previa- 
         //mente tapada. Se obtienen las coordenadas de la casilla clickada con 
         //el boton izquierdo del raton
         if (arg0.getButton() == MouseEvent.BUTTON1) {
             x = arg0.getX();
             y = arg0.getY();
+
+            xCasilla = x / (this.principal.getWidth() / dimension);
+            yCasilla = y / (this.principal.getWidth() / dimension);
             
-            System.out.println(x + ", " + y);
-            
-            
+            switch(getOpcion()){
+                case 0:
+                    mapa[xCasilla][yCasilla].setIcon(camino);
+                    break;
+                case 1:
+                    
+                    break;
+                case 2:
+                    
+                    break;
+                case 3:
+                    
+                    break;
+                
+            }
+
+//            System.out.println("Posicion de la casilla: x = " + xCasilla + ", y = " + yCasilla);
+
         }
     }
 
@@ -272,5 +296,18 @@ public class View2 extends javax.swing.JFrame implements MouseListener{
     @Override
     public void mouseExited(MouseEvent arg0) {
 //        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    public int getOpcion(){
+        if (this.selCamino) {
+            return 0;
+        }else if(this.selFoso){
+            return 1;
+        }else if(this.selMosnter){
+            return 2;
+        }else if(this.selTesoro){
+            return 3;
+        }
+        return 4;
     }
 }
