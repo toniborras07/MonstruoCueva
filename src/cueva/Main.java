@@ -10,11 +10,13 @@ package cueva;
  */
 public class Main {
     private Agente charmander;    // Punter al Model del patró
+    private Cueva cueva;
     private View2 vis;    // Punter a la Vista del patró
     private Controller con;  // punter al Control del patró
     
     private void inicio() {
         charmander = new Agente(this);
+        cueva = new Cueva(this, 10);
         vis = new View2(this,10);
         vis.mostrar();
         con = new Controller(this);
@@ -29,7 +31,7 @@ public class Main {
     }
     
     //metodo para conseguir el modelo de datos
-    public Agente getAscensor() {
+    public Agente getAgente() {
         return this.charmander;
     }
 
@@ -41,5 +43,9 @@ public class Main {
     //metodo que devuelve el controlador
     public Controller getController() {
         return con;
+    }
+    
+    public Cueva getCueva() {
+        return this.cueva;
     }
 }

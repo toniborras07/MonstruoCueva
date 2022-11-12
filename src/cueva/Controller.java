@@ -19,7 +19,7 @@ public class Controller extends Thread {
 
     public Controller(Main p) {
         this.prog = p;
-        this.charmander = p.getAscensor();
+        this.charmander = p.getAgente();
         this.vista = p.getVista();
     }
 

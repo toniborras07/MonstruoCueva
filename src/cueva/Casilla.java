@@ -43,7 +43,7 @@ class Casilla extends JLabel {
     }
     
     public void ponerImagen(){
-            this.setIcon(icono);
+        this.setIcon(icono);
     }
 
 
