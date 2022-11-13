@@ -22,11 +22,11 @@ public class View2 extends javax.swing.JFrame implements MouseListener {
     private boolean selMosnter;
     private boolean selFoso;
     private boolean selCamino;
-    private ImageIcon tierra = new ImageIcon("src/img/monstruo.png");
+    private ImageIcon monstruoImg = new ImageIcon("src/img/gyarados.png");
     private ImageIcon charm = new ImageIcon("src/img/charmander.png");
     private ImageIcon verde = new ImageIcon("src/img/foso.png");
     private ImageIcon tesoroimg = new ImageIcon("src/img/tesoro.png");
-    private ImageIcon camino = new ImageIcon("src/img/piedra.jpg");
+    private ImageIcon camino = new ImageIcon("src/img/piedra.png");
 
     /**
      * Creates new form View
@@ -48,7 +48,7 @@ public class View2 extends javax.swing.JFrame implements MouseListener {
 
         setLocationRelativeTo(null);
         setTitle("La Cueva del Monstruo");
-        Icon icono = new ImageIcon(charm.getImage().getScaledInstance(this.monstruo.getWidth(), this.monstruo.getHeight(), Image.SCALE_DEFAULT));
+        Icon icono = new ImageIcon(monstruoImg.getImage().getScaledInstance(this.monstruo.getWidth(), this.monstruo.getHeight(), Image.SCALE_DEFAULT));
         this.monstruo.setIcon(icono);
         Icon icono2 = new ImageIcon(camino.getImage().getScaledInstance(this.jLabel2.getWidth(), this.jLabel2.getHeight(), Image.SCALE_DEFAULT));
         this.jLabel2.setIcon(icono2);

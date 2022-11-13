@@ -18,7 +18,7 @@ import javax.swing.JLabel;
 class Casilla extends JLabel {
 
     //ATRIBUTOS
-    private ImageIcon tierra = new ImageIcon("src/img/tierra.png");
+    private ImageIcon tierra = new ImageIcon("src/img/piedra.png");
     private Icon icono;
     private Boolean hoyo;
     private Boolean monster;

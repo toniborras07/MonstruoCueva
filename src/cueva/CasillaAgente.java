@@ -18,6 +18,7 @@ public class CasillaAgente {
     public CasillaAgente(int x, int y) {
         this.x = x;
         this.y = y;
+        this.estado = new ArrayList<Estado>();
     }
     
     public void setSeguro(boolean b) {
