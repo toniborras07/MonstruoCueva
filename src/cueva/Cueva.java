@@ -15,16 +15,30 @@ public class Cueva {
     private int tamaño;
     private Main prog;
     
-    public Cueva(Main p, int n) {
+    public Cueva(Main p, Tamanyo n) {
         this.prog = p;
-        this.tamaño = n;
-        cueva = new CasillaAgente[n][n];
-        for(int i = 0; i < n; i++) {
-            for(int j = 0; j < n; j++) {
+        this.tamaño = tamanyo(n);
+        cueva = new CasillaAgente[tamaño][tamaño];
+        for(int i = 0; i < tamaño; i++) {
+            for(int j = 0; j < tamaño; j++) {
                 cueva[i][j] = new CasillaAgente(i,j);
                 cueva[i][j].setEstados(Estado.VACIO);
             }
         }
+    }
+    
+    public int tamanyo(Tamanyo t){
+        switch(t){
+            case PEQUEÑO:
+                return 8;
+                
+            case MEDIANO:
+                return 12;
+                
+            case GRANDE:
+                return 16;
+        }
+        return 0;
     }
     
     public void setTesoro(int i, int j) {

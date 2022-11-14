@@ -5,6 +5,8 @@
 package cueva;
 
 import java.awt.Image;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
@@ -12,32 +14,55 @@ import javax.swing.ImageIcon;
  *
  * @author toniborras
  */
-public class View extends javax.swing.JFrame {
+public class View extends javax.swing.JFrame implements MouseListener {
 
-    private int Dim;
+    private int dimension;
+    private Casilla[][] mapa;
+    private boolean selTesoro;
+    private boolean selMosnter;
+    private boolean selFoso;
+    private boolean selCamino;
+    private ImageIcon monstruoImg = new ImageIcon("src/img/gyarados.png");
+    private ImageIcon charm = new ImageIcon("src/img/charmander.png");
+    private ImageIcon verde = new ImageIcon("src/img/foso.png");
+    private ImageIcon tesoroimg = new ImageIcon("src/img/tesoro.png");
+    private ImageIcon camino = new ImageIcon("src/img/piedra.png");
 
-    ImageIcon tierra = new ImageIcon("src/img/monstruo.png");
-    ImageIcon charm = new ImageIcon("src/img/charmander.png");
-    ImageIcon verde = new ImageIcon("src/img/foso.png");
-    ImageIcon tesoroimg = new ImageIcon("src/img/tesoro.png");
-    ImageIcon camino = new ImageIcon("src/img/piedra.jpg");
     /**
      * Creates new form View
      */
-    public View(Main p, int dimension) {
-
+    public View(Main p, Tamanyo dim) {
+        this.selCamino = false;
+        this.selFoso = false;
+        this.selMosnter = false;
+        this.selTesoro = false;
         this.prog = p;
+        this.dimension = tamanyo(dim);
+        mapa = new Casilla[dimension][dimension];
         initComponents();
-        Dim=dimension;
 
+    }
+
+    public int tamanyo(Tamanyo t) {
+        switch (t) {
+            case PEQUEÑO:
+                return 8;
+
+            case MEDIANO:
+                return 12;
+
+            case GRANDE:
+                return 17;
+        }
+        return 0;
     }
 
     public void mostrar() {
         this.pack();
 
         setLocationRelativeTo(null);
-        setTitle("Cueva del monstruo");
-        Icon icono = new ImageIcon(charm.getImage().getScaledInstance(this.monstruo.getWidth(), this.monstruo.getHeight(), Image.SCALE_DEFAULT));
+        setTitle("La Cueva del Monstruo");
+        Icon icono = new ImageIcon(monstruoImg.getImage().getScaledInstance(this.monstruo.getWidth(), this.monstruo.getHeight(), Image.SCALE_DEFAULT));
         this.monstruo.setIcon(icono);
         Icon icono2 = new ImageIcon(camino.getImage().getScaledInstance(this.jLabel2.getWidth(), this.jLabel2.getHeight(), Image.SCALE_DEFAULT));
         this.jLabel2.setIcon(icono2);
@@ -45,7 +70,7 @@ public class View extends javax.swing.JFrame {
         this.tesoroo.setIcon(icono3);
         Icon icono4 = new ImageIcon(verde.getImage().getScaledInstance(this.jLabel1.getWidth(), this.jLabel1.getHeight(), Image.SCALE_DEFAULT));
         this.jLabel1.setIcon(icono4);
-        
+        this.pintarMapa();
         this.setResizable(false);
         this.revalidate();
 //        this.repaint();
@@ -63,6 +88,9 @@ public class View extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        buttonGroup1 = new javax.swing.ButtonGroup();
+        buttonGroup2 = new javax.swing.ButtonGroup();
+        buttonGroup3 = new javax.swing.ButtonGroup();
         opciones = new javax.swing.JPanel();
         monstruo = new javax.swing.JLabel();
         tesoroo = new javax.swing.JLabel();
@@ -74,12 +102,22 @@ public class View extends javax.swing.JFrame {
         foso = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
+        mapas = new javax.swing.JComboBox<>();
+        velocidades = new javax.swing.JComboBox<>();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
         principal = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setSize(new java.awt.Dimension(850, 700));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         opciones.setBackground(new java.awt.Color(100, 100, 100));
+        opciones.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                opcionesMouseReleased(evt);
+            }
+        });
 
         monstruo.setText("jLabel1");
 
@@ -116,75 +154,130 @@ public class View extends javax.swing.JFrame {
 
         jLabel2.setText("jLabel2");
 
+        mapas.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Pequeño", "Medio", "Grande"}));
+        mapas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mapasActionPerformed(evt);
+            }
+        });
+
+        velocidades.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Lenta", "Media", "Rápida" }));
+        velocidades.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                velocidadesActionPerformed(evt);
+            }
+        });
+
+        jLabel3.setForeground(new java.awt.Color(245, 245, 245));
+        jLabel3.setText("Tamaño Mapa: ");
+
+        jLabel4.setForeground(new java.awt.Color(245, 245, 245));
+        jLabel4.setText("Velocidad Agente:");
+
         javax.swing.GroupLayout opcionesLayout = new javax.swing.GroupLayout(opciones);
         opciones.setLayout(opcionesLayout);
         opcionesLayout.setHorizontalGroup(
             opcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, opcionesLayout.createSequentialGroup()
-                .addGroup(opcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(opcionesLayout.createSequentialGroup()
-                        .addGap(20, 20, 20)
+            .addGroup(opcionesLayout.createSequentialGroup()
+                .addGroup(opcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, opcionesLayout.createSequentialGroup()
                         .addGroup(opcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(tesoro, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(foso, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(opcionesLayout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, opcionesLayout.createSequentialGroup()
-                        .addGap(19, 19, 19)
-                        .addGroup(opcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, opcionesLayout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, opcionesLayout.createSequentialGroup()
+                                .addGap(30, 30, 30)
                                 .addGroup(opcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(tesoroo, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(monster, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(monstruo, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addGroup(opcionesLayout.createSequentialGroup()
+                                        .addGroup(opcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                            .addComponent(velocidades, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(mapas, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(init, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 95, Short.MAX_VALUE))
+                                        .addGap(0, 0, Short.MAX_VALUE))
+                                    .addGroup(opcionesLayout.createSequentialGroup()
+                                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, opcionesLayout.createSequentialGroup()
+                                .addGap(19, 19, 19)
+                                .addGroup(opcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(opcionesLayout.createSequentialGroup()
+                                        .addGap(6, 6, 6)
+                                        .addComponent(monstruo, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addGroup(opcionesLayout.createSequentialGroup()
+                                        .addGroup(opcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(monster, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                                            .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                        .addGap(117, 117, 117))))
                             .addGroup(opcionesLayout.createSequentialGroup()
-                                .addComponent(init, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE))))
+                                .addGroup(opcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addGroup(opcionesLayout.createSequentialGroup()
+                                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(tesoroo, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(opcionesLayout.createSequentialGroup()
+                                        .addGap(20, 20, 20)
+                                        .addGroup(opcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addComponent(tesoro, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(foso, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, opcionesLayout.createSequentialGroup()
+                                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(0, 0, Short.MAX_VALUE)))))
+                                .addGap(125, 125, 125)))
+                        .addComponent(fosoo, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(opcionesLayout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(125, 125, 125)
-                .addComponent(fosoo, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap()
+                        .addGroup(opcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel4))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         opcionesLayout.setVerticalGroup(
             opcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(opcionesLayout.createSequentialGroup()
-                .addGap(25, 25, 25)
+                .addGap(26, 26, 26)
                 .addComponent(init)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(monstruo, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jLabel3)
+                .addGap(5, 5, 5)
+                .addComponent(mapas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(velocidades, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButton1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(monstruo, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(monster, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(tesoroo, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(opcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, opcionesLayout.createSequentialGroup()
+                .addGroup(opcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(opcionesLayout.createSequentialGroup()
+                        .addGap(14, 14, 14)
                         .addComponent(fosoo, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(90, 90, 90))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, opcionesLayout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, opcionesLayout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(tesoro)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(foso)
-                        .addGap(14, 14, 14))))
+                        .addContainerGap())))
         );
 
-        getContentPane().add(opciones, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 150, 600));
+        getContentPane().add(opciones, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 150, 700));
 
         principal.setBackground(new java.awt.Color(253, 253, 150));
-        principal.setPreferredSize(new java.awt.Dimension(600, 600));
-        principal.setLayout(new java.awt.GridLayout(1, 0));
-        getContentPane().add(principal, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 0, 600, -1));
+        principal.setPreferredSize(new java.awt.Dimension(700, 700));
+        principal.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                principalMouseReleased(evt);
+            }
+        });
+        principal.setLayout(new java.awt.GridLayout(dimension, dimension));
+        getContentPane().add(principal, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 0, 700, 700));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -201,23 +294,199 @@ public class View extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_fosoActionPerformed
 
+    private void mapasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mapasActionPerformed
+        // TODO add your handling code here:
+        String itemSeleccionado = (String) mapas.getSelectedItem();
+        if ("Pequeño".equals(itemSeleccionado)) {
+            if (dimension != tamanyo(Tamanyo.PEQUEÑO)) {
+                this.dimension = tamanyo(Tamanyo.PEQUEÑO);
+                mapa = new Casilla[dimension][dimension];
+                principal.removeAll();
+                principal.setLayout(new java.awt.GridLayout(dimension, dimension));
+                pintarMapa();
+                principal.revalidate();
+                System.out.println("cambiado");
+            }
+
+        } else if ("Medio".equals(itemSeleccionado)) {
+            if (dimension != tamanyo(Tamanyo.MEDIANO)) {
+                this.dimension = tamanyo(Tamanyo.MEDIANO);
+                mapa = new Casilla[dimension][dimension];
+                principal.removeAll();
+                principal.setLayout(new java.awt.GridLayout(dimension, dimension));
+                pintarMapa();
+                principal.revalidate();
+                System.out.println("cambiado");
+            }
+        } else {
+            if (dimension != tamanyo(Tamanyo.GRANDE)) {
+                this.dimension = tamanyo(Tamanyo.GRANDE);
+                mapa = new Casilla[dimension][dimension];
+                principal.removeAll();
+                principal.setLayout(new java.awt.GridLayout(dimension, dimension));
+                pintarMapa();
+                principal.revalidate();
+                System.out.println("cambiado");
+            }
+        }
+
+        this.repaint();
+    }//GEN-LAST:event_mapasActionPerformed
+
+    private void principalMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_principalMouseReleased
+        // TODO add your handling code here:
+        int x = 0, y = 0, xCasilla, yCasilla;
+        //Algoritmo encargado de destapar una casilla si se encontraba previa- 
+        //mente tapada. Se obtienen las coordenadas de la casilla clickada con 
+        //el boton izquierdo del raton
+        if (evt.getButton() == MouseEvent.BUTTON1) {
+            x = evt.getX();
+            y = evt.getY();
+
+            xCasilla = x / (this.principal.getWidth() / dimension);
+            yCasilla = y / (this.principal.getWidth() / dimension);
+
+            switch (getOpcion()) {
+                case 0:
+                    mapa[xCasilla][yCasilla].setIcon(camino);
+                    break;
+                case 1:
+
+                    break;
+                case 2:
+
+                    break;
+                case 3:
+
+                    break;
+
+            }
+        }
+    }//GEN-LAST:event_principalMouseReleased
+
+    private void opcionesMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_opcionesMouseReleased
+        // TODO add your handling code here:
+
+    }//GEN-LAST:event_opcionesMouseReleased
+
+    private void velocidadesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_velocidadesActionPerformed
+        // TODO add your handling code here:
+        String itemSeleccionado = (String) velocidades.getSelectedItem();
+        if ("Lento".equals(itemSeleccionado)) {
+
+        } else if ("Medio".equals(itemSeleccionado)) {
+
+        } else {
+
+        }
+    }//GEN-LAST:event_velocidadesActionPerformed
+
+    public void pintarMapa() {
+        for (int i = 0; i < dimension; i++) {
+            for (int j = 0; j < dimension; j++) {
+                if (this.dimension == 8 || this.dimension == 12) {
+                    mapa[i][j] = new Casilla(this.principal.getWidth() / dimension);
+                    principal.add(mapa[i][j]);
+                    mapa[i][j].ponerImagen();
+                }else{
+                    mapa[i][j] = new Casilla((this.principal.getWidth() / dimension)+1);
+                    principal.add(mapa[i][j]);
+                    mapa[i][j].ponerImagen();
+                }
+
+            }
+
+        }
+    }
     /**
      * @param args the command line arguments
      */
     private Main prog;
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.ButtonGroup buttonGroup2;
+    private javax.swing.ButtonGroup buttonGroup3;
     private javax.swing.JButton foso;
     private javax.swing.JLabel fosoo;
     private javax.swing.JButton init;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JComboBox<String> mapas;
     private javax.swing.JButton monster;
     private javax.swing.JLabel monstruo;
     private javax.swing.JPanel opciones;
     private javax.swing.JPanel principal;
     private javax.swing.JButton tesoro;
     private javax.swing.JLabel tesoroo;
+    private javax.swing.JComboBox<String> velocidades;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void mouseClicked(MouseEvent arg0) {
+//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void mousePressed(MouseEvent arg0) {
+//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent arg0) {
+        int x = 0, y = 0, xCasilla, yCasilla;
+        //Algoritmo encargado de destapar una casilla si se encontraba previa- 
+        //mente tapada. Se obtienen las coordenadas de la casilla clickada con 
+        //el boton izquierdo del raton
+        if (arg0.getButton() == MouseEvent.BUTTON1) {
+            x = arg0.getX();
+            y = arg0.getY();
+
+            xCasilla = x / (this.principal.getWidth() / dimension);
+            yCasilla = y / (this.principal.getWidth() / dimension);
+
+            switch (getOpcion()) {
+                case 0:
+                    mapa[xCasilla][yCasilla].setIcon(camino);
+                    break;
+                case 1:
+
+                    break;
+                case 2:
+
+                    break;
+                case 3:
+
+                    break;
+
+            }
+        }
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent arg0) {
+//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void mouseExited(MouseEvent arg0) {
+//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public int getOpcion() {
+        if (this.selCamino) {
+            return 0;
+        } else if (this.selFoso) {
+            return 1;
+        } else if (this.selMosnter) {
+            return 2;
+        } else if (this.selTesoro) {
+            return 3;
+        }
+        return 4;
+    }
 }

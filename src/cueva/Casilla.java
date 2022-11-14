@@ -32,6 +32,7 @@ class Casilla extends JLabel {
     public Casilla(int size) {
         this.size=size;
         this.setSize(size, size);
+        
         icono = new ImageIcon(tierra.getImage().getScaledInstance(this.getWidth(), this.getHeight(), Image.SCALE_DEFAULT));
         this.hoyo = false;
         this.monster = false;
