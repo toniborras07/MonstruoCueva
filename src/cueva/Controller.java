@@ -29,7 +29,6 @@ public class Controller extends Thread {
         int salidas = 0;
         while (!acabar) {
             
-
         }
     }
 
@@ -40,7 +39,6 @@ public class Controller extends Thread {
         }
     }
 
-  
     
 }
 

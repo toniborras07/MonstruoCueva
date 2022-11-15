@@ -27,6 +27,10 @@ public class Cueva {
         }
     }
     
+    public int getTamanyo() {
+        return this.tamaño;
+    }
+    
     public int tamanyo(Tamanyo t){
         switch(t){
             case PEQUEÑO:

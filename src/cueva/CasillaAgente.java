@@ -13,20 +13,20 @@ import java.util.ArrayList;
 public class CasillaAgente {
     private int x,y;
     private ArrayList<Estado> estado;
-    private boolean seguro;
+    private boolean verificado;
     
     public CasillaAgente(int x, int y) {
         this.x = x;
         this.y = y;
-        this.estado = new ArrayList<Estado>();
+        this.estado = new ArrayList<>();
     }
     
-    public void setSeguro(boolean b) {
-        this.seguro = b;
+    public void setVerificado(boolean b) {
+        this.verificado = b;
     }
     
-    public boolean getSeguro() {
-        return this.seguro;
+    public boolean getVerificado() {
+        return this.verificado;
     }
     
     public void setEstados(Estado e) {
