@@ -3,27 +3,14 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-<<<<<<< Updated upstream
             <file>file:/Users/toniborras/Desktop/Universitat/UIB/3r%20%20-%204º%20AÑO/Sistemas%20inteligentes/MonstruoCueva/src/cueva/View.java</file>
-            <file>file:/Users/toniborras/Desktop/Universitat/UIB/3r%20%20-%204º%20AÑO/Sistemas%20inteligentes/MonstruoCueva/src/cueva/View2.java</file>
-=======
-            <file>file:/C:/Users/XAMAP/Desktop/Uni/Sistemas/MonstruoCueva/src/img/foso.png</file>
-            <file>file:/C:/Users/XAMAP/Desktop/Uni/Sistemas/MonstruoCueva/src/cueva/CasillaAgente.java</file>
-            <file>file:/C:/Users/XAMAP/Desktop/Uni/Sistemas/MonstruoCueva/src/img/Monstruo.png</file>
-            <file>file:/C:/Users/XAMAP/Desktop/Uni/Sistemas/MonstruoCueva/src/img/charmanderEste.png</file>
-            <file>file:/C:/Users/XAMAP/Desktop/Uni/Sistemas/MonstruoCueva/src/img/gyarados.png</file>
-            <file>file:/C:/Users/XAMAP/Desktop/Uni/Sistemas/MonstruoCueva/src/img/charmanderSurPaso.png</file>
-            <file>file:/C:/Users/XAMAP/Desktop/Uni/Sistemas/MonstruoCueva/src/img/charmanderNortePaso.png</file>
-            <file>file:/C:/Users/XAMAP/Desktop/Uni/Sistemas/MonstruoCueva/src/img/charmanderOeste.png</file>
-            <file>file:/C:/Users/XAMAP/Desktop/Uni/Sistemas/MonstruoCueva/src/img/charmander.png</file>
-            <file>file:/C:/Users/XAMAP/Desktop/Uni/Sistemas/MonstruoCueva/src/img/charmanderOestePaso.png</file>
-            <file>file:/C:/Users/XAMAP/Desktop/Uni/Sistemas/MonstruoCueva/src/cueva/Agente.java</file>
-            <file>file:/C:/Users/XAMAP/Desktop/Uni/Sistemas/MonstruoCueva/src/cueva/Casilla.java</file>
-            <file>file:/C:/Users/XAMAP/Desktop/Uni/Sistemas/MonstruoCueva/src/img/charmanderSur.png</file>
-            <file>file:/C:/Users/XAMAP/Desktop/Uni/Sistemas/MonstruoCueva/src/img/charmanderNorte.png</file>
-            <file>file:/C:/Users/XAMAP/Desktop/Uni/Sistemas/MonstruoCueva/src/cueva/Controller.java</file>
-            <file>file:/C:/Users/XAMAP/Desktop/Uni/Sistemas/MonstruoCueva/src/img/charmanderEstePaso.png</file>
->>>>>>> Stashed changes
+            <file>file:/Users/toniborras/Desktop/Universitat/UIB/3r%20%20-%204º%20AÑO/Sistemas%20inteligentes/MonstruoCueva/src/cueva/Main.java</file>
+            <file>file:/Users/toniborras/Desktop/Universitat/UIB/3r%20%20-%204º%20AÑO/Sistemas%20inteligentes/MonstruoCueva/src/cueva/Charmander.java</file>
+            <file>file:/Users/toniborras/Desktop/Universitat/UIB/3r%20%20-%204º%20AÑO/Sistemas%20inteligentes/MonstruoCueva/src/cueva/CasillaAgente.java</file>
+            <file>file:/Users/toniborras/Desktop/Universitat/UIB/3r%20%20-%204º%20AÑO/Sistemas%20inteligentes/MonstruoCueva/src/cueva/Casilla.java</file>
+            <file>file:/Users/toniborras/Desktop/Universitat/UIB/3r%20%20-%204º%20AÑO/Sistemas%20inteligentes/MonstruoCueva/src/cueva/Agente.java</file>
+            <file>file:/Users/toniborras/Desktop/Universitat/UIB/3r%20%20-%204º%20AÑO/Sistemas%20inteligentes/MonstruoCueva/src/cueva/Controller.java</file>
+            <file>file:/Users/toniborras/Desktop/Universitat/UIB/3r%20%20-%204º%20AÑO/Sistemas%20inteligentes/MonstruoCueva/src/cueva/Percepcion.java</file>
         </group>
     </open-files>
 </project-private>

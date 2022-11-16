@@ -22,6 +22,7 @@ public class View extends javax.swing.JFrame implements MouseListener {
     private boolean selMosnter;
     private boolean selFoso;
     private boolean selCamino;
+    private Charmander charmander;
     private ImageIcon monstruoImg = new ImageIcon("src/img/gyarados.png");
     private ImageIcon charm = new ImageIcon("src/img/charmander.png");
     private ImageIcon verde = new ImageIcon("src/img/foso.png");
@@ -39,7 +40,9 @@ public class View extends javax.swing.JFrame implements MouseListener {
         this.prog = p;
         this.dimension = tamanyo(dim);
         mapa = new Casilla[dimension][dimension];
+        
         initComponents();
+        charmander = new Charmander((this.principal.getWidth() / dimension), this.prog);
 
     }
 
@@ -59,8 +62,8 @@ public class View extends javax.swing.JFrame implements MouseListener {
 
     public void mostrar() {
         this.pack();
-
         setLocationRelativeTo(null);
+        
         setTitle("La Cueva del Monstruo");
         Icon icono = new ImageIcon(monstruoImg.getImage().getScaledInstance(this.monstruo.getWidth(), this.monstruo.getHeight(), Image.SCALE_DEFAULT));
         this.monstruo.setIcon(icono);
@@ -70,12 +73,16 @@ public class View extends javax.swing.JFrame implements MouseListener {
         this.tesoroo.setIcon(icono3);
         Icon icono4 = new ImageIcon(verde.getImage().getScaledInstance(this.jLabel1.getWidth(), this.jLabel1.getHeight(), Image.SCALE_DEFAULT));
         this.jLabel1.setIcon(icono4);
+        
         this.pintarMapa();
+        
+        this.mapa[0][0].add(this.charmander);
+        this.charmander.iniciarCharmander();
+        
         this.setResizable(false);
         this.revalidate();
-//        this.repaint();
         this.setVisible(true);
-//        t.repaint();
+
 
     }
 

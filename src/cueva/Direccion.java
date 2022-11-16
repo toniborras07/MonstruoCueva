@@ -6,8 +6,8 @@ package cueva;
 
 /**
  *
- * @author XAMAP
+ * @author toniborras
  */
-public enum Estado {
-    VACIO, HEDOR, BRISA, POSIBLEMONSTRUO, MONSTRUO, POSIBLEPRECIPICIO, PRECIPICIO, BRILLANTE, POSIBLETESORO, GOLPE, SEGURO, TESORO;
+public enum Direccion {
+    NORTE, SUR, ESTE, OESTE
 }

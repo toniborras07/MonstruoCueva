@@ -59,6 +59,89 @@ public class Agente {
     }
 
     public void procesarEstados() {
+        ArrayList<CasillaAgente> cAdyacentes = this.getAdyacentes();
+
+        if (this.casillaActual.getEstados().contains(Estado.VACIO)) {
+            cAdyacentes.forEach((c) -> {
+                if (!c.getVerificado()) {
+                    c.setEstados(Estado.SEGURO);
+                    c.setVerificado(false);
+                    this.addCasilla(c);
+                }
+            });
+        } else {
+
+            if (this.casillaActual.getEstados().contains(Estado.GOLPE)) {
+                //TODO Volver atrás
+            }
+
+            if (this.casillaActual.getEstados().contains(Estado.BRISA)) {
+                cAdyacentes.forEach((c) -> {
+                    if (!c.getVerificado()) {
+                        c.setEstados(Estado.POSIBLEPRECIPICIO);
+                        c.setVerificado(false);
+                        this.addCasilla(c);
+                    }
+                });
+            }
+
+            if (this.casillaActual.getEstados().contains(Estado.HEDOR)) {
+                cAdyacentes.forEach((c) -> {
+                    if (!c.getVerificado()) {
+                        c.setEstados(Estado.POSIBLEMONSTRUO);
+                        c.setVerificado(false);
+                        this.addCasilla(c);
+                    }
+                });
+            }
+
+            if (this.casillaActual.getEstados().contains(Estado.BRILLANTE)) {
+                cAdyacentes.forEach((c) -> {
+                    if (!c.getVerificado()) {
+                        c.setEstados(Estado.POSIBLETESORO);
+                        c.setVerificado(false);
+                        this.addCasilla(c);
+                    }
+                });
+            }
+        }
+    }
+
+    public void razonar() {
+        ArrayList<CasillaAgente> cAdyacentes = this.getAdyacentes();
+        if (this.casillaActual.getEstados().contains(Estado.BRILLANTE)) {
+            for (int i = 0; i < cAdyacentes.size(); i++) {
+                if (cAdyacentes.get(i).getEstados().contains(Estado.POSIBLETESORO)) {
+                    cAdyacentes.get(i).setEstados(Estado.TESORO);
+                    //IDEA: ORDENAR QUE EL AGENTE SE MUEVA A ESA CASILLA YA QUE SE ASEGURA QUE ESTA EL TESORO
+
+                }
+            }
+        }
+        if (this.casillaActual.getEstados().contains(Estado.HEDOR)) {
+            for (int i = 0; i < cAdyacentes.size(); i++) {
+                if (cAdyacentes.get(i).getEstados().contains(Estado.POSIBLEMONSTRUO)) {
+                    cAdyacentes.get(i).setEstados(Estado.MONSTRUO);
+                    
+                }
+            }
+
+        }
+        if (this.casillaActual.getEstados().contains(Estado.BRISA)) {
+            for (int i = 0; i < cAdyacentes.size(); i++) {
+                if (cAdyacentes.get(i).getEstados().contains(Estado.POSIBLEPRECIPICIO)) {
+                    cAdyacentes.get(i).setEstados(Estado.PRECIPICIO);
+
+                }
+            }
+
+        }
+       
+        
+
+    }
+
+    public ArrayList<CasillaAgente> getAdyacentes() {
         ArrayList<CasillaAgente> cAdyacentes = new ArrayList<>();
         if (this.casillaActual.getX() - 1 >= 0) {
             CasillaAgente cw = new CasillaAgente(this.casillaActual.getX() - 1, this.casillaActual.getY());
@@ -76,53 +159,7 @@ public class Agente {
             CasillaAgente cs = new CasillaAgente(this.casillaActual.getX(), this.casillaActual.getY() - 1);
             cAdyacentes.add(cs);
         }
-        
-        if(this.casillaActual.getEstados().contains(Estado.VACIO)) {
-            cAdyacentes.forEach((c) -> {
-                if(!c.getVerificado()){
-                    c.setEstados(Estado.SEGURO);
-                    c.setVerificado(false);
-                    this.addCasilla(c);
-                }
-            });
-        }
-        
-        if (this.casillaActual.getEstados().contains(Estado.GOLPE)) {
-           //TODO Volver atrás
-        }
-        
-        if (this.casillaActual.getEstados().contains(Estado.BRISA)) {
-            cAdyacentes.forEach((c) -> {
-                if(!c.getVerificado()){
-                    c.setEstados(Estado.PRECIPICIO); 
-                    c.setVerificado(false);
-                    this.addCasilla(c);
-                }
-            });
-        }
-        
-        if (this.casillaActual.getEstados().contains(Estado.HEDOR)) {
-            cAdyacentes.forEach((c) -> {
-                if(!c.getVerificado()){
-                    c.setEstados(Estado.MONSTRUO); 
-                    c.setVerificado(false);
-                    this.addCasilla(c);
-                }
-            });
-        }
-        
-        if (this.casillaActual.getEstados().contains(Estado.BRILLANTE)) {
-            cAdyacentes.forEach((c) -> {
-                if(!c.getVerificado()){
-                    c.setEstados(Estado.TESORO); 
-                    c.setVerificado(false);
-                    this.addCasilla(c);
-                }
-            });
-        }
-    }
-    
-    public void razonar() {
-        
+
+        return cAdyacentes;
     }
 }
