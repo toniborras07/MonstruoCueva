@@ -15,7 +15,7 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
-class Casilla extends JLabel {
+class CasillaGrafica extends JLabel {
 
     //ATRIBUTOS
     private ImageIcon tierra = new ImageIcon("src/img/piedra.png");
@@ -29,7 +29,7 @@ class Casilla extends JLabel {
     private int numMonsters;
     private int size;
 
-    public Casilla(int size) {
+    public CasillaGrafica(int size) {
         this.size=size;
         this.setSize(size, size);
         

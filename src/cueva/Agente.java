@@ -16,9 +16,11 @@ public class Agente {
     private HashMap<Integer, HashMap<Integer, CasillaAgente>> cuevaMemoria;
     private Main prog;
     private CasillaAgente casillaActual;
+    private Charmander apariencia;
 
     public Agente(Main p) {
         this.prog = p;
+       
     }
 
     public Main getMain() {
@@ -161,5 +163,9 @@ public class Agente {
         }
 
         return cAdyacentes;
+    }
+    
+    public void setCharmander(Charmander m){
+        this.apariencia=m;
     }
 }

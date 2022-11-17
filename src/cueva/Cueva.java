@@ -105,4 +105,15 @@ public class Cueva {
     public CasillaAgente getCasilla(int x, int y) {
         return this.cueva[x][y];
     }
+    
+    public void setCueva(Tamanyo dimension){
+         this.tamaño = tamanyo(dimension);
+        this.cueva=new CasillaAgente[tamaño][tamaño];
+        for(int i = 0; i < tamaño; i++) {
+            for(int j = 0; j < tamaño; j++) {
+                cueva[i][j] = new CasillaAgente(i,j);
+                cueva[i][j].setEstados(Estado.VACIO);
+            }
+        }
+    }
 }

@@ -20,6 +20,7 @@ public class Main {
         vis = new View(this,Tamanyo.PEQUEÑO);
         vis.mostrar();
         con = new Controller(this);
+        charmander.setCharmander(vis.getCharmander());
         con.start();       
         
     }
