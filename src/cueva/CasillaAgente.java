@@ -33,11 +33,19 @@ public class CasillaAgente {
         if(this.estado.size() == 1 && this.estado.get(0) == Estado.VACIO) {
             this.estado.remove(0);
         }
-        this.estado.add(e);
+        if(!this.estado.contains(e)) {
+            this.estado.add(e);
+        }
     }
     
     public void setEstados(ArrayList<Estado> e) {
         this.estado = e;
+    }
+    
+    public void removeEstado(Estado e) {
+        if(this.estado.contains(e)) {
+            this.estado.remove(e);
+        }
     }
     
     public ArrayList<Estado> getEstados() {

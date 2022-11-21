@@ -48,8 +48,7 @@ public class Agente {
     }
 
     public void mover(int x, int y) {
-        //TODO Comprobar si la casilla está en su base de conocimientos o no
-        historial.add(this.casillaActual);
+        historial.push(this.casillaActual);
         this.casillaActual = new CasillaAgente(x, y);
         percibirCasilla();
         procesarEstados();
@@ -81,6 +80,7 @@ public class Agente {
             }
 
             if (this.casillaActual.getEstados().contains(Estado.BRISA)) {
+                this.casillaActual.setEstados(Estado.SEGURO);
                 cAdyacentes.forEach((c) -> {
                     if (!c.getVerificado()) {
                         c.setEstados(Estado.POSIBLEPRECIPICIO);
@@ -91,6 +91,7 @@ public class Agente {
             }
 
             if (this.casillaActual.getEstados().contains(Estado.HEDOR)) {
+                this.casillaActual.setEstados(Estado.SEGURO);
                 cAdyacentes.forEach((c) -> {
                     if (!c.getVerificado()) {
                         c.setEstados(Estado.POSIBLEMONSTRUO);
@@ -101,6 +102,7 @@ public class Agente {
             }
 
             if (this.casillaActual.getEstados().contains(Estado.BRILLANTE)) {
+                this.casillaActual.setEstados(Estado.SEGURO);
                 cAdyacentes.forEach((c) -> {
                     if (!c.getVerificado()) {
                         c.setEstados(Estado.POSIBLETESORO);
@@ -115,30 +117,24 @@ public class Agente {
     public void razonar() {
         ArrayList<CasillaAgente> cAdyacentes = this.getAdyacentes();
         if (this.casillaActual.getEstados().contains(Estado.BRILLANTE) && this.casillaActual.getEstados().size() == 1) {
-            if(buscarTesoro(cAdyacentes)) {
+            if (buscarTesoro(cAdyacentes)) {
                 volver();
             }
-        }
-        
-        if (this.casillaActual.getEstados().contains(Estado.HEDOR)) {
-            for (int i = 0; i < cAdyacentes.size(); i++) {
-                if (cAdyacentes.get(i).getEstados().contains(Estado.POSIBLEMONSTRUO)) {
-                    cAdyacentes.get(i).setEstados(Estado.MONSTRUO);
-
-                }
+        } else {
+            ArrayList<CasillaAgente> noVerificadas = cAdyacentes;
+            noVerificadas.removeIf(c -> c.getVerificado());
+            
+            if(!noVerificadas.isEmpty()) {
+                noVerificadas.forEach((c) -> {
+                    if(c.getEstados().contains(Estado.SEGURO)) {
+                        mover(c.getX(), c.getY());
+                    }
+                });
+            } else {
+                CasillaAgente cAnterior = this.historial.pop();
+                this.casillaActual = new CasillaAgente(cAnterior.getX(), cAnterior.getY());
             }
-
         }
-        if (this.casillaActual.getEstados().contains(Estado.BRISA)) {
-            for (int i = 0; i < cAdyacentes.size(); i++) {
-                if (cAdyacentes.get(i).getEstados().contains(Estado.POSIBLEPRECIPICIO)) {
-                    cAdyacentes.get(i).setEstados(Estado.PRECIPICIO);
-
-                }
-            }
-
-        }
-
     }
 
     public ArrayList<CasillaAgente> getAdyacentes() {
@@ -169,20 +165,24 @@ public class Agente {
 
     public boolean buscarTesoro(ArrayList<CasillaAgente> cAd) {
         for (int i = 0; i < cAd.size(); i++) {
-            mover(cAd.get(i).getX(), cAd.get(i).getY());
-            if (this.casillaActual.getEstados().contains(Estado.TESORO)) {
-                return true;
+            if (cAd.get(i).getX() >= 0 && cAd.get(i).getX() < this.prog.getCueva().getTamanyo()
+                    && cAd.get(i).getY() >= 0 && cAd.get(i).getY() < this.prog.getCueva().getTamanyo()) {
+                this.casillaActual = new CasillaAgente(cAd.get(i).getX(), cAd.get(i).getY());
+                if (this.casillaActual.getEstados().contains(Estado.TESORO)) {
+                    return true;
+                }
+                CasillaAgente cAnterior = this.historial.pop();
+                this.casillaActual = new CasillaAgente(cAnterior.getX(), cAnterior.getY());
             }
-            CasillaAgente cAnterior = this.historial.pop();
-            mover(cAnterior.getX(), cAnterior.getY());
         }
         return false;
     }
-    
+
     public void volver() {
-        while(historial.capacity() > 0) {
+        while (historial.capacity() > 0) {
             CasillaAgente cAnterior = this.historial.pop();
-            mover(cAnterior.getX(), cAnterior.getY());
+            this.casillaActual = new CasillaAgente(cAnterior.getX(), cAnterior.getY());
         }
+        //Acabar (quedarse quieto)
     }
 }
