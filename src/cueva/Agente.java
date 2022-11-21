@@ -76,7 +76,8 @@ public class Agente {
         } else {
 
             if (this.casillaActual.getEstados().contains(Estado.GOLPE)) {
-                //TODO Volver atrás
+                CasillaAgente anterior = this.historial.pop();
+                mover(anterior.getX(), anterior.getY());
             }
 
             if (this.casillaActual.getEstados().contains(Estado.BRISA)) {
