@@ -6,6 +6,7 @@ package cueva;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Stack;
 
 /**
  *
@@ -17,6 +18,7 @@ public class Agente {
     private Main prog;
     private CasillaAgente casillaActual;
     private Charmander apariencia;
+    private Stack<CasillaAgente> historial;
 
     public Agente(Main p) {
         this.prog = p;
@@ -47,6 +49,7 @@ public class Agente {
 
     public void mover(int x, int y) {
         //TODO Comprobar si la casilla está en su base de conocimientos o no
+        historial.add(this.casillaActual);
         this.casillaActual = new CasillaAgente(x, y);
         percibirCasilla();
         procesarEstados();
@@ -111,8 +114,11 @@ public class Agente {
     public void razonar() {
         ArrayList<CasillaAgente> cAdyacentes = this.getAdyacentes();
         if (this.casillaActual.getEstados().contains(Estado.BRILLANTE) && this.casillaActual.getEstados().size() == 1) {
-            buscarTesoro(cAdyacentes);
+            if(buscarTesoro(cAdyacentes)) {
+                volver();
+            }
         }
+        
         if (this.casillaActual.getEstados().contains(Estado.HEDOR)) {
             for (int i = 0; i < cAdyacentes.size(); i++) {
                 if (cAdyacentes.get(i).getEstados().contains(Estado.POSIBLEMONSTRUO)) {
@@ -160,14 +166,22 @@ public class Agente {
         this.apariencia = m;
     }
 
-    public void buscarTesoro(ArrayList<CasillaAgente> cAd) {
+    public boolean buscarTesoro(ArrayList<CasillaAgente> cAd) {
         for (int i = 0; i < cAd.size(); i++) {
             mover(cAd.get(i).getX(), cAd.get(i).getY());
-            if (cAd.get(i).getEstados().contains(Estado.POSIBLETESORO)) {
-                cAd.get(i).setEstados(Estado.TESORO);
-                //IDEA: ORDENAR QUE EL AGENTE SE MUEVA A ESA CASILLA YA QUE SE ASEGURA QUE ESTA EL TESORO
-
+            if (this.casillaActual.getEstados().contains(Estado.TESORO)) {
+                return true;
             }
+            CasillaAgente cAnterior = this.historial.pop();
+            mover(cAnterior.getX(), cAnterior.getY());
+        }
+        return false;
+    }
+    
+    public void volver() {
+        while(historial.capacity() > 0) {
+            CasillaAgente cAnterior = this.historial.pop();
+            mover(cAnterior.getX(), cAnterior.getY());
         }
     }
 }
