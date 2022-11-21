@@ -20,7 +20,7 @@ public class Agente {
 
     public Agente(Main p) {
         this.prog = p;
-       
+
     }
 
     public Main getMain() {
@@ -51,7 +51,6 @@ public class Agente {
         percibirCasilla();
         procesarEstados();
         this.addCasilla(casillaActual);
-        razonar();
     }
 
     public void percibirCasilla() {
@@ -111,20 +110,14 @@ public class Agente {
 
     public void razonar() {
         ArrayList<CasillaAgente> cAdyacentes = this.getAdyacentes();
-        if (this.casillaActual.getEstados().contains(Estado.BRILLANTE)) {
-            for (int i = 0; i < cAdyacentes.size(); i++) {
-                if (cAdyacentes.get(i).getEstados().contains(Estado.POSIBLETESORO)) {
-                    cAdyacentes.get(i).setEstados(Estado.TESORO);
-                    //IDEA: ORDENAR QUE EL AGENTE SE MUEVA A ESA CASILLA YA QUE SE ASEGURA QUE ESTA EL TESORO
-
-                }
-            }
+        if (this.casillaActual.getEstados().contains(Estado.BRILLANTE) && this.casillaActual.getEstados().size() == 1) {
+            buscarTesoro(cAdyacentes);
         }
         if (this.casillaActual.getEstados().contains(Estado.HEDOR)) {
             for (int i = 0; i < cAdyacentes.size(); i++) {
                 if (cAdyacentes.get(i).getEstados().contains(Estado.POSIBLEMONSTRUO)) {
                     cAdyacentes.get(i).setEstados(Estado.MONSTRUO);
-                    
+
                 }
             }
 
@@ -138,8 +131,6 @@ public class Agente {
             }
 
         }
-       
-        
 
     }
 
@@ -164,8 +155,19 @@ public class Agente {
 
         return cAdyacentes;
     }
-    
-    public void setCharmander(Charmander m){
-        this.apariencia=m;
+
+    public void setCharmander(Charmander m) {
+        this.apariencia = m;
+    }
+
+    public void buscarTesoro(ArrayList<CasillaAgente> cAd) {
+        for (int i = 0; i < cAd.size(); i++) {
+            mover(cAd.get(i).getX(), cAd.get(i).getY());
+            if (cAd.get(i).getEstados().contains(Estado.POSIBLETESORO)) {
+                cAd.get(i).setEstados(Estado.TESORO);
+                //IDEA: ORDENAR QUE EL AGENTE SE MUEVA A ESA CASILLA YA QUE SE ASEGURA QUE ESTA EL TESORO
+
+            }
+        }
     }
 }
