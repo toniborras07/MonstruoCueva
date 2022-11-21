@@ -25,12 +25,23 @@ public class View extends javax.swing.JFrame implements MouseListener {
     private boolean selMonster;
     private boolean selFoso;
     private boolean selCamino;
+    private boolean iniciar;
     private Charmander charmander;
     private ImageIcon monstruoImg = new ImageIcon("src/img/gyarados.png");
     private ImageIcon charm = new ImageIcon("src/img/charmander.png");
     private ImageIcon verde = new ImageIcon("src/img/foso.png");
     private ImageIcon tesoroimg = new ImageIcon("src/img/tesoro.png");
     private ImageIcon camino = new ImageIcon("src/img/piedra.png");
+
+    private ImageIcon charmanderEste = new ImageIcon("src/img/charmanderEste.png");
+    private ImageIcon charmanderEstePaso = new ImageIcon("src/img/charmanderEstePaso.png");
+    private ImageIcon charmanderNorte = new ImageIcon("src/img/charmanderNorte.png");
+    private ImageIcon charmanderNortePaso = new ImageIcon("src/img/charmanderNortePaso.png");
+    private ImageIcon charmanderOeste = new ImageIcon("src/img/charmanderOeste.png");
+    private ImageIcon charmanderOestePaso = new ImageIcon("src/img/charmanderOestePaso.png");
+    private ImageIcon charmanderSur = new ImageIcon("src/img/charmanderSur.png");
+    private ImageIcon charmanderSurPaso = new ImageIcon("src/img/charmanderSurPaso.png");
+    Icon icono;
 
     /**
      * Creates new form View
@@ -42,7 +53,8 @@ public class View extends javax.swing.JFrame implements MouseListener {
         this.selMonster = false;
         this.selTesoro = false;
         this.prog = p;
-       
+        this.iniciar = false;
+
         this.dimension = tamanyo(dim);
         mapa = new CasillaGrafica[dimension][dimension];
 
@@ -80,8 +92,9 @@ public class View extends javax.swing.JFrame implements MouseListener {
         this.jLabel1.setIcon(icono4);
 
         this.pintarMapa();
-
         this.mapa[0][0].add(this.charmander);
+        this.charmander.setX(0);
+        this.charmander.setY(0);
         this.charmander.iniciarCharmander();
 
         this.setResizable(false);
@@ -90,45 +103,79 @@ public class View extends javax.swing.JFrame implements MouseListener {
 
     }
 
-    public void animacion(int n) {
-        int y;
-        int nextFloor;
+   
+
+    public void moverCharmander(Direccion dir) {
+        int y, x;
+        int next;
         boolean llegado;
-        ImageIcon wallpaper;
-        Icon icono;
-        y = this.charmander.getY();
-        if (n == 0) {
-            nextFloor = y - (this.charmander.getHeight() + 5);
-        } else {
-            nextFloor = y + (this.charmander.getHeight() + 5);
-        }
+
+        y = charmander.getY();
+        x = charmander.getX();
 
         llegado = false;
 
-        while (!llegado) {
-            if (this.charmander.getY() != nextFloor) {
-                if (n == 0) {
-                    this.charmander.setLocation(this.charmander.getX(), this.charmander.getY() - 1);
-                    this.charmander.repaint();
+        switch (dir) {
+            case NORTE:
 
-                } else {
-                    this.charmander.setLocation(this.charmander.getX(), this.charmander.getY() + 1);
-                    this.charmander.repaint();
+                next = y - (charmander.getHeight() + 5);
+                if (charmander.getDireccion() != Direccion.NORTE) {
+                    charmander.setDireccion(Direccion.NORTE);
+
+                    charmander.setIcon(icono = new ImageIcon(charmanderNorte.getImage().getScaledInstance(charmander.getWidth(), charmander.getHeight(), Image.SCALE_DEFAULT)));
+
+                }
+                mapa[charmander.getY() - 1][charmander.getX()].add(charmander);
+//                charmander.setIcon(icono = new ImageIcon(charmanderNorte.getImage().getScaledInstance(charmander.getWidth(), charmander.getHeight(), Image.SCALE_DEFAULT)));
+
+                this.charmander.setY(charmander.getY() - 1);
+                break;
+            case SUR:
+                next = y + (charmander.getHeight() + 5);
+
+                if (charmander.getDireccion() != Direccion.SUR) {
+                    charmander.setDireccion(Direccion.SUR);
+
+                    charmander.setIcon(icono = new ImageIcon(charmanderSur.getImage().getScaledInstance(charmander.getWidth(), charmander.getHeight(), Image.SCALE_DEFAULT)));
+
+                }
+//                charmander.setBounds(next, charmander.getHeight() + 5, charmander.getWidth(), charmander.getHeight());
+                if (charmander.getY() < mapa.length) {
+                    mapa[charmander.getY() + 1][charmander.getX()].add(charmander);
+                    this.charmander.setY(charmander.getY() + 1);
+                }
+//                this.iniciar=false;
+
+//                charmander.setIcon(icono = new ImageIcon(charmanderSur.getImage().getScaledInstance(charmander.getWidth(), charmander.getHeight(), Image.SCALE_DEFAULT)));
+                break;
+            case ESTE:
+                next = x + (charmander.getHeight() + 5);
+                if (charmander.getDireccion() != Direccion.ESTE) {
+                    charmander.setDireccion(Direccion.ESTE);
+                    charmander.setIcon(icono = new ImageIcon(charmanderEste.getImage().getScaledInstance(charmander.getWidth(), charmander.getHeight(), Image.SCALE_DEFAULT)));
+
                 }
 
-                try {
-                    //PARALIZACIÓN DE LA EJECUCIÓN DURANTE RETRASO/1000 SEGUNDOS
-                    //PARA SIMULAR LA VELOCIDAD DEL MOVIMIENTO DE LA
-                    //FIGURA ELIPSE
-                    Thread.sleep(20);
-                } catch (InterruptedException err) {
-                    System.out.println(err);
+                mapa[charmander.getY()][charmander.getX() + 1].add(charmander);
+                this.charmander.setX(charmander.getX() + 1);
+//                charmander.setIcon(icono = new ImageIcon(charmanderEste.getImage().getScaledInstance(charmander.getWidth(), charmander.getHeight(), Image.SCALE_DEFAULT)));
+                break;
+            case OESTE:
+                next = x - (charmander.getHeight() + 5);
+                if (charmander.getDireccion() != Direccion.OESTE) {
+                    charmander.setDireccion(Direccion.OESTE);
+                    charmander.setIcon(icono = new ImageIcon(charmanderOeste.getImage().getScaledInstance(charmander.getWidth(), charmander.getHeight(), Image.SCALE_DEFAULT)));
+
                 }
 
-            } else {
-                llegado = true;
-            }
+                mapa[charmander.getY()][charmander.getX() - 1].add(charmander);
+                this.charmander.setX(charmander.getX() - 1);
+//                charmander.setIcon(icono = new ImageIcon(charmanderOeste.getImage().getScaledInstance(charmander.getWidth(), charmander.getHeight(), Image.SCALE_DEFAULT)));
+                break;
+
         }
+        this.repaint();
+
     }
 
     /**
@@ -178,6 +225,11 @@ public class View extends javax.swing.JFrame implements MouseListener {
         fosoo.setText("jLabel3");
 
         init.setText("Iniciar");
+        init.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                initActionPerformed(evt);
+            }
+        });
 
         jLabel1.setText("jLabel1");
 
@@ -423,33 +475,36 @@ public class View extends javax.swing.JFrame implements MouseListener {
                     mapa[xCasilla][yCasilla].setIcon(camino);
                     break;
                 case 1:
-                    System.out.println("ggifji");
+
                     JLabel gyarados = new JLabel();
                     gyarados.setSize(mapa[xCasilla][yCasilla].getWidth(), mapa[xCasilla][yCasilla].getHeight());
                     ImageIcon gy = new ImageIcon("src/img/Monstruo.png");
                     Icon icono = new ImageIcon(gy.getImage().getScaledInstance(gyarados.getWidth(), gyarados.getHeight(), Image.SCALE_DEFAULT));
 
                     mapa[yCasilla][xCasilla].add(gyarados);
+                    mapa[yCasilla][xCasilla].setMonster(true);
                     gyarados.setIcon(icono);
                     break;
                 case 2:
-                    System.out.println("ggifji");
+
                     JLabel foso = new JLabel();
                     foso.setSize(mapa[xCasilla][yCasilla].getWidth(), mapa[xCasilla][yCasilla].getHeight());
                     ImageIcon fo = new ImageIcon("src/img/foso.png");
                     Icon iconofoso = new ImageIcon(fo.getImage().getScaledInstance(foso.getWidth(), foso.getHeight(), Image.SCALE_DEFAULT));
 
                     mapa[yCasilla][xCasilla].add(foso);
+                    mapa[yCasilla][xCasilla].setHoyo(true);
                     foso.setIcon(iconofoso);
                     break;
                 case 3:
-                    System.out.println("ggifji");
+
                     JLabel tresor = new JLabel();
                     tresor.setSize(mapa[xCasilla][yCasilla].getWidth(), mapa[xCasilla][yCasilla].getHeight());
                     ImageIcon te = new ImageIcon("src/img/tesoro.png");
                     Icon iconotesoro = new ImageIcon(te.getImage().getScaledInstance(tresor.getWidth(), tresor.getHeight(), Image.SCALE_DEFAULT));
 
                     mapa[yCasilla][xCasilla].add(tresor);
+                    mapa[yCasilla][xCasilla].setTesoro(true);
                     tresor.setIcon(iconotesoro);
 
                     break;
@@ -491,6 +546,12 @@ public class View extends javax.swing.JFrame implements MouseListener {
         this.selMonster = false;
         this.selTesoro = false;
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void initActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_initActionPerformed
+        // TODO add your handling code here:
+
+        this.iniciar = true;
+    }//GEN-LAST:event_initActionPerformed
 
     public void pintarMapa() {
         for (int i = 0; i < dimension; i++) {
@@ -616,8 +677,17 @@ public class View extends javax.swing.JFrame implements MouseListener {
 
         }
     }
-    
-    public Charmander getCharmander(){
+
+    public Charmander getCharmander() {
         return this.charmander;
     }
+
+    public boolean isIniciar() {
+        return iniciar;
+    }
+
+    public void setIniciar(boolean iniciar) {
+        this.iniciar = iniciar;
+    }
+
 }
