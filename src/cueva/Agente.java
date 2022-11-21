@@ -18,19 +18,10 @@ public class Agente {
     private Main prog;
     private CasillaAgente casillaActual;
     private Charmander apariencia;
-<<<<<<< Updated upstream
     private Stack<CasillaAgente> historial;
 
     public Agente(Main p) {
         this.prog = p;
-=======
-    private boolean encontrado;
-
-    public Agente(Main p) {
-        this.prog = p;
-        encontrado = false;
->>>>>>> Stashed changes
-
     }
 
     public Main getMain() {
@@ -39,6 +30,7 @@ public class Agente {
 
     public void setCasillaActual(CasillaAgente ca) {
         this.casillaActual = ca;
+        //Hacer el movimiento
     }
 
     public CasillaAgente getCasillaActual() {
@@ -61,10 +53,6 @@ public class Agente {
         percibirCasilla();
         procesarEstados();
         this.addCasilla(casillaActual);
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
     }
 
     public void percibirCasilla() {
@@ -128,72 +116,32 @@ public class Agente {
 
     public void razonar() {
         ArrayList<CasillaAgente> cAdyacentes = this.getAdyacentes();
-<<<<<<< Updated upstream
         if (this.casillaActual.getEstados().contains(Estado.BRILLANTE) && this.casillaActual.getEstados().size() == 1) {
             if (buscarTesoro(cAdyacentes)) {
                 volver();
-=======
-        if (this.casillaActual.getEstados().contains(Estado.BRILLANTE)) {
-            for (int i = 0; i < cAdyacentes.size(); i++) {
-                if (cAdyacentes.get(i).getEstados().contains(Estado.POSIBLETESORO)) {
-                    cAdyacentes.get(i).setEstados(Estado.TESORO);
-                    //IDEA: ORDENAR QUE EL AGENTE SE MUEVA A ESA CASILLA YA QUE SE ASEGURA QUE ESTA EL TESORO
-                    this.encontrado = true;
-                }
             }
-        }
-        if (this.casillaActual.getEstados().contains(Estado.HEDOR)) {
-            for (int i = 0; i < cAdyacentes.size(); i++) {
-                if (cAdyacentes.get(i).getEstados().contains(Estado.POSIBLEMONSTRUO)) {
-                    cAdyacentes.get(i).setEstados(Estado.MONSTRUO);
+            if (this.casillaActual.getEstados().contains(Estado.HEDOR)) {
+                for (int i = 0; i < cAdyacentes.size(); i++) {
+                    if (cAdyacentes.get(i).getEstados().contains(Estado.POSIBLEMONSTRUO)) {
+                        cAdyacentes.get(i).setEstados(Estado.MONSTRUO);
 
-                }
->>>>>>> Stashed changes
-            }
-        } else {
-            ArrayList<CasillaAgente> noVerificadas = cAdyacentes;
-            noVerificadas.removeIf(c -> c.getVerificado());
-            
-            if(!noVerificadas.isEmpty()) {
-                noVerificadas.forEach((c) -> {
-                    if(c.getEstados().contains(Estado.SEGURO)) {
-                        mover(c.getX(), c.getY());
                     }
-                });
+                }
             } else {
-                CasillaAgente cAnterior = this.historial.pop();
-                this.casillaActual = new CasillaAgente(cAnterior.getX(), cAnterior.getY());
-            }
-        }
-<<<<<<< Updated upstream
-=======
+                ArrayList<CasillaAgente> noVerificadas = cAdyacentes;
+                noVerificadas.removeIf(c -> c.getVerificado());
 
->>>>>>> Stashed changes
-    }
-
-    public void actuar() {
-        razonar();
-
-        if (encontrado) {
-            ArrayList<CasillaAgente> cAdyacentes = this.getAdyacentes();
-            for (int i = 0; i < this.getAdyacentes().size(); i++) {
-                if (this.getAdyacentes().get(i).getEstados().contains(Estado.TESORO)) {
-                    this.mover(this.getAdyacentes().get(i).getX(), this.getAdyacentes().get(i).getY());
-                    
-                }else{
-                    if (this.getAdyacentes().get(i).getEstados().contains(Estado.SEGURO) ||  
-                        this.getAdyacentes().get(i).getEstados().contains(Estado.VACIO)){
-                        this.mover(this.getAdyacentes().get(i).getX(), this.getAdyacentes().get(i).getY());
-                        
-                    }
- {
-                        
-                        
-                    }
-                    
+                if (!noVerificadas.isEmpty()) {
+                    noVerificadas.forEach((c) -> {
+                        if (c.getEstados().contains(Estado.SEGURO)) {
+                            mover(c.getX(), c.getY());
+                        }
+                    });
+                } else {
+                    CasillaAgente cAnterior = this.historial.pop();
+                    setCasillaActual(cAnterior);
                 }
             }
-
         }
     }
 
@@ -223,17 +171,16 @@ public class Agente {
         this.apariencia = m;
     }
 
-<<<<<<< Updated upstream
     public boolean buscarTesoro(ArrayList<CasillaAgente> cAd) {
         for (int i = 0; i < cAd.size(); i++) {
             if (cAd.get(i).getX() >= 0 && cAd.get(i).getX() < this.prog.getCueva().getTamanyo()
                     && cAd.get(i).getY() >= 0 && cAd.get(i).getY() < this.prog.getCueva().getTamanyo()) {
-                this.casillaActual = new CasillaAgente(cAd.get(i).getX(), cAd.get(i).getY());
+                setCasillaActual(cAd.get(i));
                 if (this.casillaActual.getEstados().contains(Estado.TESORO)) {
                     return true;
                 }
                 CasillaAgente cAnterior = this.historial.pop();
-                this.casillaActual = new CasillaAgente(cAnterior.getX(), cAnterior.getY());
+                setCasillaActual(cAnterior);
             }
         }
         return false;
@@ -242,20 +189,12 @@ public class Agente {
     public void volver() {
         while (historial.capacity() > 0) {
             CasillaAgente cAnterior = this.historial.pop();
-            this.casillaActual = new CasillaAgente(cAnterior.getX(), cAnterior.getY());
+            setCasillaActual(cAnterior);
         }
         //Acabar (quedarse quieto)
-=======
+    }
+
     public Charmander getCharmander() {
         return this.apariencia;
-    }
-
-    public boolean isEncontrado() {
-        return encontrado;
-    }
-
-    public void setEncontrado(boolean encontrado) {
-        this.encontrado = encontrado;
->>>>>>> Stashed changes
     }
 }
