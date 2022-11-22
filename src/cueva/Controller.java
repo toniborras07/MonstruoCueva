@@ -26,8 +26,7 @@ public class Controller extends Thread {
 
     @Override
     public void run() {
-        boolean dale= false;
-
+        boolean dale = false;
 
         while (!acabar) {
             try {
@@ -40,11 +39,16 @@ public class Controller extends Thread {
                 charmander.percibirCasilla();
                 charmander.addCasilla(charmander.getCasillaActual());
                 charmander.procesarEstados();
-                
+
                 this.vista.setIniciar(false);
-                dale=true;
-            }else if(dale){
-                 charmander.razonar();
+                dale = true;
+            } else if (dale) {
+                charmander.razonar();
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
 
         }
