@@ -26,8 +26,9 @@ public class Controller extends Thread {
 
     @Override
     public void run() {
-        int aviso = 0;
-        int salidas = 0;
+        boolean dale= false;
+
+
         while (!acabar) {
             try {
                 Thread.sleep(30);
@@ -36,13 +37,14 @@ public class Controller extends Thread {
             }
 
             if (this.vista.isIniciar()) {
-//                System.out.println("fgdfuiyg");
-                this.vista.moverCharmander(Direccion.SUR);
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                charmander.percibirCasilla();
+                charmander.addCasilla(charmander.getCasillaActual());
+                charmander.procesarEstados();
+                
+                this.vista.setIniciar(false);
+                dale=true;
+            }else if(dale){
+                 charmander.razonar();
             }
 
         }

@@ -14,11 +14,14 @@ public class CasillaAgente {
     private int x,y;
     private ArrayList<Estado> estado;
     private boolean verificado;
+    private int numVisitas;
     
     public CasillaAgente(int x, int y) {
         this.x = x;
         this.y = y;
         this.estado = new ArrayList<>();
+        numVisitas=0;
+        verificado=false;
     }
     
     public void setVerificado(boolean b) {
@@ -58,6 +61,16 @@ public class CasillaAgente {
     public int getY() {
         return this.y;
     }
+
+    public int getNumVisitas() {
+        return numVisitas;
+    }
+
+    public void setNumVisitas(int numVisitas) {
+        this.numVisitas = numVisitas;
+    }
+    
+    
     
 }
 

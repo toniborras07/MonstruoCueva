@@ -515,6 +515,7 @@ public class View extends javax.swing.JFrame implements MouseListener {
                     mapa[yCasilla][xCasilla - 1].add(hedor4);
 
                     mapa[yCasilla][xCasilla].add(gyarados);
+                    this.prog.getCueva().setMonstruo(xCasilla, yCasilla);
                     mapa[yCasilla][xCasilla].setMonster(true);
                     gyarados.setIcon(icono);
                     hedor1.setIcon(iconohedor);
@@ -542,6 +543,7 @@ public class View extends javax.swing.JFrame implements MouseListener {
                     Icon iconobrisa = new ImageIcon(brisa.getImage().getScaledInstance(foso.getWidth() / 3, foso.getHeight() / 3, Image.SCALE_DEFAULT));
 //                    mapa[yCasilla][xCasilla].setLayout(new GridLayout(1,1));
                     mapa[yCasilla][xCasilla].add(foso);
+                    this.prog.getCueva().setPrecipicio(xCasilla, yCasilla);
                     if (yCasilla > 0) {
                         mapa[yCasilla - 1][xCasilla].add(brisa1);
                     }
@@ -574,6 +576,7 @@ public class View extends javax.swing.JFrame implements MouseListener {
                     Icon iconotesoro = new ImageIcon(te.getImage().getScaledInstance(tresor.getWidth(), tresor.getHeight(), Image.SCALE_DEFAULT));
 
                     mapa[yCasilla][xCasilla].add(tresor);
+                    this.prog.getCueva().setTesoro(xCasilla, yCasilla);
                     mapa[yCasilla][xCasilla].setTesoro(true);
                     tresor.setIcon(iconotesoro);
 
