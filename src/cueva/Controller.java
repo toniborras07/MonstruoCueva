@@ -1,6 +1,7 @@
 package cueva;
 
-
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -28,7 +29,22 @@ public class Controller extends Thread {
         int aviso = 0;
         int salidas = 0;
         while (!acabar) {
-            
+            try {
+                Thread.sleep(30);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            if (this.vista.isIniciar()) {
+//                System.out.println("fgdfuiyg");
+                this.vista.moverCharmander(Direccion.SUR);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
         }
     }
 
@@ -39,6 +55,4 @@ public class Controller extends Thread {
         }
     }
 
-    
 }
-

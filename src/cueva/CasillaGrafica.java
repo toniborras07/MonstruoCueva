@@ -7,6 +7,7 @@ package cueva;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
@@ -34,6 +35,7 @@ class CasillaGrafica extends JLabel {
         this.setSize(size, size);
         
         icono = new ImageIcon(tierra.getImage().getScaledInstance(this.getWidth(), this.getHeight(), Image.SCALE_DEFAULT));
+//        this.setLayout(new GridLayout(2,1));
         this.hoyo = false;
         this.monster = false;
         this.tesoro = false;
