@@ -33,7 +33,7 @@ public class CasillaAgente {
     }
     
     public void setEstados(Estado e) {
-        if(this.estado.size() == 1 && this.estado.get(0) == Estado.VACIO) {
+        if(this.estado.size() == 1 && this.estado.get(0) == Estado.VACIO && e != Estado.SEGURO) {
             this.estado.remove(0);
         }
         if(!this.estado.contains(e)) {

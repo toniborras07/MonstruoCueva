@@ -509,10 +509,19 @@ public class View extends javax.swing.JFrame implements MouseListener {
                     ImageIcon hedor = new ImageIcon("src/img/hedor.png");
                     Icon iconohedor = new ImageIcon(hedor.getImage().getScaledInstance(gyarados.getWidth() / 3, gyarados.getHeight() / 3, Image.SCALE_DEFAULT));
 
-                    mapa[yCasilla + 1][xCasilla].add(hedor1);
-                    mapa[yCasilla - 1][xCasilla].add(hedor2);
-                    mapa[yCasilla][xCasilla + 1].add(hedor3);
-                    mapa[yCasilla][xCasilla - 1].add(hedor4);
+                    if (yCasilla > 0) {
+                        mapa[yCasilla - 1][xCasilla].add(hedor1);
+                    }
+                    if (yCasilla < mapa.length - 1) {
+                        mapa[yCasilla + 1][xCasilla].add(hedor2);
+                    }
+
+                    if (xCasilla > 0) {
+                        mapa[yCasilla][xCasilla - 1].add(hedor4);
+                    }
+                    if (xCasilla < mapa.length - 1) {
+                        mapa[yCasilla][xCasilla + 1].add(hedor3);
+                    }
 
                     mapa[yCasilla][xCasilla].add(gyarados);
                     this.prog.getCueva().setMonstruo(xCasilla, yCasilla);

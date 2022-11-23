@@ -84,21 +84,21 @@ public class Cueva {
     }
     
     public void setPrecipicio(int i, int j) {
-        this.cueva[i][j].setEstados(Estado.PRECIPICIO);
-        if(i > 0) {
-            this.cueva[i-1][j].setEstados(Estado.BRISA);
-        }
-        
-        if(i < this.tamaño - 1) {
-            this.cueva[i+1][j].setEstados(Estado.BRISA);
-        }
-        
+        this.cueva[j][i].setEstados(Estado.PRECIPICIO);
         if(j > 0) {
-            this.cueva[i][j-1].setEstados(Estado.BRISA);
+            this.cueva[j-1][i].setEstados(Estado.BRISA);
         }
         
         if(j < this.tamaño - 1) {
-            this.cueva[i][j+1].setEstados(Estado.BRISA);
+            this.cueva[j+1][i].setEstados(Estado.BRISA);
+        }
+        
+        if(i > 0) {
+            this.cueva[j][i-1].setEstados(Estado.BRISA);
+        }
+        
+        if(i < this.tamaño - 1) {
+            this.cueva[j][i+1].setEstados(Estado.BRISA);
         }
     }
     
