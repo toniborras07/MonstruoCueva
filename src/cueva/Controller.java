@@ -43,7 +43,11 @@ public class Controller extends Thread {
                 this.vista.setIniciar(false);
                 dale = true;
             } else if (dale) {
-                charmander.razonar();
+                try {
+                    charmander.razonar();
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException ex) {

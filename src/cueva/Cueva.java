@@ -46,40 +46,40 @@ public class Cueva {
     }
     
     public void setTesoro(int i, int j) {
-        this.cueva[i][j].setEstados(Estado.TESORO);
-        if(i > 0) {
-            this.cueva[i-1][j].setEstados(Estado.BRILLANTE);
-        }
-        
-        if(i < this.tamaño - 1) {
-            this.cueva[i+1][j].setEstados(Estado.BRILLANTE);
-        }
-        
+        this.cueva[j][i].setEstados(Estado.TESORO);
         if(j > 0) {
-            this.cueva[i][j-1].setEstados(Estado.BRILLANTE);
+            this.cueva[j-1][i].setEstados(Estado.BRILLANTE);
         }
         
         if(j < this.tamaño - 1) {
-            this.cueva[i][j+1].setEstados(Estado.BRILLANTE);
+            this.cueva[j+1][i].setEstados(Estado.BRILLANTE);
+        }
+        
+        if(i > 0) {
+            this.cueva[j][i-1].setEstados(Estado.BRILLANTE);
+        }
+        
+        if(i < this.tamaño - 1) {
+            this.cueva[j][i+1].setEstados(Estado.BRILLANTE);
         }
     }
     
     public void setMonstruo(int i, int j) {
-        this.cueva[i][j].setEstados(Estado.MONSTRUO);
-        if(i > 0) {
-            this.cueva[i-1][j].setEstados(Estado.HEDOR);
-        }
-        
-        if(i < this.tamaño - 1) {
-            this.cueva[i+1][j].setEstados(Estado.HEDOR);
-        }
-        
+        this.cueva[j][i].setEstados(Estado.MONSTRUO);
         if(j > 0) {
-            this.cueva[i][j-1].setEstados(Estado.HEDOR);
+            this.cueva[j-1][i].setEstados(Estado.HEDOR);
         }
         
         if(j < this.tamaño - 1) {
-            this.cueva[i][j+1].setEstados(Estado.HEDOR);
+            this.cueva[j+1][i].setEstados(Estado.HEDOR);
+        }
+        
+        if(i > 0) {
+            this.cueva[j][i-1].setEstados(Estado.HEDOR);
+        }
+        
+        if(i < this.tamaño - 1) {
+            this.cueva[j][i+1].setEstados(Estado.HEDOR);
         }
     }
     

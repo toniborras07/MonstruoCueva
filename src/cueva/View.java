@@ -103,6 +103,10 @@ public class View extends javax.swing.JFrame implements MouseListener {
         this.setVisible(true);
 
     }
+    
+    public void quitarTesoro() {
+        //Quitar imagen del tesoro y los brillos del lado
+    }
 
     public void moverCharmander(Direccion dir) {
         int y, x;
@@ -579,8 +583,17 @@ public class View extends javax.swing.JFrame implements MouseListener {
                 case 3:
 
                     JLabel tresor = new JLabel();
+                    JLabel brillo1 = new JLabel();
+                    JLabel brillo2 = new JLabel();
+                    JLabel brillo3 = new JLabel();
+                    JLabel brillo4 = new JLabel();
+                    
 //                    mapa[yCasilla][xCasilla].setLayout(new GridLayout(1,1));
                     tresor.setSize(mapa[xCasilla][yCasilla].getWidth(), mapa[xCasilla][yCasilla].getHeight());
+                    brillo1.setSize(mapa[xCasilla][yCasilla].getWidth(), mapa[xCasilla][yCasilla].getHeight());
+                    brillo2.setSize(mapa[xCasilla][yCasilla].getWidth(), mapa[xCasilla][yCasilla].getHeight());
+                    brillo3.setSize(mapa[xCasilla][yCasilla].getWidth(), mapa[xCasilla][yCasilla].getHeight());
+                    brillo4.setSize(mapa[xCasilla][yCasilla].getWidth(), mapa[xCasilla][yCasilla].getHeight());
                     ImageIcon te = new ImageIcon("src/img/tesoro.png");
                     Icon iconotesoro = new ImageIcon(te.getImage().getScaledInstance(tresor.getWidth(), tresor.getHeight(), Image.SCALE_DEFAULT));
 

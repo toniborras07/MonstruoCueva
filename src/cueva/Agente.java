@@ -69,6 +69,16 @@ public class Agente {
 
     }
 
+    private void mover(CasillaAgente c) {
+        historial.push(this.casillaActual);
+        this.casillaActual = c;
+        this.casillaActual.setNumVisitas(this.casillaActual.getNumVisitas() + 1);
+        percibirCasilla();
+        procesarEstados();
+        this.addCasilla(casillaActual);
+
+    }
+
     private void mover() {
         historial.push(this.casillaActual);
         ArrayList<CasillaAgente> cAdyacentes = this.getAdyacentes();
@@ -111,6 +121,7 @@ public class Agente {
             cAdyacentes.forEach((c) -> {
                 if (!c.getVerificado() && !c.getEstados().contains(Estado.SEGURO)) {
                     if (c.getEstados().contains(Estado.POSIBLEMONSTRUO)) {
+                        c.removeEstado(Estado.POSIBLEMONSTRUO);
                         c.setEstados(Estado.SEGURO);
                     } else {
                         c.setEstados(Estado.POSIBLEPRECIPICIO);
@@ -126,6 +137,7 @@ public class Agente {
             cAdyacentes.forEach((c) -> {
                 if (!c.getVerificado()) {
                     if (c.getEstados().contains(Estado.POSIBLEPRECIPICIO)) {
+                        c.removeEstado(Estado.POSIBLEPRECIPICIO);
                         c.setEstados(Estado.SEGURO);
                     } else {
                         c.setEstados(Estado.POSIBLEMONSTRUO);
@@ -139,7 +151,7 @@ public class Agente {
         if (this.casillaActual.getEstados().contains(Estado.HEDOR) && this.casillaActual.getEstados().contains(Estado.BRISA)) {
             this.casillaActual.setEstados(Estado.SEGURO);
             cAdyacentes.forEach((c) -> {
-                if (!c.getVerificado()) {
+                if (!c.getVerificado() && !c.getEstados().contains(Estado.SEGURO)) {
                     c.setEstados(Estado.POSIBLEPRECIPICIO);
                     c.setEstados(Estado.POSIBLEMONSTRUO);
                 }
@@ -152,6 +164,9 @@ public class Agente {
             this.casillaActual.setEstados(Estado.SEGURO);
             cAdyacentes.forEach((c) -> {
                 if (!c.getVerificado()) {
+                    if (!(this.casillaActual.getEstados().contains(Estado.HEDOR) || this.casillaActual.getEstados().contains(Estado.BRISA))) {
+                        c.setEstados(Estado.SEGURO);
+                    }
                     c.setEstados(Estado.POSIBLETESORO);
                     c.setVerificado(false);
                     this.addCasilla(c);
@@ -160,21 +175,17 @@ public class Agente {
         }
     }
 
-    public void razonar() {
+    public void razonar() throws InterruptedException {
         ArrayList<CasillaAgente> cAdyacentes = this.getAdyacentes();
 
-        if (this.casillaActual.getEstados().contains(Estado.BRILLANTE) && this.casillaActual.getEstados().size() == 1) {
-            if (buscarTesoro(cAdyacentes)) {
-                volver();
-            }
-        } else if (this.casillaActual.getEstados().contains(Estado.HEDOR) || this.casillaActual.getEstados().contains(Estado.BRISA)) {
+        if (this.casillaActual.getEstados().contains(Estado.HEDOR) || this.casillaActual.getEstados().contains(Estado.BRISA)) {
             ArrayList<CasillaAgente> noVerificadasSeguras = (ArrayList<CasillaAgente>) cAdyacentes.clone();
             noVerificadasSeguras.removeIf(c -> c.getVerificado() || !c.getEstados().contains(Estado.SEGURO));
 
             if (!noVerificadasSeguras.isEmpty()) {
 //                noVerificadasSeguras.forEach((c) -> {
-                mover(noVerificadasSeguras.get(0).getX(), noVerificadasSeguras.get(0).getY());
                 this.prog.getVista().moverCharmander(this.getDireccion(noVerificadasSeguras.get(0).getX(), noVerificadasSeguras.get(0).getY()));
+                mover(noVerificadasSeguras.get(0).getX(), noVerificadasSeguras.get(0).getY());
 //                });
             } else {
 //                cAdyacentes.forEach((c) -> {
@@ -189,17 +200,30 @@ public class Agente {
                         }
                     }
                 }
-                mover(cAdyacentes.get(menosVisto).getX(), cAdyacentes.get(menosVisto).getY());
                 this.prog.getVista().moverCharmander(this.getDireccion(cAdyacentes.get(menosVisto).getX(), cAdyacentes.get(menosVisto).getY()));
+                mover(cAdyacentes.get(menosVisto));
 
 //                });
             }
         } else if (this.casillaActual.getEstados().contains(Estado.BRILLANTE)) {
             for (int i = 0; i < cAdyacentes.size(); i++) {
-                if (cAdyacentes.get(i).getEstados().contains(Estado.POSIBLETESORO)) {
-//                        cAdyacentes.get(i).setEstados(Estado.TESORO);
-//                        //IDEA: ORDENAR QUE EL AGENTE SE MUEVA A ESA CASILLA YA QUE SE ASEGURA QUE ESTA EL TESORO
-//                        this.encontrado = true;
+                if (cAdyacentes.get(i).getEstados().contains(Estado.POSIBLETESORO) && cAdyacentes.get(i).getEstados().contains(Estado.SEGURO)) {
+                    CasillaAgente c = cAdyacentes.get(i);
+                    Thread.sleep(1000);
+                    this.prog.getVista().moverCharmander(this.getDireccion(c.getX(), c.getY()));
+                    historial.push(this.casillaActual);
+                    this.casillaActual = c;
+                    percibirCasilla();
+                    procesarEstados();
+                    if(this.casillaActual.getEstados().contains(Estado.TESORO)) {
+                        this.prog.getVista().quitarTesoro();
+                        volver();
+                    } else {
+                        CasillaAgente cAnterior = this.historial.pop();
+                        Thread.sleep(1000);
+                        this.prog.getVista().moverCharmander(this.getDireccion(c.getX(), c.getY()));
+                        this.casillaActual = cAnterior;
+                    }
                 }
             }
         }
@@ -209,29 +233,32 @@ public class Agente {
 //                        cAdyacentes.get(i).setEstados(Estado.MONSTRUO);
                     if (!cAdyacentes.get(i).getEstados().contains(Estado.POSIBLEPRECIPICIO)) {
                         if (!cAdyacentes.get(i).getVerificado()) {
-                            this.mover(cAdyacentes.get(i).getX(), cAdyacentes.get(i).getY());
                             this.prog.getVista().moverCharmander(this.getDireccion(cAdyacentes.get(i).getX(), cAdyacentes.get(i).getY()));
+                            this.mover(cAdyacentes.get(i).getX(), cAdyacentes.get(i).getY());
 
                         } else {
-                            this.volver();
-                            this.mover();
-                            this.prog.getVista().moverCharmander(this.getDireccion(cAdyacentes.get(i).getX(), cAdyacentes.get(i).getY()));
+                            CasillaAgente cAnterior = this.historial.pop();
+
+                            this.prog.getVista().moverCharmander(this.getDireccion(cAnterior.getX(), cAnterior.getY()));
+                            this.casillaActual = cAnterior;
                         }
                     } else {
-                        this.volver();
-                        this.mover();
-                        this.prog.getVista().moverCharmander(this.getDireccion(cAdyacentes.get(i).getX(), cAdyacentes.get(i).getY()));
+                        CasillaAgente cAnterior = this.historial.pop();
+
+                        this.prog.getVista().moverCharmander(this.getDireccion(cAnterior.getX(), cAnterior.getY()));
+                        this.casillaActual = cAnterior;
                     }
 
                 } else {
-                    this.volver();
-                    this.mover();
-                    this.prog.getVista().moverCharmander(this.getDireccion(cAdyacentes.get(i).getX(), cAdyacentes.get(i).getY()));
+                    CasillaAgente cAnterior = this.historial.pop();
+
+                    this.prog.getVista().moverCharmander(this.getDireccion(cAnterior.getX(), cAnterior.getY()));
+                    this.casillaActual = cAnterior;
                 }
 
             }
         } else {
-            ArrayList<CasillaAgente> noVerificadas = cAdyacentes;
+            ArrayList<CasillaAgente> noVerificadas = (ArrayList<CasillaAgente>) cAdyacentes.clone();
             noVerificadas.removeIf(c -> c.getVerificado());
 
             if (!noVerificadas.isEmpty()) {
@@ -327,12 +354,14 @@ public class Agente {
         return false;
     }
 
-    public void volver() {
-        while (historial.capacity() > 0) {
+    public void volver() throws InterruptedException {
+        while (!historial.isEmpty()) {
+            Thread.sleep(1000);
             CasillaAgente cAnterior = this.historial.pop();
+            this.prog.getVista().moverCharmander(this.getDireccion(cAnterior.getX(), cAnterior.getY()));
             setCasillaActual(cAnterior);
         }
-        //Acabar (quedarse quieto)
+        System.exit(0);
     }
 
     public Charmander getCharmander() {
