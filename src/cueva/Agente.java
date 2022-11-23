@@ -257,11 +257,18 @@ public class Agente {
     private ArrayList<CasillaAgente> getAdyacentes() {
         ArrayList<CasillaAgente> cAdyacentes = new ArrayList<>();
         if (this.cuevaMemoria.containsKey(casillaActual.getX() + 1)) {
-            cAdyacentes.add(this.cuevaMemoria.get(casillaActual.getX() + 1).get(casillaActual.getY()));
+            if (this.cuevaMemoria.get(casillaActual.getX() + 1).containsKey(casillaActual.getY())) {
+                cAdyacentes.add(this.cuevaMemoria.get(casillaActual.getX() + 1).get(casillaActual.getY()));
+            } else {
+                if (this.casillaActual.getX() + 1 < this.prog.getCueva().getTamanyo()) {
+                    CasillaAgente cs = new CasillaAgente(this.casillaActual.getX() + 1, this.casillaActual.getY());
+                    cAdyacentes.add(cs);
+                }
+            }
         } else {
             if (this.casillaActual.getX() + 1 < this.prog.getCueva().getTamanyo()) {
-                CasillaAgente ce = new CasillaAgente(this.casillaActual.getX() + 1, this.casillaActual.getY());
-                cAdyacentes.add(ce);
+                CasillaAgente cs = new CasillaAgente(this.casillaActual.getX() + 1, this.casillaActual.getY());
+                cAdyacentes.add(cs);
             }
         }
 
@@ -269,26 +276,33 @@ public class Agente {
             cAdyacentes.add(this.cuevaMemoria.get(casillaActual.getX()).get(casillaActual.getY() + 1));
         } else {
             if (this.casillaActual.getY() + 1 < this.prog.getCueva().getTamanyo()) {
-                CasillaAgente cs = new CasillaAgente(this.casillaActual.getX(), this.casillaActual.getY() + 1);
-                cAdyacentes.add(cs);
+                CasillaAgente ce = new CasillaAgente(this.casillaActual.getX(), this.casillaActual.getY() + 1);
+                cAdyacentes.add(ce);
             }
         }
 
         if (this.cuevaMemoria.containsKey(casillaActual.getX() - 1)) {
-            cAdyacentes.add(this.cuevaMemoria.get(casillaActual.getX() - 1).get(casillaActual.getY()));
+            if (this.cuevaMemoria.get(casillaActual.getX() - 1).containsKey(casillaActual.getY())) {
+                cAdyacentes.add(this.cuevaMemoria.get(casillaActual.getX() - 1).get(casillaActual.getY()));
+            } else {
+                if (this.casillaActual.getX() - 1 >= 0) {
+                    CasillaAgente cn = new CasillaAgente(this.casillaActual.getX() - 1, this.casillaActual.getY());
+                    cAdyacentes.add(cn);
+                }
+            }
         } else {
             if (this.casillaActual.getX() - 1 >= 0) {
-                CasillaAgente cw = new CasillaAgente(this.casillaActual.getX() - 1, this.casillaActual.getY());
-                cAdyacentes.add(cw);
+                CasillaAgente cn = new CasillaAgente(this.casillaActual.getX() - 1, this.casillaActual.getY());
+                cAdyacentes.add(cn);
             }
         }
 
         if (this.cuevaMemoria.get(casillaActual.getX()).containsKey(casillaActual.getY() - 1)) {
             cAdyacentes.add(this.cuevaMemoria.get(casillaActual.getX()).get(casillaActual.getY() - 1));
         } else {
-            if (this.casillaActual.getY() - 1 > 0) {
-                CasillaAgente cn = new CasillaAgente(this.casillaActual.getX(), this.casillaActual.getY() - 1);
-                cAdyacentes.add(cn);
+            if (this.casillaActual.getY() - 1 >= 0) {
+                CasillaAgente cw = new CasillaAgente(this.casillaActual.getX(), this.casillaActual.getY() - 1);
+                cAdyacentes.add(cw);
             }
         }
 
