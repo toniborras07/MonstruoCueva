@@ -11,117 +11,196 @@ import java.util.ArrayList;
  * @author XAMAP
  */
 public class Cueva {
+
     private CasillaAgente[][] cueva;
     private int tamaño;
     private Main prog;
-    
+
     public Cueva(Main p, Tamanyo n) {
         this.prog = p;
         this.tamaño = tamanyo(n);
         cueva = new CasillaAgente[tamaño][tamaño];
-        for(int i = 0; i < tamaño; i++) {
-            for(int j = 0; j < tamaño; j++) {
-                cueva[i][j] = new CasillaAgente(i,j);
+        for (int i = 0; i < tamaño; i++) {
+            for (int j = 0; j < tamaño; j++) {
+                cueva[i][j] = new CasillaAgente(i, j);
                 cueva[i][j].setEstados(Estado.VACIO);
             }
         }
     }
-    
+
     public int getTamanyo() {
         return this.tamaño;
     }
-    
-    public int tamanyo(Tamanyo t){
-        switch(t){
+
+    public int tamanyo(Tamanyo t) {
+        switch (t) {
             case PEQUEÑO:
                 return 8;
-                
+
             case MEDIANO:
                 return 12;
-                
+
             case GRANDE:
                 return 16;
         }
         return 0;
     }
-    
+
+    public void quitar(int i, int j, Estado e) {
+        this.cueva[j][i].removeEstado(e);
+        if (this.cueva[j][i].getEstados().isEmpty()) {
+            this.cueva[j][i].setEstados(Estado.VACIO);
+        }
+        if (j > 0) {
+            switch (e) {
+                case MONSTRUO:
+                    this.cueva[j - 1][i].removeEstado(Estado.HEDOR);
+                    break;
+                case PRECIPICIO:
+                    this.cueva[j - 1][i].removeEstado(Estado.BRISA);
+                    break;
+                case TESORO:
+                    this.cueva[j - 1][i].removeEstado(Estado.BRILLANTE);
+                    break;
+            }
+
+            if (this.cueva[j - 1][i].getEstados().isEmpty()) {
+                this.cueva[j - 1][i].setEstados(Estado.VACIO);
+            }
+        }
+
+        if (j < this.tamaño - 1) {
+            switch (e) {
+                case MONSTRUO:
+                    this.cueva[j + 1][i].removeEstado(Estado.HEDOR);
+                    break;
+                case PRECIPICIO:
+                    this.cueva[j + 1][i].removeEstado(Estado.BRISA);
+                    break;
+                case TESORO:
+                    this.cueva[j + 1][i].removeEstado(Estado.BRILLANTE);
+                    break;
+            }
+
+            if (this.cueva[j + 1][i].getEstados().isEmpty()) {
+                this.cueva[j + 1][i].setEstados(Estado.VACIO);
+            }
+        }
+
+        if (i > 0) {
+            switch (e) {
+                case MONSTRUO:
+                    this.cueva[j][i - 1].removeEstado(Estado.HEDOR);
+                    break;
+                case PRECIPICIO:
+                    this.cueva[j][i - 1].removeEstado(Estado.BRISA);
+                    break;
+                case TESORO:
+                    this.cueva[j][i - 1].removeEstado(Estado.BRILLANTE);
+                    break;
+            }
+
+            if (this.cueva[j][i - 1].getEstados().isEmpty()) {
+                this.cueva[j][i - 1].setEstados(Estado.VACIO);
+            }
+        }
+
+        if (i < this.tamaño - 1) {
+            switch (e) {
+                case MONSTRUO:
+                    this.cueva[j][i + 1].removeEstado(Estado.HEDOR);
+                    break;
+                case PRECIPICIO:
+                    this.cueva[j][i + 1].removeEstado(Estado.BRISA);
+                    break;
+                case TESORO:
+                    this.cueva[j][i + 1].removeEstado(Estado.BRILLANTE);
+                    break;
+            }
+
+            if (this.cueva[j][i + 1].getEstados().isEmpty()) {
+                this.cueva[j][i + 1].setEstados(Estado.VACIO);
+            }
+        }
+    }
+
     public void setTesoro(int i, int j) {
         this.cueva[j][i].setEstados(Estado.TESORO);
-        if(j > 0) {
-            this.cueva[j-1][i].setEstados(Estado.BRILLANTE);
+        if (j > 0) {
+            this.cueva[j - 1][i].setEstados(Estado.BRILLANTE);
         }
-        
-        if(j < this.tamaño - 1) {
-            this.cueva[j+1][i].setEstados(Estado.BRILLANTE);
+
+        if (j < this.tamaño - 1) {
+            this.cueva[j + 1][i].setEstados(Estado.BRILLANTE);
         }
-        
-        if(i > 0) {
-            this.cueva[j][i-1].setEstados(Estado.BRILLANTE);
+
+        if (i > 0) {
+            this.cueva[j][i - 1].setEstados(Estado.BRILLANTE);
         }
-        
-        if(i < this.tamaño - 1) {
-            this.cueva[j][i+1].setEstados(Estado.BRILLANTE);
+
+        if (i < this.tamaño - 1) {
+            this.cueva[j][i + 1].setEstados(Estado.BRILLANTE);
         }
     }
-    
+
     public void setMonstruo(int i, int j) {
         this.cueva[j][i].setEstados(Estado.MONSTRUO);
-        if(j > 0) {
-            this.cueva[j-1][i].setEstados(Estado.HEDOR);
+        if (j > 0) {
+            this.cueva[j - 1][i].setEstados(Estado.HEDOR);
         }
-        
-        if(j < this.tamaño - 1) {
-            this.cueva[j+1][i].setEstados(Estado.HEDOR);
+
+        if (j < this.tamaño - 1) {
+            this.cueva[j + 1][i].setEstados(Estado.HEDOR);
         }
-        
-        if(i > 0) {
-            this.cueva[j][i-1].setEstados(Estado.HEDOR);
+
+        if (i > 0) {
+            this.cueva[j][i - 1].setEstados(Estado.HEDOR);
         }
-        
-        if(i < this.tamaño - 1) {
-            this.cueva[j][i+1].setEstados(Estado.HEDOR);
+
+        if (i < this.tamaño - 1) {
+            this.cueva[j][i + 1].setEstados(Estado.HEDOR);
         }
     }
-    
+
     public void setPrecipicio(int i, int j) {
         this.cueva[j][i].setEstados(Estado.PRECIPICIO);
-        if(j > 0) {
-            this.cueva[j-1][i].setEstados(Estado.BRISA);
+        if (j > 0) {
+            this.cueva[j - 1][i].setEstados(Estado.BRISA);
         }
-        
-        if(j < this.tamaño - 1) {
-            this.cueva[j+1][i].setEstados(Estado.BRISA);
+
+        if (j < this.tamaño - 1) {
+            this.cueva[j + 1][i].setEstados(Estado.BRISA);
         }
-        
-        if(i > 0) {
-            this.cueva[j][i-1].setEstados(Estado.BRISA);
+
+        if (i > 0) {
+            this.cueva[j][i - 1].setEstados(Estado.BRISA);
         }
-        
-        if(i < this.tamaño - 1) {
-            this.cueva[j][i+1].setEstados(Estado.BRISA);
+
+        if (i < this.tamaño - 1) {
+            this.cueva[j][i + 1].setEstados(Estado.BRISA);
         }
     }
-    
+
     public CasillaAgente getCasilla(int x, int y) {
         if (x < 0) {
-            
-        }else if(x >= cueva.length){
-            
-        }else if(y < 0){
-            
-        }else if(y >= cueva.length){
-            
+
+        } else if (x >= cueva.length) {
+
+        } else if (y < 0) {
+
+        } else if (y >= cueva.length) {
+
         }
         return this.cueva[x][y];
-        
+
     }
-    
-    public void setCueva(Tamanyo dimension){
-         this.tamaño = tamanyo(dimension);
-        this.cueva=new CasillaAgente[tamaño][tamaño];
-        for(int i = 0; i < tamaño; i++) {
-            for(int j = 0; j < tamaño; j++) {
-                cueva[i][j] = new CasillaAgente(i,j);
+
+    public void setCueva(Tamanyo dimension) {
+        this.tamaño = tamanyo(dimension);
+        this.cueva = new CasillaAgente[tamaño][tamaño];
+        for (int i = 0; i < tamaño; i++) {
+            for (int j = 0; j < tamaño; j++) {
+                cueva[i][j] = new CasillaAgente(i, j);
                 cueva[i][j].setEstados(Estado.VACIO);
             }
         }

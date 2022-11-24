@@ -114,10 +114,10 @@ public class View extends javax.swing.JFrame implements MouseListener {
 
     }
 
-    public void quitarTesoro() {
-        ImageIcon Img = new ImageIcon("");
-        Icon icono = new ImageIcon(Img.getImage().getScaledInstance(this.tesoroo.getWidth(), this.tesoroo.getHeight(), Image.SCALE_DEFAULT));
-        this.tesoroo.setIcon(icono);
+    public void quitarTesoro(int x, int y) {
+        JLabel label = (JLabel) mapa[x][y].getComponent(0);
+        label.setIcon(null);
+        this.repaint();
         //Quitar imagen del tesoro y los brillos del lado
     }
 
@@ -520,7 +520,46 @@ public class View extends javax.swing.JFrame implements MouseListener {
 
             switch (getOpcion()) {
                 case 0:
-                    mapa[xCasilla][yCasilla].setIcon(camino);
+                    JLabel label = (JLabel) mapa[yCasilla][xCasilla].getComponent(0);
+                    label.setIcon(null);
+                    if (mapa[yCasilla][xCasilla].getMonster()) {
+                        if (yCasilla > 0) {
+                            cambiarIconos(yCasilla - 1, xCasilla, mapa[yCasilla - 1][xCasilla]);
+
+                        }
+                        if (yCasilla < mapa.length - 1) {
+                            cambiarIconos(yCasilla + 1, xCasilla, mapa[yCasilla + 1][xCasilla]);
+                        }
+
+                        if (xCasilla > 0) {
+                            cambiarIconos(yCasilla, xCasilla - 1, mapa[yCasilla][xCasilla - 1]);
+                        }
+                        if (xCasilla < mapa.length - 1) {
+                            cambiarIconos(yCasilla, xCasilla + 1, mapa[yCasilla][xCasilla + 1]);
+                        }
+                    }
+
+                    if (mapa[yCasilla][xCasilla].getHoyo()) {
+                        if (yCasilla > 0) {
+                            JLabel label1 = (JLabel) mapa[yCasilla - 1][xCasilla].getComponent(0);
+                            label1.setIcon(null);
+                        }
+                        if (yCasilla < mapa.length - 1) {
+                            JLabel label2 = (JLabel) mapa[yCasilla + 1][xCasilla].getComponent(0);
+                            label2.setIcon(null);
+                        }
+
+                        if (xCasilla > 0) {
+                            JLabel label3 = (JLabel) mapa[yCasilla][xCasilla - 1].getComponent(0);
+                            label3.setIcon(null);
+                        }
+                        if (xCasilla < mapa.length - 1) {
+                            JLabel label4 = (JLabel) mapa[yCasilla][xCasilla + 1].getComponent(0);
+                            label4.setIcon(null);
+                        }
+                    }
+                    this.repaint();
+
                     break;
                 case 1:
 
@@ -537,7 +576,7 @@ public class View extends javax.swing.JFrame implements MouseListener {
                     hedor4.setSize(mapa[xCasilla][yCasilla].getWidth(), mapa[xCasilla][yCasilla].getHeight());
                     gyarados.setSize(mapa[xCasilla][yCasilla].getWidth(), mapa[xCasilla][yCasilla].getHeight());
                     ImageIcon gy = new ImageIcon("src/img/Monstruo.png");
-                    Icon icono = new ImageIcon(gy.getImage().getScaledInstance(gyarados.getWidth(), gyarados.getHeight(), Image.SCALE_DEFAULT));
+                    Icon iconomonstruo = new ImageIcon(gy.getImage().getScaledInstance(gyarados.getWidth(), gyarados.getHeight(), Image.SCALE_DEFAULT));
 
 //                    mapa[yCasilla][xCasilla].setLayout(new GridLayout(1,1));
                     ImageIcon hedor = new ImageIcon("src/img/hedor.png");
@@ -560,7 +599,7 @@ public class View extends javax.swing.JFrame implements MouseListener {
                     mapa[yCasilla][xCasilla].add(gyarados);
                     this.prog.getCueva().setMonstruo(xCasilla, yCasilla);
                     mapa[yCasilla][xCasilla].setMonster(true);
-                    gyarados.setIcon(icono);
+                    gyarados.setIcon(iconomonstruo);
                     hedor1.setIcon(iconohedor);
                     hedor2.setIcon(iconohedor);
                     hedor3.setIcon(iconohedor);
@@ -639,6 +678,79 @@ public class View extends javax.swing.JFrame implements MouseListener {
         }
     }//GEN-LAST:event_principalMouseReleased
 
+    public void cambiarIconos(int yCasilla, int xCasilla, CasillaGrafica c) {
+        for (int i = 0; i < c.getComponentCount(); i++) {
+            JLabel l = (JLabel) c.getComponent(i);
+            l.setIcon(null);
+        }
+
+        JLabel brisa1 = new JLabel();
+        brisa1.setSize(mapa[xCasilla][yCasilla].getWidth(), mapa[xCasilla][yCasilla].getHeight());
+        ImageIcon brisa = new ImageIcon("src/img/brisa.png");
+        Icon iconobrisa = new ImageIcon(brisa.getImage().getScaledInstance(brisa1.getWidth() / 3, brisa1.getHeight() / 3, Image.SCALE_DEFAULT));
+
+        JLabel hedor1 = new JLabel();
+        hedor1.setSize(mapa[xCasilla][yCasilla].getWidth(), mapa[xCasilla][yCasilla].getHeight());
+        ImageIcon hedor = new ImageIcon("src/img/hedor.png");
+        Icon iconohedor = new ImageIcon(hedor.getImage().getScaledInstance(hedor1.getWidth() / 3, hedor1.getHeight() / 3, Image.SCALE_DEFAULT));
+
+        if (yCasilla > 0) {
+            if (mapa[yCasilla - 1][xCasilla].getHoyo()) {
+                c.add(brisa1);
+            }
+
+            if (mapa[yCasilla - 1][xCasilla].getMonster()) {
+                c.add(hedor1);
+            }
+
+            if (mapa[yCasilla - 1][xCasilla].getTesoro()) {
+
+            }
+        }
+        if (yCasilla < mapa.length - 1) {
+            if (mapa[yCasilla + 1][xCasilla].getHoyo()) {
+                c.add(brisa1);
+            }
+
+            if (mapa[yCasilla + 1][xCasilla].getMonster()) {
+                c.add(hedor1);
+            }
+
+            if (mapa[yCasilla + 1][xCasilla].getTesoro()) {
+
+            }
+        }
+
+        if (xCasilla > 0) {
+            if (mapa[yCasilla][xCasilla - 1].getHoyo()) {
+                c.add(brisa1);
+            }
+
+            if (mapa[yCasilla][xCasilla - 1].getMonster()) {
+                c.add(hedor1);
+            }
+
+            if (mapa[yCasilla][xCasilla - 1].getTesoro()) {
+
+            }
+
+        }
+        if (xCasilla < mapa.length - 1) {
+            if (mapa[yCasilla][xCasilla + 1].getHoyo()) {
+                c.add(brisa1);
+            }
+
+            if (mapa[yCasilla][xCasilla + 1].getMonster()) {
+                c.add(hedor1);
+            }
+
+            if (mapa[yCasilla][xCasilla + 1].getTesoro()) {
+
+            }
+        }
+        brisa1.setIcon(iconobrisa);
+        hedor1.setIcon(iconohedor);
+    }
     private void opcionesMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_opcionesMouseReleased
         // TODO add your handling code here:
 
@@ -695,7 +807,7 @@ public class View extends javax.swing.JFrame implements MouseListener {
                 Logger.getLogger(View.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
+
     }//GEN-LAST:event_formKeyPressed
 
     public void pintarMapa() {
@@ -842,6 +954,5 @@ public class View extends javax.swing.JFrame implements MouseListener {
     public void setManual(boolean manual) {
         this.manual = manual;
     }
-
 
 }

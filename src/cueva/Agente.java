@@ -168,7 +168,7 @@ public class Agente {
             });
         }
 
-        if (this.casillaActual.getEstados().contains(Estado.BRILLANTE)) {
+        if (this.casillaActual.getEstados().contains(Estado.BRILLANTE) && !this.encontrado) {
             this.casillaActual.setEstados(Estado.SEGURO);
             cAdyacentes.forEach((c) -> {
                 if (!c.getVerificado()) {
@@ -185,12 +185,25 @@ public class Agente {
 
     public void razonar() throws InterruptedException {
         ArrayList<CasillaAgente> cAdyacentes = this.getAdyacentes();
-
-        if (this.casillaActual.getEstados().contains(Estado.BRILLANTE)) { //EXISTE TESORO CERCA
+        if (this.casillaActual.getEstados().contains(Estado.TESORO)) {
+            this.prog.getController().quitarTesoro(this.casillaActual);
+            this.encontrado = true;
+        } else if (this.historial.size() > 0 && this.historial.peek().getEstados().contains(Estado.BRILLANTE)) {
+            volver();
+        } else if (this.casillaActual.getEstados().contains(Estado.BRILLANTE)) { //EXISTE TESORO CERCA
 //            for (int i = 0; i < cAdyacentes.size(); i++) {
-            if (cAdyacentes.get(0).getEstados().contains(Estado.POSIBLETESORO)
-                    && cAdyacentes.get(0).getEstados().contains(Estado.SEGURO) && !cAdyacentes.get(0).getVerificado()) {
-                CasillaAgente c = cAdyacentes.get(0);
+            CasillaAgente c = null;
+            for (int i = 0; i < cAdyacentes.size(); i++) {
+                if (cAdyacentes.get(i).getEstados().contains(Estado.POSIBLETESORO)
+                        && cAdyacentes.get(i).getEstados().contains(Estado.SEGURO) && !cAdyacentes.get(i).getVerificado()) {
+                    c = cAdyacentes.get(i);
+                    break;
+                }
+            }
+            if (c == null) {
+                volver();
+            } else {
+
                 //Thread.sleep(1000);
                 boolean seguir = true;
                 try {
@@ -199,7 +212,7 @@ public class Agente {
                 } catch (Exception e) {
 
                     while (seguir) {
-                        switch (this.getDireccion(cAdyacentes.get(0).getX(), cAdyacentes.get(0).getY())) {
+                        switch (this.getDireccion(c.getX(), c.getY())) {
                             case NORTE:
                                 this.casillaActual.setEstados(Estado.GOLPENORTE);
                                 this.addCasilla(casillaActual);
@@ -217,7 +230,7 @@ public class Agente {
                                 this.addCasilla(casillaActual);
                                 break;
                         }
-                        cAdyacentes.remove(0);
+                        cAdyacentes.remove(c);
                         try {
                             if (cAdyacentes.size() > 0) {
                                 if (cAdyacentes.get(0).getEstados().contains(Estado.POSIBLETESORO)
@@ -236,27 +249,13 @@ public class Agente {
                             seguir = true;
                         }
                     }
-
+                    
                 }
-
                 mover(c.getX(), c.getY());
-//                    historial.push(this.casillaActual);
-//                    this.casillaActual = c;
-//                    percibirCasilla();
-//                    procesarEstados();
-
-                if (this.casillaActual.getEstados().contains(Estado.TESORO)) {
-                    this.prog.getVista().quitarTesoro();
-                    volver();
-                } else {
-                    CasillaAgente cAnterior = this.historial.pop();
-                    Thread.sleep(1000);
-                    this.prog.getVista().moverCharmander(this.getDireccion(c.getX(), c.getY()));
-                    this.casillaActual = cAnterior;
-                }
             }
-//            }
-        } else if (this.casillaActual.getEstados().contains(Estado.HEDOR)
+        } //            }
+        else if (this.casillaActual.getEstados()
+                .contains(Estado.HEDOR)
                 || //EXISTE MONSTRUO O PRECIPICIO
                 this.casillaActual.getEstados().contains(Estado.BRISA)) {
             ArrayList<CasillaAgente> noVerificadasSeguras = (ArrayList<CasillaAgente>) cAdyacentes.clone();
@@ -437,35 +436,18 @@ public class Agente {
         return cAdyacentes;
     }
 
+    public void volver() {
+        CasillaAgente cAnterior = this.historial.pop();
+        this.prog.getVista().moverCharmander(this.getDireccion(cAnterior.getX(), cAnterior.getY()));
+        this.casillaActual = cAnterior;
+    }
+
+    public boolean isSalida() {
+        return this.casillaActual.getX() == 0 && this.casillaActual.getY() == 0;
+    }
+
     public void setCharmander(Charmander m) {
         this.apariencia = m;
-    }
-
-    private boolean buscarTesoro(ArrayList<CasillaAgente> cAd) {
-        for (int i = 0; i < cAd.size(); i++) {
-            if (cAd.get(i).getX() >= 0 && cAd.get(i).getX() < this.prog.getCueva().getTamanyo()
-                    && cAd.get(i).getY() >= 0 && cAd.get(i).getY() < this.prog.getCueva().getTamanyo()) {
-                this.casillaActual = new CasillaAgente(cAd.get(i).getX(), cAd.get(i).getY());
-                setCasillaActual(cAd.get(i));
-                if (this.casillaActual.getEstados().contains(Estado.TESORO)) {
-                    return true;
-                }
-                CasillaAgente cAnterior = this.historial.pop();
-                this.casillaActual = new CasillaAgente(cAnterior.getX(), cAnterior.getY());
-                setCasillaActual(cAnterior);
-            }
-        }
-        return false;
-    }
-
-    public void volver() throws InterruptedException {
-        while (!historial.isEmpty()) {
-            Thread.sleep(1000);
-            CasillaAgente cAnterior = this.historial.pop();
-            this.prog.getVista().moverCharmander(this.getDireccion(cAnterior.getX(), cAnterior.getY()));
-            setCasillaActual(cAnterior);
-        }
-        System.exit(0);
     }
 
     public Charmander getCharmander() {

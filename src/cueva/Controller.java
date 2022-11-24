@@ -42,6 +42,16 @@ public class Controller extends Thread {
 
                 this.vista.setIniciar(false);
                 dale = true;
+            } else if(charmander.isEncontrado()) {
+                charmander.volver();
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                if(charmander.isSalida()) {
+                    acabar = true;
+                }
             } else if (dale) {
                 try {
                     charmander.razonar();
@@ -63,6 +73,11 @@ public class Controller extends Thread {
             Thread.sleep(m);
         } catch (Exception e) {
         }
+    }
+    
+    public void quitarTesoro(CasillaAgente c){
+        this.prog.getCueva().quitar(c.getX(), c.getY(), Estado.TESORO);
+        this.prog.getVista().quitarTesoro(c.getX(), c.getY());
     }
 
 }
