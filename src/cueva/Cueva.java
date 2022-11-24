@@ -59,9 +59,6 @@ public class Cueva {
                 case PRECIPICIO:
                     this.cueva[j - 1][i].removeEstado(Estado.BRISA);
                     break;
-                case TESORO:
-                    this.cueva[j - 1][i].removeEstado(Estado.BRILLANTE);
-                    break;
             }
 
             if (this.cueva[j - 1][i].getEstados().isEmpty()) {
@@ -76,9 +73,6 @@ public class Cueva {
                     break;
                 case PRECIPICIO:
                     this.cueva[j + 1][i].removeEstado(Estado.BRISA);
-                    break;
-                case TESORO:
-                    this.cueva[j + 1][i].removeEstado(Estado.BRILLANTE);
                     break;
             }
 
@@ -95,9 +89,6 @@ public class Cueva {
                 case PRECIPICIO:
                     this.cueva[j][i - 1].removeEstado(Estado.BRISA);
                     break;
-                case TESORO:
-                    this.cueva[j][i - 1].removeEstado(Estado.BRILLANTE);
-                    break;
             }
 
             if (this.cueva[j][i - 1].getEstados().isEmpty()) {
@@ -113,9 +104,6 @@ public class Cueva {
                 case PRECIPICIO:
                     this.cueva[j][i + 1].removeEstado(Estado.BRISA);
                     break;
-                case TESORO:
-                    this.cueva[j][i + 1].removeEstado(Estado.BRILLANTE);
-                    break;
             }
 
             if (this.cueva[j][i + 1].getEstados().isEmpty()) {
@@ -126,21 +114,6 @@ public class Cueva {
 
     public void setTesoro(int i, int j) {
         this.cueva[j][i].setEstados(Estado.TESORO);
-        if (j > 0) {
-            this.cueva[j - 1][i].setEstados(Estado.BRILLANTE);
-        }
-
-        if (j < this.tamaño - 1) {
-            this.cueva[j + 1][i].setEstados(Estado.BRILLANTE);
-        }
-
-        if (i > 0) {
-            this.cueva[j][i - 1].setEstados(Estado.BRILLANTE);
-        }
-
-        if (i < this.tamaño - 1) {
-            this.cueva[j][i + 1].setEstados(Estado.BRILLANTE);
-        }
     }
 
     public void setMonstruo(int i, int j) {
