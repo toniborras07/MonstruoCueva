@@ -6,8 +6,12 @@ package cueva;
 
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -43,18 +47,20 @@ public class View extends javax.swing.JFrame implements MouseListener {
     private ImageIcon charmanderSur = new ImageIcon("src/img/charmanderSur.png");
     private ImageIcon charmanderSurPaso = new ImageIcon("src/img/charmanderSurPaso.png");
     Icon icono;
+//    EventosTeclado teclado;
 
     /**
      * Creates new form View
      */
     public View(Main p, Tamanyo dim) {
-        manual = false;
+        manual = true;
         this.selCamino = false;
         this.selFoso = false;
         this.selMonster = false;
         this.selTesoro = false;
         this.prog = p;
         this.iniciar = false;
+//        teclado= new EventosTeclado();
 
         this.dimension = tamanyo(dim);
         mapa = new CasillaGrafica[dimension][dimension];
@@ -99,11 +105,15 @@ public class View extends javax.swing.JFrame implements MouseListener {
         this.charmander.iniciarCharmander();
 
         this.setResizable(false);
+        setFocusable(true);
         this.revalidate();
         this.setVisible(true);
+//        this.addKeyListener(teclado);
+//        this.principal.addKeyListener(teclado);
+//        this.opciones.addKeyListener(teclado);
 
     }
-    
+
     public void quitarTesoro() {
         //Quitar imagen del tesoro y los brillos del lado
     }
@@ -127,10 +137,12 @@ public class View extends javax.swing.JFrame implements MouseListener {
                     charmander.setIcon(icono = new ImageIcon(charmanderNorte.getImage().getScaledInstance(charmander.getWidth(), charmander.getHeight(), Image.SCALE_DEFAULT)));
 
                 }
-                if (charmander.getPosY() > 0) {
-                    mapa[charmander.getPosY() - 1][charmander.getPosX()].add(charmander);
-                    this.charmander.setPosY(charmander.getPosY() - 1);
-                }
+//                if (charmander.getPosY() > 0) {
+                mapa[charmander.getPosY() - 1][charmander.getPosX()].add(charmander);
+                this.charmander.setPosY(charmander.getPosY() - 1);
+//                }else{
+//                    this.prog.getAgente().getCasillaActual().setEstados(Estado.GOLPENORTE);
+//                }
 
                 break;
             case SUR:
@@ -141,11 +153,12 @@ public class View extends javax.swing.JFrame implements MouseListener {
 
                 }
 
-                if (charmander.getPosY() < mapa.length - 1) {
-
-                    mapa[charmander.getPosY() + 1][charmander.getPosX()].add(charmander);
-                    this.charmander.setPosY(charmander.getPosY() + 1);
-                }
+//                if (charmander.getPosY() < mapa.length - 1) {
+                mapa[charmander.getPosY() + 1][charmander.getPosX()].add(charmander);
+                this.charmander.setPosY(charmander.getPosY() + 1);
+//                }else{
+//                    this.prog.getAgente().getCasillaActual().setEstados(Estado.GOLPESUR);
+//                }
 
 //                charmander.setIcon(icono = new ImageIcon(charmanderSur.getImage().getScaledInstance(charmander.getWidth(), charmander.getHeight(), Image.SCALE_DEFAULT)));
                 break;
@@ -156,10 +169,12 @@ public class View extends javax.swing.JFrame implements MouseListener {
                     charmander.setIcon(icono = new ImageIcon(charmanderEste.getImage().getScaledInstance(charmander.getWidth(), charmander.getHeight(), Image.SCALE_DEFAULT)));
 
                 }
-                if (charmander.getPosX() < mapa.length - 1) {
-                    mapa[charmander.getPosY()][charmander.getPosX() + 1].add(charmander);
-                    this.charmander.setPosX(charmander.getPosX() + 1);
-                }
+//                if (charmander.getPosX() < mapa.length - 1) {
+                mapa[charmander.getPosY()][charmander.getPosX() + 1].add(charmander);
+                this.charmander.setPosX(charmander.getPosX() + 1);
+//                }else{
+//                    this.prog.getAgente().getCasillaActual().setEstados(Estado.GOLPEESTE);
+//                }
 
                 break;
             case OESTE:
@@ -169,10 +184,12 @@ public class View extends javax.swing.JFrame implements MouseListener {
                     charmander.setIcon(icono = new ImageIcon(charmanderOeste.getImage().getScaledInstance(charmander.getWidth(), charmander.getHeight(), Image.SCALE_DEFAULT)));
 
                 }
-                if (charmander.getPosX() > 0) {
-                    mapa[charmander.getPosY()][charmander.getPosX() - 1].add(charmander);
-                    this.charmander.setPosX(charmander.getPosX() - 1);
-                }
+//                if (charmander.getPosX() > 0) {
+                mapa[charmander.getPosY()][charmander.getPosX() - 1].add(charmander);
+                this.charmander.setPosX(charmander.getPosX() - 1);
+//                }else{
+//                    this.prog.getAgente().getCasillaActual().setEstados(Estado.GOLPEOESTE);
+//                }
 
                 break;
 
@@ -212,6 +229,11 @@ public class View extends javax.swing.JFrame implements MouseListener {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setSize(new java.awt.Dimension(850, 700));
+        addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                formKeyPressed(evt);
+            }
+        });
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         opciones.setBackground(new java.awt.Color(100, 100, 100));
@@ -384,6 +406,11 @@ public class View extends javax.swing.JFrame implements MouseListener {
         principal.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseReleased(java.awt.event.MouseEvent evt) {
                 principalMouseReleased(evt);
+            }
+        });
+        principal.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                principalKeyPressed(evt);
             }
         });
         principal.setLayout(new java.awt.GridLayout(dimension, dimension));
@@ -587,7 +614,7 @@ public class View extends javax.swing.JFrame implements MouseListener {
                     JLabel brillo2 = new JLabel();
                     JLabel brillo3 = new JLabel();
                     JLabel brillo4 = new JLabel();
-                    
+
 //                    mapa[yCasilla][xCasilla].setLayout(new GridLayout(1,1));
                     tresor.setSize(mapa[xCasilla][yCasilla].getWidth(), mapa[xCasilla][yCasilla].getHeight());
                     brillo1.setSize(mapa[xCasilla][yCasilla].getWidth(), mapa[xCasilla][yCasilla].getHeight());
@@ -645,9 +672,28 @@ public class View extends javax.swing.JFrame implements MouseListener {
 
     private void initActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_initActionPerformed
         // TODO add your handling code here:
+        if (!manual) {
+            this.iniciar = true;
+        }
 
-        this.iniciar = true;
     }//GEN-LAST:event_initActionPerformed
+
+    private void principalKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_principalKeyPressed
+        // TODO add your handling code here:
+//        System.out.println(evt.getKeyCode());
+    }//GEN-LAST:event_principalKeyPressed
+
+    private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
+        // TODO add your handling code here:
+        if (evt.getKeyCode() == evt.VK_SPACE) {
+            try {
+                this.prog.getAgente().razonar();
+            } catch (InterruptedException ex) {
+                Logger.getLogger(View.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+    }//GEN-LAST:event_formKeyPressed
 
     public void pintarMapa() {
         for (int i = 0; i < dimension; i++) {
@@ -785,5 +831,14 @@ public class View extends javax.swing.JFrame implements MouseListener {
     public void setIniciar(boolean iniciar) {
         this.iniciar = iniciar;
     }
+
+    public boolean isManual() {
+        return manual;
+    }
+
+    public void setManual(boolean manual) {
+        this.manual = manual;
+    }
+
 
 }

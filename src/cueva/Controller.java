@@ -35,7 +35,7 @@ public class Controller extends Thread {
                 Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
             }
 
-            if (this.vista.isIniciar()) {
+            if (this.vista.isIniciar() || this.vista.isManual()) {
                 charmander.percibirCasilla();
                 charmander.addCasilla(charmander.getCasillaActual());
                 charmander.procesarEstados();

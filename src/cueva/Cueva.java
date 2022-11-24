@@ -103,7 +103,17 @@ public class Cueva {
     }
     
     public CasillaAgente getCasilla(int x, int y) {
+        if (x < 0) {
+            
+        }else if(x >= cueva.length){
+            
+        }else if(y < 0){
+            
+        }else if(y >= cueva.length){
+            
+        }
         return this.cueva[x][y];
+        
     }
     
     public void setCueva(Tamanyo dimension){
