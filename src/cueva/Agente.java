@@ -186,7 +186,79 @@ public class Agente {
     public void razonar() throws InterruptedException {
         ArrayList<CasillaAgente> cAdyacentes = this.getAdyacentes();
 
-        if (this.casillaActual.getEstados().contains(Estado.HEDOR) || this.casillaActual.getEstados().contains(Estado.BRISA)) {
+        if (this.casillaActual.getEstados().contains(Estado.BRILLANTE)) { //EXISTE TESORO CERCA
+//            for (int i = 0; i < cAdyacentes.size(); i++) {
+            if (cAdyacentes.get(0).getEstados().contains(Estado.POSIBLETESORO)
+                    && cAdyacentes.get(0).getEstados().contains(Estado.SEGURO) && !cAdyacentes.get(0).getVerificado()) {
+                CasillaAgente c = cAdyacentes.get(0);
+                //Thread.sleep(1000);
+                boolean seguir = true;
+                try {
+
+                    this.prog.getVista().moverCharmander(this.getDireccion(c.getX(), c.getY()));
+                } catch (Exception e) {
+
+                    while (seguir) {
+                        switch (this.getDireccion(cAdyacentes.get(0).getX(), cAdyacentes.get(0).getY())) {
+                            case NORTE:
+                                this.casillaActual.setEstados(Estado.GOLPENORTE);
+                                this.addCasilla(casillaActual);
+                                break;
+                            case SUR:
+                                this.casillaActual.setEstados(Estado.GOLPESUR);
+                                this.addCasilla(casillaActual);
+                                break;
+                            case ESTE:
+                                this.casillaActual.setEstados(Estado.GOLPEESTE);
+                                this.addCasilla(casillaActual);
+                                break;
+                            case OESTE:
+                                this.casillaActual.setEstados(Estado.GOLPEOESTE);
+                                this.addCasilla(casillaActual);
+                                break;
+                        }
+                        cAdyacentes.remove(0);
+                        try {
+                            if (cAdyacentes.size() > 0) {
+                                if (cAdyacentes.get(0).getEstados().contains(Estado.POSIBLETESORO)
+                                        && cAdyacentes.get(0).getEstados().contains(Estado.SEGURO) && !cAdyacentes.get(0).getVerificado()) {
+                                    this.prog.getVista().moverCharmander(this.getDireccion(cAdyacentes.get(0).getX(), cAdyacentes.get(0).getY()));
+                                    seguir = false;
+                                }
+
+//                                    mover(noVerificadas.get(0).getX(), noVerificadas.get(0).getY());
+                            } else {
+                                CasillaAgente cAnterior = this.historial.pop();
+                                this.casillaActual = cAnterior;
+                            }
+
+                        } catch (Exception ex) {
+                            seguir = true;
+                        }
+                    }
+
+                }
+
+                mover(c.getX(), c.getY());
+//                    historial.push(this.casillaActual);
+//                    this.casillaActual = c;
+//                    percibirCasilla();
+//                    procesarEstados();
+
+                if (this.casillaActual.getEstados().contains(Estado.TESORO)) {
+                    this.prog.getVista().quitarTesoro();
+                    volver();
+                } else {
+                    CasillaAgente cAnterior = this.historial.pop();
+                    Thread.sleep(1000);
+                    this.prog.getVista().moverCharmander(this.getDireccion(c.getX(), c.getY()));
+                    this.casillaActual = cAnterior;
+                }
+            }
+//            }
+        } else if (this.casillaActual.getEstados().contains(Estado.HEDOR)
+                || //EXISTE MONSTRUO O PRECIPICIO
+                this.casillaActual.getEstados().contains(Estado.BRISA)) {
             ArrayList<CasillaAgente> noVerificadasSeguras = (ArrayList<CasillaAgente>) cAdyacentes.clone();
             noVerificadasSeguras.removeIf(c -> c.getVerificado() || !c.getEstados().contains(Estado.SEGURO));
 
@@ -208,64 +280,44 @@ public class Agente {
                         }
                     }
                 }
+
                 this.prog.getVista().moverCharmander(this.getDireccion(cAdyacentes.get(menosVisto).getX(), cAdyacentes.get(menosVisto).getY()));
                 mover(cAdyacentes.get(menosVisto));
 
 //                });
             }
-        } else if (this.casillaActual.getEstados().contains(Estado.BRILLANTE)) {
-            for (int i = 0; i < cAdyacentes.size(); i++) {
-                if (cAdyacentes.get(i).getEstados().contains(Estado.POSIBLETESORO) && cAdyacentes.get(i).getEstados().contains(Estado.SEGURO)) {
-                    CasillaAgente c = cAdyacentes.get(i);
-                    Thread.sleep(1000);
-                    this.prog.getVista().moverCharmander(this.getDireccion(c.getX(), c.getY()));
-                    historial.push(this.casillaActual);
-                    this.casillaActual = c;
-                    percibirCasilla();
-                    procesarEstados();
-                    if (this.casillaActual.getEstados().contains(Estado.TESORO)) {
-                        this.prog.getVista().quitarTesoro();
-                        volver();
-                    } else {
-                        CasillaAgente cAnterior = this.historial.pop();
-                        Thread.sleep(1000);
-                        this.prog.getVista().moverCharmander(this.getDireccion(c.getX(), c.getY()));
-                        this.casillaActual = cAnterior;
-                    }
-                }
-            }
-        }
-        if (this.casillaActual.getEstados().contains(Estado.HEDOR)) {
-            for (int i = 0; i < cAdyacentes.size(); i++) {
-                if (!cAdyacentes.get(i).getEstados().contains(Estado.POSIBLEMONSTRUO)) {
-//                        cAdyacentes.get(i).setEstados(Estado.MONSTRUO);
-                    if (!cAdyacentes.get(i).getEstados().contains(Estado.POSIBLEPRECIPICIO)) {
-                        if (!cAdyacentes.get(i).getVerificado()) {
-                            this.prog.getVista().moverCharmander(this.getDireccion(cAdyacentes.get(i).getX(), cAdyacentes.get(i).getY()));
-                            this.mover(cAdyacentes.get(i).getX(), cAdyacentes.get(i).getY());
-
-                        } else {
-                            CasillaAgente cAnterior = this.historial.pop();
-
-                            this.prog.getVista().moverCharmander(this.getDireccion(cAnterior.getX(), cAnterior.getY()));
-                            this.casillaActual = cAnterior;
-                        }
-                    } else {
-                        CasillaAgente cAnterior = this.historial.pop();
-
-                        this.prog.getVista().moverCharmander(this.getDireccion(cAnterior.getX(), cAnterior.getY()));
-                        this.casillaActual = cAnterior;
-                    }
-
-                } else {
-                    CasillaAgente cAnterior = this.historial.pop();
-
-                    this.prog.getVista().moverCharmander(this.getDireccion(cAnterior.getX(), cAnterior.getY()));
-                    this.casillaActual = cAnterior;
-                }
-
-            }
-        } else {
+        } //        if (this.casillaActual.getEstados().contains(Estado.HEDOR)) {
+        //            for (int i = 0; i < cAdyacentes.size(); i++) {
+        //                if (!cAdyacentes.get(i).getEstados().contains(Estado.POSIBLEMONSTRUO)) {
+        ////                        cAdyacentes.get(i).setEstados(Estado.MONSTRUO);
+        //                    if (!cAdyacentes.get(i).getEstados().contains(Estado.POSIBLEPRECIPICIO)) {
+        //                        if (!cAdyacentes.get(i).getVerificado()) {
+        //                            this.prog.getVista().moverCharmander(this.getDireccion(cAdyacentes.get(i).getX(), cAdyacentes.get(i).getY()));
+        //                            this.mover(cAdyacentes.get(i).getX(), cAdyacentes.get(i).getY());
+        //
+        //                        } else {
+        //                            CasillaAgente cAnterior = this.historial.pop();
+        //
+        //                            this.prog.getVista().moverCharmander(this.getDireccion(cAnterior.getX(), cAnterior.getY()));
+        //                            this.casillaActual = cAnterior;
+        //                        }
+        //                    } else {
+        //                        CasillaAgente cAnterior = this.historial.pop();
+        //
+        //                        this.prog.getVista().moverCharmander(this.getDireccion(cAnterior.getX(), cAnterior.getY()));
+        //                        this.casillaActual = cAnterior;
+        //                    }
+        //
+        //                } else {
+        //                    CasillaAgente cAnterior = this.historial.pop();
+        //
+        //                    this.prog.getVista().moverCharmander(this.getDireccion(cAnterior.getX(), cAnterior.getY()));
+        //                    this.casillaActual = cAnterior;
+        //                }
+        //
+        //            }
+        //        } 
+        else { //NO HAY NADA PELIGROSO PERCEPCION
             ArrayList<CasillaAgente> noVerificadas = (ArrayList<CasillaAgente>) cAdyacentes.clone();
             noVerificadas.removeIf(c -> c.getVerificado());
 
@@ -281,15 +333,19 @@ public class Agente {
                             switch (this.getDireccion(noVerificadas.get(0).getX(), noVerificadas.get(0).getY())) {
                                 case NORTE:
                                     this.casillaActual.setEstados(Estado.GOLPENORTE);
+                                    this.addCasilla(casillaActual);
                                     break;
                                 case SUR:
                                     this.casillaActual.setEstados(Estado.GOLPESUR);
+                                    this.addCasilla(casillaActual);
                                     break;
                                 case ESTE:
                                     this.casillaActual.setEstados(Estado.GOLPEESTE);
+                                    this.addCasilla(casillaActual);
                                     break;
                                 case OESTE:
                                     this.casillaActual.setEstados(Estado.GOLPEOESTE);
+                                    this.addCasilla(casillaActual);
                                     break;
                             }
                             noVerificadas.remove(0);
@@ -307,7 +363,6 @@ public class Agente {
                                 seguir = true;
                             }
                         }
-                        
 
                     }
                     mover(noVerificadas.get(0).getX(), noVerificadas.get(0).getY());

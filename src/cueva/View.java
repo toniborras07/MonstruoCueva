@@ -115,6 +115,9 @@ public class View extends javax.swing.JFrame implements MouseListener {
     }
 
     public void quitarTesoro() {
+        ImageIcon Img = new ImageIcon("");
+        Icon icono = new ImageIcon(Img.getImage().getScaledInstance(this.tesoroo.getWidth(), this.tesoroo.getHeight(), Image.SCALE_DEFAULT));
+        this.tesoroo.setIcon(icono);
         //Quitar imagen del tesoro y los brillos del lado
     }
 
