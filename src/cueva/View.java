@@ -245,6 +245,11 @@ public class View extends javax.swing.JFrame implements MouseListener {
                 opcionesMouseReleased(evt);
             }
         });
+        opciones.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                opcionesKeyPressed(evt);
+            }
+        });
 
         monstruo.setText("jLabel1");
 
@@ -282,7 +287,7 @@ public class View extends javax.swing.JFrame implements MouseListener {
             }
         });
 
-        jButton1.setText("Camino");
+        jButton1.setText("Borrar");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -424,26 +429,44 @@ public class View extends javax.swing.JFrame implements MouseListener {
 
     private void monsterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_monsterActionPerformed
         // TODO add your handling code here:
+        if (this.selMonster) {
+            this.selMonster = false;
+        } else {
+            this.selMonster = true;
+        }
         this.selCamino = false;
         this.selFoso = false;
-        this.selMonster = true;
+
         this.selTesoro = false;
+        this.requestFocus();
     }//GEN-LAST:event_monsterActionPerformed
 
     private void tesoroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tesoroActionPerformed
         // TODO add your handling code here:
+        if (this.selTesoro) {
+            this.selTesoro = false;
+        } else {
+            this.selTesoro = true;
+        }
         this.selCamino = false;
         this.selFoso = false;
         this.selMonster = false;
-        this.selTesoro = true;
+        this.requestFocus();
+
     }//GEN-LAST:event_tesoroActionPerformed
 
     private void fosoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fosoActionPerformed
         // TODO add your handling code here:ImageIcon monstruoImg = new ImageIcon("src/img/Monstruo.png");
+        if (this.selFoso) {
+            this.selFoso = false;
+        } else {
+            this.selFoso = true;
+        }
         this.selCamino = false;
-        this.selFoso = true;
+
         this.selMonster = false;
         this.selTesoro = false;
+        this.requestFocus();
     }//GEN-LAST:event_fosoActionPerformed
 
     private void mapasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mapasActionPerformed
@@ -518,148 +541,107 @@ public class View extends javax.swing.JFrame implements MouseListener {
 
             switch (getOpcion()) {
                 case 0:
-                    JLabel label = (JLabel) mapa[yCasilla][xCasilla].getComponent(0);
-                    label.setIcon(null);
+                    this.eliminarImagenes(yCasilla, xCasilla);
                     if (mapa[yCasilla][xCasilla].getMonster()) {
-                        if (yCasilla > 0) {
-                            cambiarIconos(yCasilla - 1, xCasilla, mapa[yCasilla - 1][xCasilla]);
-
-                        }
-                        if (yCasilla < mapa.length - 1) {
-                            cambiarIconos(yCasilla + 1, xCasilla, mapa[yCasilla + 1][xCasilla]);
-                        }
-
-                        if (xCasilla > 0) {
-                            cambiarIconos(yCasilla, xCasilla - 1, mapa[yCasilla][xCasilla - 1]);
-                        }
-                        if (xCasilla < mapa.length - 1) {
-                            cambiarIconos(yCasilla, xCasilla + 1, mapa[yCasilla][xCasilla + 1]);
-                        }
+                        this.prog.getCueva().eliminarElemento(yCasilla, xCasilla, Estado.MONSTRUO, Estado.HEDOR);
+                    } else if (mapa[yCasilla][xCasilla].getHoyo()) {
+                        this.prog.getCueva().eliminarElemento(yCasilla, xCasilla, Estado.MONSTRUO, Estado.HEDOR);
+                    } else if (mapa[yCasilla][xCasilla].getTesoro()) {
+                        this.prog.getCueva().eliminarElemento(yCasilla, xCasilla, Estado.MONSTRUO, Estado.HEDOR);
                     }
 
-                    if (mapa[yCasilla][xCasilla].getHoyo()) {
-                        if (yCasilla > 0) {
-                            JLabel label1 = (JLabel) mapa[yCasilla - 1][xCasilla].getComponent(0);
-                            label1.setIcon(null);
-                        }
-                        if (yCasilla < mapa.length - 1) {
-                            JLabel label2 = (JLabel) mapa[yCasilla + 1][xCasilla].getComponent(0);
-                            label2.setIcon(null);
-                        }
-
-                        if (xCasilla > 0) {
-                            JLabel label3 = (JLabel) mapa[yCasilla][xCasilla - 1].getComponent(0);
-                            label3.setIcon(null);
-                        }
-                        if (xCasilla < mapa.length - 1) {
-                            JLabel label4 = (JLabel) mapa[yCasilla][xCasilla + 1].getComponent(0);
-                            label4.setIcon(null);
-                        }
-                    }
                     this.repaint();
 
                     break;
                 case 1:
 
-                    JLabel gyarados = new JLabel();
-
-                    JLabel hedor1 = new JLabel();
-                    JLabel hedor2 = new JLabel();
-                    JLabel hedor3 = new JLabel();
-                    JLabel hedor4 = new JLabel();
-
-                    hedor1.setSize(mapa[xCasilla][yCasilla].getWidth(), mapa[xCasilla][yCasilla].getHeight());
-                    hedor2.setSize(mapa[xCasilla][yCasilla].getWidth(), mapa[xCasilla][yCasilla].getHeight());
-                    hedor3.setSize(mapa[xCasilla][yCasilla].getWidth(), mapa[xCasilla][yCasilla].getHeight());
-                    hedor4.setSize(mapa[xCasilla][yCasilla].getWidth(), mapa[xCasilla][yCasilla].getHeight());
-                    gyarados.setSize(mapa[xCasilla][yCasilla].getWidth(), mapa[xCasilla][yCasilla].getHeight());
                     ImageIcon gy = new ImageIcon("src/img/Monstruo.png");
-                    Icon iconomonstruo = new ImageIcon(gy.getImage().getScaledInstance(gyarados.getWidth(), gyarados.getHeight(), Image.SCALE_DEFAULT));
+                    Icon iconomonstruo = new ImageIcon(gy.getImage().getScaledInstance(mapa[xCasilla][yCasilla].getWidth(), mapa[xCasilla][yCasilla].getHeight(), Image.SCALE_DEFAULT));
 
-//                    mapa[yCasilla][xCasilla].setLayout(new GridLayout(1,1));
+                    percepcionGrafica mosnt = new percepcionGrafica(mapa[xCasilla][yCasilla].getWidth(), mapa[xCasilla][yCasilla].getHeight());
+                    mosnt.meterEstado(Estado.MONSTRUO, iconomonstruo);
+                    mapa[yCasilla][xCasilla].meterPercepcion(mosnt);
+
                     ImageIcon hedor = new ImageIcon("src/img/hedor.png");
-                    Icon iconohedor = new ImageIcon(hedor.getImage().getScaledInstance(gyarados.getWidth() / 3, gyarados.getHeight() / 3, Image.SCALE_DEFAULT));
+                    Icon iconohedor = new ImageIcon(hedor.getImage().getScaledInstance(mapa[xCasilla][yCasilla].getWidth() / 3, mapa[xCasilla][yCasilla].getHeight() / 3, Image.SCALE_DEFAULT));
 
                     if (yCasilla > 0) {
-                        mapa[yCasilla - 1][xCasilla].add(hedor1);
+                        percepcionGrafica g1 = new percepcionGrafica(mapa[xCasilla][yCasilla].getWidth(), mapa[xCasilla][yCasilla].getHeight());
+                        g1.meterEstado(Estado.HEDOR, iconohedor);
+                        mapa[yCasilla - 1][xCasilla].meterPercepcion(g1);
                     }
                     if (yCasilla < mapa.length - 1) {
-                        mapa[yCasilla + 1][xCasilla].add(hedor2);
+                        percepcionGrafica g1 = new percepcionGrafica(mapa[xCasilla][yCasilla].getWidth(), mapa[xCasilla][yCasilla].getHeight());
+                        g1.meterEstado(Estado.HEDOR, iconohedor);
+                        mapa[yCasilla + 1][xCasilla].meterPercepcion(g1);
                     }
 
                     if (xCasilla > 0) {
-                        mapa[yCasilla][xCasilla - 1].add(hedor4);
+                        percepcionGrafica g1 = new percepcionGrafica(mapa[xCasilla][yCasilla].getWidth(), mapa[xCasilla][yCasilla].getHeight());
+                        g1.meterEstado(Estado.HEDOR, iconohedor);
+                        mapa[yCasilla][xCasilla - 1].meterPercepcion(g1);
                     }
                     if (xCasilla < mapa.length - 1) {
-                        mapa[yCasilla][xCasilla + 1].add(hedor3);
+                        percepcionGrafica g1 = new percepcionGrafica(mapa[xCasilla][yCasilla].getWidth(), mapa[xCasilla][yCasilla].getHeight());
+                        g1.meterEstado(Estado.HEDOR, iconohedor);
+                        mapa[yCasilla][xCasilla + 1].meterPercepcion(g1);
                     }
 
-                    mapa[yCasilla][xCasilla].add(gyarados);
                     this.prog.getCueva().setMonstruo(xCasilla, yCasilla);
                     mapa[yCasilla][xCasilla].setMonster(true);
-                    gyarados.setIcon(iconomonstruo);
-                    hedor1.setIcon(iconohedor);
-                    hedor2.setIcon(iconohedor);
-                    hedor3.setIcon(iconohedor);
-                    hedor4.setIcon(iconohedor);
 
                     break;
+
                 case 2:
 
-                    JLabel foso = new JLabel();
-                    JLabel brisa1 = new JLabel();
-                    JLabel brisa2 = new JLabel();
-                    JLabel brisa3 = new JLabel();
-                    JLabel brisa4 = new JLabel();
-
-                    foso.setSize(mapa[xCasilla][yCasilla].getWidth(), mapa[xCasilla][yCasilla].getHeight());
-                    brisa1.setSize(mapa[xCasilla][yCasilla].getWidth(), mapa[xCasilla][yCasilla].getHeight());
-                    brisa2.setSize(mapa[xCasilla][yCasilla].getWidth(), mapa[xCasilla][yCasilla].getHeight());
-                    brisa3.setSize(mapa[xCasilla][yCasilla].getWidth(), mapa[xCasilla][yCasilla].getHeight());
-                    brisa4.setSize(mapa[xCasilla][yCasilla].getWidth(), mapa[xCasilla][yCasilla].getHeight());
                     ImageIcon fo = new ImageIcon("src/img/foso.png");
-                    Icon iconofoso = new ImageIcon(fo.getImage().getScaledInstance(foso.getWidth(), foso.getHeight(), Image.SCALE_DEFAULT));
+                    Icon iconofoso = new ImageIcon(fo.getImage().getScaledInstance(mapa[xCasilla][yCasilla].getWidth(), mapa[xCasilla][yCasilla].getHeight(), Image.SCALE_DEFAULT));
                     ImageIcon brisa = new ImageIcon("src/img/brisa.png");
-                    Icon iconobrisa = new ImageIcon(brisa.getImage().getScaledInstance(foso.getWidth() / 3, foso.getHeight() / 3, Image.SCALE_DEFAULT));
-//                    mapa[yCasilla][xCasilla].setLayout(new GridLayout(1,1));
-                    mapa[yCasilla][xCasilla].add(foso);
+                    Icon iconobrisa = new ImageIcon(brisa.getImage().getScaledInstance(mapa[xCasilla][yCasilla].getWidth() / 3, mapa[xCasilla][yCasilla].getHeight() / 3, Image.SCALE_DEFAULT));
+
+                    percepcionGrafica foso = new percepcionGrafica(mapa[xCasilla][yCasilla].getWidth(), mapa[xCasilla][yCasilla].getHeight());
+                    foso.meterEstado(Estado.PRECIPICIO, iconofoso);
+                    mapa[yCasilla][xCasilla].meterPercepcion(foso);
+
+//                    mapa[yCasilla][xCasilla].add(mosnt);
                     this.prog.getCueva().setPrecipicio(xCasilla, yCasilla);
                     if (yCasilla > 0) {
-                        mapa[yCasilla - 1][xCasilla].add(brisa1);
+                        percepcionGrafica g1 = new percepcionGrafica(mapa[xCasilla][yCasilla].getWidth(), mapa[xCasilla][yCasilla].getHeight());
+                        g1.meterEstado(Estado.BRISA, iconobrisa);
+                        mapa[yCasilla - 1][xCasilla].meterPercepcion(g1);
                     }
                     if (yCasilla < mapa.length - 1) {
-                        mapa[yCasilla + 1][xCasilla].add(brisa2);
+                        percepcionGrafica g2 = new percepcionGrafica(mapa[xCasilla][yCasilla].getWidth(), mapa[xCasilla][yCasilla].getHeight());
+                        g2.meterEstado(Estado.BRISA, iconobrisa);
+                        mapa[yCasilla + 1][xCasilla].meterPercepcion(g2);
                     }
 
                     if (xCasilla > 0) {
-                        mapa[yCasilla][xCasilla - 1].add(brisa4);
+                        percepcionGrafica g3 = new percepcionGrafica(mapa[xCasilla][yCasilla].getWidth(), mapa[xCasilla][yCasilla].getHeight());
+                        g3.meterEstado(Estado.BRISA, iconobrisa);
+                        mapa[yCasilla][xCasilla - 1].meterPercepcion(g3);
                     }
                     if (xCasilla < mapa.length - 1) {
-                        mapa[yCasilla][xCasilla + 1].add(brisa3);
+                        percepcionGrafica g4 = new percepcionGrafica(mapa[xCasilla][yCasilla].getWidth(), mapa[xCasilla][yCasilla].getHeight());
+                        g4.meterEstado(Estado.BRISA, iconobrisa);
+                        mapa[yCasilla][xCasilla + 1].meterPercepcion(g4);
                     }
 
                     mapa[yCasilla][xCasilla].setHoyo(true);
 
-                    foso.setIcon(iconofoso);
-                    brisa1.setIcon(iconobrisa);
-                    brisa2.setIcon(iconobrisa);
-                    brisa3.setIcon(iconobrisa);
-                    brisa4.setIcon(iconobrisa);
-
                     break;
+
                 case 3:
 
-                    JLabel tresor = new JLabel();
-
 //                    mapa[yCasilla][xCasilla].setLayout(new GridLayout(1,1));
-                    tresor.setSize(mapa[xCasilla][yCasilla].getWidth(), mapa[xCasilla][yCasilla].getHeight());
                     ImageIcon te = new ImageIcon("src/img/tesoro.png");
-                    Icon iconotesoro = new ImageIcon(te.getImage().getScaledInstance(tresor.getWidth(), tresor.getHeight(), Image.SCALE_DEFAULT));
+                    Icon iconotesoro = new ImageIcon(te.getImage().getScaledInstance(mapa[xCasilla][yCasilla].getWidth(), mapa[xCasilla][yCasilla].getHeight(), Image.SCALE_DEFAULT));
+                    percepcionGrafica g4 = new percepcionGrafica(mapa[xCasilla][yCasilla].getWidth(), mapa[xCasilla][yCasilla].getHeight());
+                    g4.meterEstado(Estado.TESORO, iconotesoro);
+                    mapa[yCasilla][xCasilla].meterPercepcion(g4);
 
-                    mapa[yCasilla][xCasilla].add(tresor);
                     this.prog.getCueva().setTesoro(xCasilla, yCasilla);
                     mapa[yCasilla][xCasilla].setTesoro(true);
-                    tresor.setIcon(iconotesoro);
 
                     break;
 
@@ -668,82 +650,63 @@ public class View extends javax.swing.JFrame implements MouseListener {
         }
     }//GEN-LAST:event_principalMouseReleased
 
-    public void cambiarIconos(int yCasilla, int xCasilla, CasillaGrafica c) {
-        for (int i = 0; i < c.getComponentCount(); i++) {
-            JLabel l = (JLabel) c.getComponent(i);
-            l.setIcon(null);
-        }
-
-        JLabel brisa1 = new JLabel();
-        brisa1.setSize(mapa[xCasilla][yCasilla].getWidth(), mapa[xCasilla][yCasilla].getHeight());
-        ImageIcon brisa = new ImageIcon("src/img/brisa.png");
-        Icon iconobrisa = new ImageIcon(brisa.getImage().getScaledInstance(brisa1.getWidth() / 3, brisa1.getHeight() / 3, Image.SCALE_DEFAULT));
-
-        JLabel hedor1 = new JLabel();
-        hedor1.setSize(mapa[xCasilla][yCasilla].getWidth(), mapa[xCasilla][yCasilla].getHeight());
-        ImageIcon hedor = new ImageIcon("src/img/hedor.png");
-        Icon iconohedor = new ImageIcon(hedor.getImage().getScaledInstance(hedor1.getWidth() / 3, hedor1.getHeight() / 3, Image.SCALE_DEFAULT));
-
-        if (yCasilla > 0) {
-            if (mapa[yCasilla - 1][xCasilla].getHoyo()) {
-                c.add(brisa1);
-            }
-
-            if (mapa[yCasilla - 1][xCasilla].getMonster()) {
-                c.add(hedor1);
-            }
-
-            if (mapa[yCasilla - 1][xCasilla].getTesoro()) {
-
+    private void eliminar(CasillaGrafica g, Estado estado) {
+        boolean founded = false;
+        for (int j = 0; j < g.getPercepciones().size() && !founded; j++) {
+            System.out.println(j);
+            if (g.getPercepciones().get(j).getEstado() == estado) {
+                g.remove(j);
+                g.getPercepciones().remove(j);
+                founded = true;
             }
         }
-        if (yCasilla < mapa.length - 1) {
-            if (mapa[yCasilla + 1][xCasilla].getHoyo()) {
-                c.add(brisa1);
-            }
-
-            if (mapa[yCasilla + 1][xCasilla].getMonster()) {
-                c.add(hedor1);
-            }
-
-            if (mapa[yCasilla + 1][xCasilla].getTesoro()) {
-
-            }
-        }
-
-        if (xCasilla > 0) {
-            if (mapa[yCasilla][xCasilla - 1].getHoyo()) {
-                c.add(brisa1);
-            }
-
-            if (mapa[yCasilla][xCasilla - 1].getMonster()) {
-                c.add(hedor1);
-            }
-
-            if (mapa[yCasilla][xCasilla - 1].getTesoro()) {
-
-            }
-
-        }
-        if (xCasilla < mapa.length - 1) {
-            if (mapa[yCasilla][xCasilla + 1].getHoyo()) {
-                c.add(brisa1);
-            }
-
-            if (mapa[yCasilla][xCasilla + 1].getMonster()) {
-                c.add(hedor1);
-            }
-
-            if (mapa[yCasilla][xCasilla + 1].getTesoro()) {
-
-            }
-        }
-        brisa1.setIcon(iconobrisa);
-        hedor1.setIcon(iconohedor);
     }
+
+    public void eliminarImagenes(int x, int y) {
+
+        if (mapa[x][y].getMonster()) {
+            eliminar(mapa[x][y], Estado.MONSTRUO);
+            if (x > 0) {
+                eliminar(mapa[x - 1][y], Estado.HEDOR);
+
+            }
+            if (x < mapa.length - 1) {
+                eliminar(mapa[x + 1][y], Estado.HEDOR);
+            }
+
+            if (y > 0) {
+                eliminar(mapa[x][y - 1], Estado.HEDOR);
+            }
+            if (y < mapa.length - 1) {
+                eliminar(mapa[x][y + 1], Estado.HEDOR);
+            }
+
+        } else if (mapa[x][y].getHoyo()) {
+            eliminar(mapa[x][y], Estado.PRECIPICIO);
+            if (x > 0) {
+                eliminar(mapa[x - 1][y], Estado.BRISA);
+
+            }
+            if (x < mapa.length - 1) {
+                eliminar(mapa[x + 1][y], Estado.BRISA);
+            }
+
+            if (y > 0) {
+                eliminar(mapa[x][y - 1], Estado.BRISA);
+            }
+            if (y < mapa.length - 1) {
+                eliminar(mapa[x][y + 1], Estado.BRISA);
+            }
+
+        } else if (mapa[x][y].getTesoro()) {
+            eliminar(mapa[x][y], Estado.TESORO);
+        }
+
+    }
+
     private void opcionesMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_opcionesMouseReleased
         // TODO add your handling code here:
-
+        this.requestFocus();
     }//GEN-LAST:event_opcionesMouseReleased
 
     private void velocidadesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_velocidadesActionPerformed
@@ -765,14 +728,21 @@ public class View extends javax.swing.JFrame implements MouseListener {
             manual = true;
             cambiarVelocidad(0);
         }
+        this.requestFocus();
     }//GEN-LAST:event_velocidadesActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        this.selCamino = true;
+        if (this.selCamino) {
+            this.selCamino = false;
+        } else {
+            this.selCamino = true;
+        }
+
         this.selFoso = false;
         this.selMonster = false;
         this.selTesoro = false;
+        this.requestFocus();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void initActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_initActionPerformed
@@ -780,12 +750,19 @@ public class View extends javax.swing.JFrame implements MouseListener {
         if (!manual) {
             this.iniciar = true;
         }
+        this.requestFocus();
 
     }//GEN-LAST:event_initActionPerformed
 
     private void principalKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_principalKeyPressed
         // TODO add your handling code here:
-//        System.out.println(evt.getKeyCode());
+        if (evt.getKeyCode() == evt.VK_SPACE) {
+            try {
+                this.prog.getAgente().razonar();
+            } catch (InterruptedException ex) {
+                Logger.getLogger(View.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }//GEN-LAST:event_principalKeyPressed
 
     private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
@@ -799,6 +776,18 @@ public class View extends javax.swing.JFrame implements MouseListener {
         }
 
     }//GEN-LAST:event_formKeyPressed
+
+    private void opcionesKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_opcionesKeyPressed
+        // TODO add your handling code here:
+        if (evt.getKeyCode() == evt.VK_SPACE) {
+            try {
+                this.prog.getAgente().razonar();
+            } catch (InterruptedException ex) {
+                Logger.getLogger(View.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+    }//GEN-LAST:event_opcionesKeyPressed
 
     public void pintarMapa() {
         for (int i = 0; i < dimension; i++) {
@@ -856,41 +845,6 @@ public class View extends javax.swing.JFrame implements MouseListener {
 
     @Override
     public void mouseReleased(MouseEvent arg0) {
-        int x = 0, y = 0, xCasilla, yCasilla;
-        //Algoritmo encargado de destapar una casilla si se encontraba previa- 
-        //mente tapada. Se obtienen las coordenadas de la casilla clickada con 
-        //el boton izquierdo del raton
-        if (arg0.getButton() == MouseEvent.BUTTON1) {
-            x = arg0.getX();
-            y = arg0.getY();
-
-            xCasilla = x / (this.principal.getWidth() / dimension);
-            yCasilla = y / (this.principal.getWidth() / dimension);
-
-            switch (getOpcion()) {
-                case 0:
-                    mapa[xCasilla][yCasilla].setIcon(camino);
-                    break;
-                case 1:
-                    System.out.println("ggifji");
-                    JLabel gyarados = new JLabel();
-                    gyarados.setSize(mapa[xCasilla][yCasilla].getWidth(), mapa[xCasilla][yCasilla].getHeight());
-                    ImageIcon gy = new ImageIcon("src/img/Monstruo.png");
-                    Icon icono = new ImageIcon(monstruoImg.getImage().getScaledInstance(gyarados.getWidth(), gyarados.getHeight(), Image.SCALE_DEFAULT));
-
-                    mapa[xCasilla][yCasilla].add(gyarados);
-                    gyarados.setIcon(icono);
-
-                    break;
-                case 2:
-
-                    break;
-                case 3:
-
-                    break;
-
-            }
-        }
 
     }
 

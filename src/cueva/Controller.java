@@ -27,15 +27,22 @@ public class Controller extends Thread {
     @Override
     public void run() {
         boolean dale = false;
-
+        boolean inicio=true;
         while (!acabar) {
             try {
                 Thread.sleep(30);
             } catch (InterruptedException ex) {
                 Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
             }
-
-            if (this.vista.isIniciar() || this.vista.isManual()) {
+            
+            if (this.vista.isManual() && inicio) {
+                charmander.percibirCasilla();
+                charmander.addCasilla(charmander.getCasillaActual());
+                charmander.procesarEstados();
+                inicio=false;
+                this.vista.setIniciar(false);
+                dale = false;
+            }else if (this.vista.isIniciar()) {
                 charmander.percibirCasilla();
                 charmander.addCasilla(charmander.getCasillaActual());
                 charmander.procesarEstados();

@@ -178,4 +178,65 @@ public class Cueva {
             }
         }
     }
+
+    public void eliminarElemento(int x, int y, Estado estado, Estado estado2) {
+        for (int i = 0; i < cueva[x][y].getEstados().size(); i++) {
+            if (cueva[x][y].getEstados().get(i) == estado) {
+                cueva[x][y].getEstados().remove(i);
+                if (cueva[x][y].getEstados().size() == 0) {
+                    cueva[x][y].setEstados(Estado.VACIO);
+                }
+                if (x > 0) {
+                    for (int j = 0; j < cueva[x - 1][y].getEstados().size(); j++) {
+                        if (cueva[x - 1][y].getEstados().get(j) == estado2) {
+                            cueva[x - 1][y].getEstados().remove(j);
+
+                            if (cueva[x - 1][y].getEstados().size() == 0) {
+                                cueva[x - 1][y].setEstados(Estado.VACIO);
+                            }
+                        }
+
+                    }
+                }
+                if (x < cueva.length - 1) {
+                    for (int j = 0; j < cueva[x + 1][y].getEstados().size(); j++) {
+                        if (cueva[x + 1][y].getEstados().get(j) == estado2) {
+                            cueva[x + 1][y].getEstados().remove(j);
+                            if (cueva[x + 1][y].getEstados().size() == 0) {
+                                cueva[x + 1][y].setEstados(Estado.VACIO);
+                            }
+                        }
+
+                    }
+                }
+
+                if (y > 0) {
+                    for (int j = 0; j < cueva[x][y - 1].getEstados().size(); j++) {
+                        if (cueva[x][y - 1].getEstados().get(j) == estado2) {
+                            cueva[x][y - 1].getEstados().remove(j);
+                            if (cueva[x][y - 1].getEstados().size() == 0) {
+                                cueva[x][y - 1].setEstados(Estado.VACIO);
+                            }
+                        }
+
+                    }
+                }
+                if (y < cueva.length - 1) {
+                    for (int j = 0; j < cueva[x][y + 1].getEstados().size(); j++) {
+                        if (cueva[x][y + 1].getEstados().get(j) == estado2) {
+                            cueva[x][y + 1].getEstados().remove(j);
+                            if (cueva[x][y + 1].getEstados().size() == 0) {
+                                cueva[x][y + 1].setEstados(Estado.VACIO);
+                            }
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
 }
