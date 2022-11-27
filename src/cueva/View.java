@@ -701,7 +701,7 @@ public class View extends javax.swing.JFrame implements MouseListener {
         } else if (mapa[x][y].getTesoro()) {
             eliminar(mapa[x][y], Estado.TESORO);
         }
-
+        this.repaint();
     }
 
     private void opcionesMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_opcionesMouseReleased
