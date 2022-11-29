@@ -6,6 +6,7 @@ package cueva;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,16 +23,26 @@ public class Agente {
     private Charmander apariencia;
     private ArrayList<Integer[]> monstruosEncontrados;
     private Stack<CasillaAgente> historial;
+    private int id;
+    private int flechas;
 
+    private int orientacion;
     private boolean encontrado;
 
-    public Agente(Main p) {
+    public Agente(Main p, int id, int orientacion) {
         this.prog = p;
         encontrado = false;
         cuevaMemoria = new HashMap();
-        casillaActual = new CasillaAgente(0, 0);
+        casillaActual = new CasillaAgente(p.getVista().getDimension() - 1, 0);
         historial = new Stack();
         monstruosEncontrados = new ArrayList();
+        this.id = id;
+        this.apariencia = new Charmander(p);
+        this.apariencia.instanciar();
+        this.prog.getVista().getCharmander().add(apariencia);
+        flechas = 0;
+        this.orientacion = orientacion;
+        this.prog.getVista().repaint();
     }
 
     public Main getMain() {
@@ -48,6 +59,12 @@ public class Agente {
     }
 
     public void addCasilla(CasillaAgente ca) {
+        try {
+            Main.semaforoCueva.acquire();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Agente.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
         if (cuevaMemoria.get(ca.getX()) == null) {
             HashMap<Integer, CasillaAgente> hs = new HashMap();
             hs.put(ca.getY(), ca);
@@ -58,7 +75,7 @@ public class Agente {
             cuevaMemoria.get(ca.getX()).remove(ca.getY());
             cuevaMemoria.get(ca.getX()).put(ca.getY(), ca);
         }
-//        ca.setVerificado(true);
+        Main.semaforoCueva.release();
     }
 
     private void mover(int x, int y) {
@@ -100,22 +117,6 @@ public class Agente {
 
     }
 
-//    private void mover() {
-//        historial.push(this.casillaActual);
-//        ArrayList<CasillaAgente> cAdyacentes = this.getAdyacentes();
-//        boolean seguir = true;
-//        for (int i = 0; i < cAdyacentes.size() && seguir; i++) {
-//            if ((cAdyacentes.get(i).getEstados().contains(Estado.VACIO)
-//                    || cAdyacentes.get(i).getEstados().contains(Estado.SEGURO)) && !cAdyacentes.get(i).getVerificado()) {
-//                seguir = false;
-//                this.casillaActual = new CasillaAgente(cAdyacentes.get(i).getX(), cAdyacentes.get(i).getY());
-//                percibirCasilla();
-//                procesarEstados();
-//                this.addCasilla(casillaActual);
-//            }
-//        }
-//
-//    }
     public void percibirCasilla() {
         Cueva c = this.prog.getCueva();
         try {
@@ -129,13 +130,12 @@ public class Agente {
     }
 
     public void procesarEstados() {
-        ArrayList<CasillaAgente> cAdyacentes = this.getAdyacentes();
+        ArrayList<CasillaAgente> cAdyacentes = this.getAdyacentes(this.orientacion);
 
         if (this.casillaActual.getEstados().contains(Estado.VACIO)) {
             cAdyacentes.forEach((c) -> {
                 if (!c.getVerificado()) {
                     c.setEstados(Estado.SEGURO);
-//                    c.setVerificado(false);
                     this.addCasilla(c);
                 }
             });
@@ -179,7 +179,6 @@ public class Agente {
 
             }
             if (numM == 1) {
-//                cAdyacentes.get(indice).setEstados(Estado.MONSTRUO);
 
                 System.out.println("El monstruo esta en la casilla x= " + cAdyacentes.get(indice).getX() + " y= " + cAdyacentes.get(indice).getY());
                 this.prog.getVista().eliminarImagenes(cAdyacentes.get(indice).getX(), cAdyacentes.get(indice).getY());
@@ -212,22 +211,26 @@ public class Agente {
                         || (this.casillaActual.getY() == this.monstruosEncontrados.get(i)[1])) {
                     this.prog.getVista().eliminarImagenes(
                             this.monstruosEncontrados.get(i)[0], this.monstruosEncontrados.get(i)[1]);
+                    Main.semaforoCueva.acquire();
                     this.cuevaMemoria.get(this.monstruosEncontrados.get(i)[0]).get(this.monstruosEncontrados.get(i)[1]).setEstados(Estado.SEGURO);
+                    Main.semaforoCueva.release();
                     ArrayList<CasillaAgente> cAdyacentes = this.getAdyacentes(
-                            this.cuevaMemoria.get(this.monstruosEncontrados.get(i)[0]).get(this.monstruosEncontrados.get(i)[1]));
-//                    this.addCasilla(cAdyacentes.get(indice));
+                            this.cuevaMemoria.get(this.monstruosEncontrados.get(i)[0]).get(this.monstruosEncontrados.get(i)[1]), this.orientacion);
                     for (int j = 0; j < cAdyacentes.size(); j++) {
                         cAdyacentes.get(j).setEstados(Estado.SEGURO);
                         this.addCasilla(cAdyacentes.get(j));
                     }
-                   
+
+                    Main.semaforoCueva.acquire();
                     this.prog.getCueva().eliminarElemento(
                             this.cuevaMemoria.get(this.monstruosEncontrados.get(i)[0]).get(
                                     this.monstruosEncontrados.get(i)[1]).getX(), this.cuevaMemoria.get(
                             this.monstruosEncontrados.get(i)[0]).get(this.monstruosEncontrados.get(i)[1]).getY(),
                             Estado.MONSTRUO, Estado.HEDOR);
+
                     indice = i;
-                     this.casillaActual= this.cuevaMemoria.get(this.casillaActual.getX()).get(this.casillaActual.getY());
+                    this.casillaActual = this.cuevaMemoria.get(this.casillaActual.getX()).get(this.casillaActual.getY());
+                    Main.semaforoCueva.release();
 
                 }
             }
@@ -235,11 +238,11 @@ public class Agente {
 
         } else {
 
-            ArrayList<CasillaAgente> cAdyacentes = this.getAdyacentes();
+            ArrayList<CasillaAgente> cAdyacentes = this.getAdyacentes(this.orientacion);
             for (int i = 0; i < cAdyacentes.size(); i++) {
                 if (cAdyacentes.get(i).getEstados().contains(Estado.MEMORIZADA)
                         && cAdyacentes.get(i).getEstados().contains(Estado.HEDOR)) {
-                    ArrayList<CasillaAgente> cAdyacentesI = this.getAdyacentes(cAdyacentes.get(i));
+                    ArrayList<CasillaAgente> cAdyacentesI = this.getAdyacentes(cAdyacentes.get(i), this.orientacion);
                     int posibles = 0;
                     int indice = 0;
                     for (int j = 0; j < cAdyacentesI.size(); j++) {
@@ -259,8 +262,21 @@ public class Agente {
                     }
                 } // 
             }
-            if (this.casillaActual.getEstados().contains(Estado.TESORO)) {
-                this.prog.getController().quitarTesoro(this.casillaActual);
+            int posibles = 0;
+            for (int i = 0; i < cAdyacentes.size(); i++) {
+                if (cAdyacentes.get(i).getEstados().contains(Estado.HEDOR) && cAdyacentes.get(i).getEstados().contains(Estado.MEMORIZADA)) {
+                    posibles++;
+
+                }
+            }
+
+            if (posibles == cAdyacentes.size()) {
+
+                lanzarFlecha();
+                cAdyacentes = this.getAdyacentes(this.orientacion);
+
+            } else if (this.casillaActual.getEstados().contains(Estado.TESORO)) {
+                this.prog.getController().get(id).quitarTesoro(this.casillaActual);
                 this.encontrado = true;
             } else if (this.casillaActual.getEstados().contains(Estado.HEDOR)
                     || this.casillaActual.getEstados().contains(Estado.BRISA)) {
@@ -268,12 +284,11 @@ public class Agente {
                 noVerificadasSeguras.removeIf(c -> c.getVerificado() || !c.getEstados().contains(Estado.SEGURO));
 
                 if (!noVerificadasSeguras.isEmpty()) {
-//                noVerificadasSeguras.forEach((c) -> {
-                    this.prog.getVista().moverCharmander(this.getDireccion(noVerificadasSeguras.get(0).getX(), noVerificadasSeguras.get(0).getY()));
+
+                    this.apariencia.moverCharmander(this.getDireccion(noVerificadasSeguras.get(0).getX(), noVerificadasSeguras.get(0).getY()));
                     mover(noVerificadasSeguras.get(0).getX(), noVerificadasSeguras.get(0).getY());
-//                });
+
                 } else {
-//                cAdyacentes.forEach((c) -> {
                     int menosVisto = 0;
                     int comp = 10000;
                     for (int i = 0; i < cAdyacentes.size(); i++) {
@@ -286,55 +301,23 @@ public class Agente {
                         }
                     }
 
-                    this.prog.getVista().moverCharmander(this.getDireccion(cAdyacentes.get(menosVisto).getX(), cAdyacentes.get(menosVisto).getY()));
+                    this.apariencia.moverCharmander(this.getDireccion(cAdyacentes.get(menosVisto).getX(), cAdyacentes.get(menosVisto).getY()));
                     mover(cAdyacentes.get(menosVisto));
 
-//                });
                 }
-            } //        if (this.casillaActual.getEstados().contains(Estado.HEDOR)) {
-            //            for (int i = 0; i < cAdyacentes.size(); i++) {
-            //                if (!cAdyacentes.get(i).getEstados().contains(Estado.POSIBLEMONSTRUO)) {
-            ////                        cAdyacentes.get(i).setEstados(Estado.MONSTRUO);
-            //                    if (!cAdyacentes.get(i).getEstados().contains(Estado.POSIBLEPRECIPICIO)) {
-            //                        if (!cAdyacentes.get(i).getVerificado()) {
-            //                            this.prog.getVista().moverCharmander(this.getDireccion(cAdyacentes.get(i).getX(), cAdyacentes.get(i).getY()));
-            //                            this.mover(cAdyacentes.get(i).getX(), cAdyacentes.get(i).getY());
-            //
-            //                        } else {
-            //                            CasillaAgente cAnterior = this.historial.pop();
-            //
-            //                            this.prog.getVista().moverCharmander(this.getDireccion(cAnterior.getX(), cAnterior.getY()));
-            //                            this.casillaActual = cAnterior;
-            //                        }
-            //                    } else {
-            //                        CasillaAgente cAnterior = this.historial.pop();
-            //
-            //                        this.prog.getVista().moverCharmander(this.getDireccion(cAnterior.getX(), cAnterior.getY()));
-            //                        this.casillaActual = cAnterior;
-            //                    }
-            //
-            //                } else {
-            //                    CasillaAgente cAnterior = this.historial.pop();
-            //
-            //                    this.prog.getVista().moverCharmander(this.getDireccion(cAnterior.getX(), cAnterior.getY()));
-            //                    this.casillaActual = cAnterior;
-            //                }
-            //
-            //            }
-            //        } 
-            else { //NO HAY NADA PELIGROSO PERCEPCION
+            } else { //NO HAY NADA PELIGROSO PERCEPCION
                 ArrayList<CasillaAgente> noVerificadas = (ArrayList<CasillaAgente>) cAdyacentes.clone();
                 noVerificadas.removeIf(c -> c.getVerificado()
                         || c.getX() >= this.prog.getCueva().getTamanyo() || c.getX() < 0
                         || c.getY() >= this.prog.getCueva().getTamanyo() || c.getY() < 0);
 
                 if (!noVerificadas.isEmpty()) {
-//                noVerificadas.forEach((c) -> {
+
                     if (noVerificadas.get(0).getEstados().contains(Estado.SEGURO)) {
                         boolean seguir = true;
 
                         try {
-                            this.prog.getVista().moverCharmander(this.getDireccion(noVerificadas.get(0).getX(), noVerificadas.get(0).getY()));
+                            this.apariencia.moverCharmander(this.getDireccion(noVerificadas.get(0).getX(), noVerificadas.get(0).getY()));
                         } catch (Exception ex) {
                             while (seguir) {
                                 switch (this.getDireccion(noVerificadas.get(0).getX(), noVerificadas.get(0).getY())) {
@@ -358,9 +341,8 @@ public class Agente {
                                 noVerificadas.remove(0);
                                 try {
                                     if (!noVerificadas.isEmpty()) {
-                                        this.prog.getVista().moverCharmander(this.getDireccion(noVerificadas.get(0).getX(), noVerificadas.get(0).getY()));
+                                        this.apariencia.moverCharmander(this.getDireccion(noVerificadas.get(0).getX(), noVerificadas.get(0).getY()));
                                         seguir = false;
-//                                    mover(noVerificadas.get(0).getX(), noVerificadas.get(0).getY());
                                     } else {
                                         CasillaAgente cAnterior = this.historial.pop();
                                         mover(cAnterior);
@@ -377,14 +359,14 @@ public class Agente {
                     } else {
                         CasillaAgente cAnterior = this.historial.pop();
                         mover(cAnterior);
-                        this.prog.getVista().moverCharmander(this.getDireccion(cAnterior.getX(), cAnterior.getY()));
+                        this.apariencia.moverCharmander(this.getDireccion(cAnterior.getX(), cAnterior.getY()));
                     }
-//                });
+
                 } else {
 
                     CasillaAgente c = getMinimumVisits(cAdyacentes);
                     try {
-                        this.prog.getVista().moverCharmander(this.getDireccion(c.getX(), c.getY()));
+                        this.apariencia.moverCharmander(this.getDireccion(c.getX(), c.getY()));
                     } catch (Exception ex) {
 
                     }
@@ -395,121 +377,568 @@ public class Agente {
         }
     }
 
-    private ArrayList<CasillaAgente> getAdyacentes() {
-        ArrayList<CasillaAgente> cAdyacentes = new ArrayList<>();
+    private CasillaAgente getAdyacenteEste() {
+        try {
+            Main.semaforoCueva.acquire();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Agente.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
         if (this.cuevaMemoria.get(casillaActual.getX()).containsKey(casillaActual.getY() + 1)) {
+            CasillaAgente g = new CasillaAgente(0, 0);
+            Cueva cueva = this.prog.getCueva();
+            if (this.cuevaMemoria.get(casillaActual.getX()).get(
+                    casillaActual.getY() + 1).getVerificado()) {
+                g.setEstados(cueva.getCasilla(this.casillaActual.getX(), this.casillaActual.getY() + 1).getEstados());
+                for (int i = 0; i < g.getEstados().size(); i++) {
+                    if (!this.cuevaMemoria.get(casillaActual.getX()).get(
+                            casillaActual.getY() + 1).getEstados().contains(g.getEstados().get(i))) {
+                        this.cuevaMemoria.get(casillaActual.getX()).get(
+                                casillaActual.getY() + 1).setEstados(g.getEstados().get(i));
+                    }
+
+                }
+            }
+
+            if (!casillaActual.getEstados().contains(Estado.HEDOR)
+                    && !this.casillaActual.getEstados().contains(Estado.BRISA)) {
+                this.cuevaMemoria.get(casillaActual.getX()).get(
+                        casillaActual.getY() + 1).setEstados(Estado.SEGURO);
+
+            }
+
             this.cuevaMemoria.get(casillaActual.getX()).get(casillaActual.getY() + 1).setEstados(Estado.MEMORIZADA);
-            cAdyacentes.add(this.cuevaMemoria.get(casillaActual.getX()).get(casillaActual.getY() + 1));
+//            cAdyacentes.add(this.cuevaMemoria.get(casillaActual.getX()).get(casillaActual.getY() + 1));
+            CasillaAgente c = this.cuevaMemoria.get(casillaActual.getX()).get(casillaActual.getY() + 1);
+            Main.semaforoCueva.release();
+            return c;
         } else {
             if (this.casillaActual.getY() + 1 < this.prog.getCueva().getTamanyo()) {
                 CasillaAgente ce = new CasillaAgente(this.casillaActual.getX(), this.casillaActual.getY() + 1);
-                cAdyacentes.add(ce);
+                Main.semaforoCueva.release();
+//                cAdyacentes.add(ce);
+                return ce;
             }
         }
+        Main.semaforoCueva.release();
+        return null;
+    }
 
+    private CasillaAgente getAdyacenteEste(CasillaAgente a) {
+        try {
+            Main.semaforoCueva.acquire();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Agente.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if (this.cuevaMemoria.get(a.getX()).containsKey(a.getY() + 1)) {
+            CasillaAgente g = new CasillaAgente(0, 0);
+            Cueva cueva = this.prog.getCueva();
+            g.setEstados(cueva.getCasilla(a.getX(), a.getY() + 1).getEstados());
+            if (this.cuevaMemoria.get(a.getX()).get(
+                    a.getY() + 1).getVerificado()) {
+                for (int i = 0; i < g.getEstados().size(); i++) {
+                    if (!this.cuevaMemoria.get(a.getX()).get(
+                            a.getY() + 1).getEstados().contains(g.getEstados().get(i))) {
+                        this.cuevaMemoria.get(a.getX()).get(
+                                a.getY() + 1).setEstados(g.getEstados().get(i));
+                    }
+
+                }
+            }
+            if (!a.getEstados().contains(Estado.HEDOR)
+                    && !a.getEstados().contains(Estado.BRISA)) {
+                this.cuevaMemoria.get(a.getX()).get(
+                        a.getY() + 1).setEstados(Estado.SEGURO);
+
+            }
+            this.cuevaMemoria.get(a.getX()).get(a.getY() + 1).setEstados(Estado.MEMORIZADA);
+//            cAdyacentes.add(this.cuevaMemoria.get(casillaActual.getX()).get(casillaActual.getY() + 1));
+            CasillaAgente c = this.cuevaMemoria.get(a.getX()).get(a.getY() + 1);
+            Main.semaforoCueva.release();
+            return c;
+        } else {
+            if (a.getY() + 1 < this.prog.getCueva().getTamanyo()) {
+                CasillaAgente ce = new CasillaAgente(a.getX(), a.getY() + 1);
+                Main.semaforoCueva.release();
+//                cAdyacentes.add(ce);
+                return ce;
+            }
+        }
+        Main.semaforoCueva.release();
+        return null;
+    }
+
+    private CasillaAgente getAdyacenteOeste() {
+        try {
+            Main.semaforoCueva.acquire();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Agente.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if (this.cuevaMemoria.get(casillaActual.getX()).containsKey(casillaActual.getY() - 1)) {
+            CasillaAgente g = new CasillaAgente(0, 0);
+            Cueva cueva = this.prog.getCueva();
+            g.setEstados(cueva.getCasilla(this.casillaActual.getX(), this.casillaActual.getY() - 1).getEstados());
+            if (this.cuevaMemoria.get(casillaActual.getX()).get(
+                    casillaActual.getY() - 1).getVerificado()) {
+                for (int i = 0; i < g.getEstados().size(); i++) {
+                    if (!this.cuevaMemoria.get(casillaActual.getX()).get(
+                            casillaActual.getY() - 1).getEstados().contains(g.getEstados().get(i))) {
+                        this.cuevaMemoria.get(casillaActual.getX()).get(
+                                casillaActual.getY() - 1).setEstados(g.getEstados().get(i));
+                    }
+
+                }
+            }
+            if (!casillaActual.getEstados().contains(Estado.HEDOR)
+                    && !this.casillaActual.getEstados().contains(Estado.BRISA)) {
+                this.cuevaMemoria.get(casillaActual.getX()).get(
+                        casillaActual.getY() - 1).setEstados(Estado.SEGURO);
+
+            }
+            this.cuevaMemoria.get(casillaActual.getX()).get(casillaActual.getY() - 1).setEstados(Estado.MEMORIZADA);
+//            cAdyacentes.add(this.cuevaMemoria.get(casillaActual.getX()).get(casillaActual.getY() - 1));
+            CasillaAgente c = this.cuevaMemoria.get(casillaActual.getX()).get(casillaActual.getY() - 1);
+            Main.semaforoCueva.release();
+            return c;
+        } else {
+            if (this.casillaActual.getY() - 1 >= 0) {
+                CasillaAgente cw = new CasillaAgente(this.casillaActual.getX(), this.casillaActual.getY() - 1);
+                Main.semaforoCueva.release();
+//                cAdyacentes.add(cw);
+                return cw;
+
+            }
+        }
+        Main.semaforoCueva.release();
+        return null;
+    }
+
+    private CasillaAgente getAdyacenteOeste(CasillaAgente a) {
+        try {
+            Main.semaforoCueva.acquire();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Agente.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if (this.cuevaMemoria.get(a.getX()).containsKey(a.getY() - 1)) {
+            CasillaAgente g = new CasillaAgente(0, 0);
+            Cueva cueva = this.prog.getCueva();
+            g.setEstados(cueva.getCasilla(a.getX(), a.getY() - 1).getEstados());
+            if (this.cuevaMemoria.get(a.getX()).get(
+                    a.getY() - 1).getVerificado()) {
+                for (int i = 0; i < g.getEstados().size(); i++) {
+                    if (!this.cuevaMemoria.get(a.getX()).get(
+                            a.getY() - 1).getEstados().contains(g.getEstados().get(i))) {
+                        this.cuevaMemoria.get(a.getX()).get(
+                                a.getY() - 1).setEstados(g.getEstados().get(i));
+                    }
+
+                }
+            }
+            if (!a.getEstados().contains(Estado.HEDOR)
+                    && !a.getEstados().contains(Estado.BRISA)) {
+                this.cuevaMemoria.get(a.getX()).get(
+                        a.getY() - 1).setEstados(Estado.SEGURO);
+
+            }
+            this.cuevaMemoria.get(a.getX()).get(a.getY() - 1).setEstados(Estado.MEMORIZADA);
+//            cAdyacentes.add(this.cuevaMemoria.get(casillaActual.getX()).get(casillaActual.getY() - 1));
+            CasillaAgente c = this.cuevaMemoria.get(a.getX()).get(a.getY() - 1);
+            Main.semaforoCueva.release();
+            return c;
+        } else {
+            if (a.getY() - 1 >= 0) {
+                CasillaAgente cw = new CasillaAgente(a.getX(), a.getY() - 1);
+                Main.semaforoCueva.release();
+//                cAdyacentes.add(cw);
+                return cw;
+            }
+        }
+        Main.semaforoCueva.release();
+        return null;
+    }
+
+    private CasillaAgente getAdyacenteNorte() {
+        try {
+            Main.semaforoCueva.acquire();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Agente.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if (this.cuevaMemoria.containsKey(casillaActual.getX() - 1)) {
+            if (this.cuevaMemoria.get(casillaActual.getX() - 1).containsKey(casillaActual.getY())) {
+                CasillaAgente g = new CasillaAgente(0, 0);
+                Cueva cueva = this.prog.getCueva();
+                g.setEstados(cueva.getCasilla(this.casillaActual.getX() - 1, this.casillaActual.getY()).getEstados());
+                if (this.cuevaMemoria.get(casillaActual.getX() - 1).get(
+                        casillaActual.getY()).getVerificado()) {
+                    for (int i = 0; i < g.getEstados().size(); i++) {
+                        if (!this.cuevaMemoria.get(casillaActual.getX() - 1).get(
+                                casillaActual.getY()).getEstados().contains(g.getEstados().get(i))) {
+                            this.cuevaMemoria.get(casillaActual.getX() - 1).get(
+                                    casillaActual.getY()).setEstados(g.getEstados().get(i));
+                        }
+
+                    }
+                }
+                if (!casillaActual.getEstados().contains(Estado.HEDOR)
+                        && !this.casillaActual.getEstados().contains(Estado.BRISA)) {
+                    this.cuevaMemoria.get(casillaActual.getX() - 1).get(
+                            casillaActual.getY()).setEstados(Estado.SEGURO);
+
+                }
+                this.cuevaMemoria.get(casillaActual.getX() - 1).get(casillaActual.getY()).setEstados(Estado.MEMORIZADA);
+//                cAdyacentes.add(this.cuevaMemoria.get(casillaActual.getX() - 1).get(casillaActual.getY()));
+                CasillaAgente c = this.cuevaMemoria.get(casillaActual.getX() - 1).get(casillaActual.getY());
+                Main.semaforoCueva.release();
+                return c;
+            } else {
+                if (this.casillaActual.getX() - 1 >= 0) {
+                    CasillaAgente cn = new CasillaAgente(this.casillaActual.getX() - 1, this.casillaActual.getY());
+                    Main.semaforoCueva.release();
+//                    cAdyacentes.add(cn);
+                    return cn;
+                }
+            }
+        } else {
+            if (this.casillaActual.getX() - 1 >= 0) {
+                CasillaAgente cn = new CasillaAgente(this.casillaActual.getX() - 1, this.casillaActual.getY());
+                Main.semaforoCueva.release();
+//                cAdyacentes.add(cn);
+                return cn;
+            }
+        }
+        Main.semaforoCueva.release();
+        return null;
+    }
+
+    private CasillaAgente getAdyacenteNorte(CasillaAgente a) {
+        try {
+            Main.semaforoCueva.acquire();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Agente.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        if (this.cuevaMemoria.containsKey(a.getX() - 1)) {
+            if (this.cuevaMemoria.get(a.getX() - 1).containsKey(a.getY())) {
+                CasillaAgente g = new CasillaAgente(0, 0);
+                Cueva cueva = this.prog.getCueva();
+                g.setEstados(cueva.getCasilla(a.getX() - 1, a.getY()).getEstados());
+                if (this.cuevaMemoria.get(a.getX() - 1).get(
+                        a.getY()).getVerificado()) {
+                    for (int i = 0; i < g.getEstados().size(); i++) {
+                        if (!this.cuevaMemoria.get(a.getX() - 1).get(
+                                a.getY()).getEstados().contains(g.getEstados().get(i))) {
+                            this.cuevaMemoria.get(a.getX() - 1).get(
+                                    a.getY()).setEstados(g.getEstados().get(i));
+                        }
+
+                    }
+                }
+                if (!a.getEstados().contains(Estado.HEDOR)
+                        && !a.getEstados().contains(Estado.BRISA)) {
+                    this.cuevaMemoria.get(a.getX() - 1).get(
+                            a.getY()).setEstados(Estado.SEGURO);
+
+                }
+                this.cuevaMemoria.get(a.getX() - 1).get(a.getY()).setEstados(Estado.MEMORIZADA);
+//                cAdyacentes.add(this.cuevaMemoria.get(casillaActual.getX() - 1).get(casillaActual.getY()));
+                CasillaAgente c = this.cuevaMemoria.get(a.getX() - 1).get(a.getY());
+                Main.semaforoCueva.release();
+                return c;
+            } else {
+                if (a.getX() - 1 >= 0) {
+                    CasillaAgente cn = new CasillaAgente(a.getX() - 1, a.getY());
+                    Main.semaforoCueva.release();
+//                    cAdyacentes.add(cn);
+                    return cn;
+                }
+            }
+        } else {
+            if (a.getX() - 1 >= 0) {
+                CasillaAgente cn = new CasillaAgente(a.getX() - 1, a.getY());
+                Main.semaforoCueva.release();
+//                cAdyacentes.add(cn);
+                return cn;
+            }
+        }
+        Main.semaforoCueva.release();
+        return null;
+    }
+
+    private CasillaAgente getAdyacenteSur() {
+        try {
+            Main.semaforoCueva.acquire();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Agente.class.getName()).log(Level.SEVERE, null, ex);
+        }
         if (this.cuevaMemoria.containsKey(casillaActual.getX() + 1)) {
             if (this.cuevaMemoria.get(casillaActual.getX() + 1).containsKey(casillaActual.getY())) {
+                CasillaAgente g = new CasillaAgente(0, 0);
+                Cueva cueva = this.prog.getCueva();
+                g.setEstados(cueva.getCasilla(this.casillaActual.getX() + 1, this.casillaActual.getY()).getEstados());
+                if (this.cuevaMemoria.get(casillaActual.getX() + 1).get(
+                        casillaActual.getY()).getVerificado()) {
+                    for (int i = 0; i < g.getEstados().size(); i++) {
+                        if (!this.cuevaMemoria.get(casillaActual.getX() + 1).get(
+                                casillaActual.getY()).getEstados().contains(g.getEstados().get(i))) {
+                            this.cuevaMemoria.get(casillaActual.getX() + 1).get(
+                                    casillaActual.getY()).setEstados(g.getEstados().get(i));
+                        }
+
+                    }
+                }
+                if (!casillaActual.getEstados().contains(Estado.HEDOR)
+                        && !this.casillaActual.getEstados().contains(Estado.BRISA)) {
+                    this.cuevaMemoria.get(casillaActual.getX() + 1).get(
+                            casillaActual.getY()).setEstados(Estado.SEGURO);
+
+                }
                 this.cuevaMemoria.get(casillaActual.getX() + 1).get(casillaActual.getY()).setEstados(Estado.MEMORIZADA);
-                cAdyacentes.add(this.cuevaMemoria.get(casillaActual.getX() + 1).get(casillaActual.getY()));
+                CasillaAgente c = this.cuevaMemoria.get(casillaActual.getX() + 1).get(casillaActual.getY());
+                Main.semaforoCueva.release();
+                return c;
+
+//                cAdyacentes.add(this.cuevaMemoria.get(casillaActual.getX() + 1).get(casillaActual.getY()));
             } else {
                 if (this.casillaActual.getX() + 1 < this.prog.getCueva().getTamanyo()) {
                     CasillaAgente cs = new CasillaAgente(this.casillaActual.getX() + 1, this.casillaActual.getY());
-                    cAdyacentes.add(cs);
+                    Main.semaforoCueva.release();
+//                    cAdyacentes.add(cs);
+                    return cs;
                 }
             }
         } else {
             if (this.casillaActual.getX() + 1 < this.prog.getCueva().getTamanyo()) {
 
                 CasillaAgente cs = new CasillaAgente(this.casillaActual.getX() + 1, this.casillaActual.getY());
-                cAdyacentes.add(cs);
+//                cAdyacentes.add(cs);
+                Main.semaforoCueva.release();
+                return cs;
             }
         }
-
-        if (this.cuevaMemoria.get(casillaActual.getX()).containsKey(casillaActual.getY() - 1)) {
-            this.cuevaMemoria.get(casillaActual.getX()).get(casillaActual.getY() - 1).setEstados(Estado.MEMORIZADA);
-            cAdyacentes.add(this.cuevaMemoria.get(casillaActual.getX()).get(casillaActual.getY() - 1));
-        } else {
-            if (this.casillaActual.getY() - 1 >= 0) {
-                CasillaAgente cw = new CasillaAgente(this.casillaActual.getX(), this.casillaActual.getY() - 1);
-                cAdyacentes.add(cw);
-            }
-        }
-
-        if (this.cuevaMemoria.containsKey(casillaActual.getX() - 1)) {
-            if (this.cuevaMemoria.get(casillaActual.getX() - 1).containsKey(casillaActual.getY())) {
-                this.cuevaMemoria.get(casillaActual.getX() - 1).get(casillaActual.getY()).setEstados(Estado.MEMORIZADA);
-                cAdyacentes.add(this.cuevaMemoria.get(casillaActual.getX() - 1).get(casillaActual.getY()));
-            } else {
-                if (this.casillaActual.getX() - 1 >= 0) {
-                    CasillaAgente cn = new CasillaAgente(this.casillaActual.getX() - 1, this.casillaActual.getY());
-                    cAdyacentes.add(cn);
-                }
-            }
-        } else {
-            if (this.casillaActual.getX() - 1 >= 0) {
-                CasillaAgente cn = new CasillaAgente(this.casillaActual.getX() - 1, this.casillaActual.getY());
-                cAdyacentes.add(cn);
-            }
-        }
-
-        return cAdyacentes;
+        Main.semaforoCueva.release();
+        return null;
     }
 
-    private ArrayList<CasillaAgente> getAdyacentes(CasillaAgente a) {
-        ArrayList<CasillaAgente> cAdyacentes = new ArrayList<>();
-        if (this.cuevaMemoria.get(a.getX()).containsKey(a.getY() + 1)) {
-            this.cuevaMemoria.get(a.getX()).get(a.getY() + 1).setEstados(Estado.MEMORIZADA);
-            cAdyacentes.add(this.cuevaMemoria.get(a.getX()).get(a.getY() + 1));
-        } else {
-            if (a.getY() + 1 < this.prog.getCueva().getTamanyo()) {
-                CasillaAgente ce = new CasillaAgente(a.getX(), a.getY() + 1);
-                cAdyacentes.add(ce);
-            }
+    private CasillaAgente getAdyacenteSur(CasillaAgente a) {
+        try {
+            Main.semaforoCueva.acquire();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Agente.class.getName()).log(Level.SEVERE, null, ex);
         }
-
         if (this.cuevaMemoria.containsKey(a.getX() + 1)) {
             if (this.cuevaMemoria.get(a.getX() + 1).containsKey(a.getY())) {
+                CasillaAgente g = new CasillaAgente(0, 0);
+                Cueva cueva = this.prog.getCueva();
+                g.setEstados(cueva.getCasilla(a.getX() + 1, a.getY()).getEstados());
+                if (this.cuevaMemoria.get(a.getX() + 1).get(
+                        a.getY()).getVerificado()) {
+                    for (int i = 0; i < g.getEstados().size(); i++) {
+                        if (!this.cuevaMemoria.get(a.getX() + 1).get(
+                                a.getY()).getEstados().contains(g.getEstados().get(i))) {
+                            this.cuevaMemoria.get(a.getX() + 1).get(
+                                    a.getY()).setEstados(g.getEstados().get(i));
+                        }
+
+                    }
+                }
+                if (!a.getEstados().contains(Estado.HEDOR)
+                        && !a.getEstados().contains(Estado.BRISA)) {
+                    this.cuevaMemoria.get(a.getX() + 1).get(
+                            a.getY()).setEstados(Estado.SEGURO);
+
+                }
                 this.cuevaMemoria.get(a.getX() + 1).get(a.getY()).setEstados(Estado.MEMORIZADA);
-                cAdyacentes.add(this.cuevaMemoria.get(a.getX() + 1).get(a.getY()));
+                CasillaAgente c = this.cuevaMemoria.get(a.getX() + 1).get(a.getY());
+                Main.semaforoCueva.release();
+                return c;
+
+//                cAdyacentes.add(this.cuevaMemoria.get(casillaActual.getX() + 1).get(casillaActual.getY()));
             } else {
                 if (a.getX() + 1 < this.prog.getCueva().getTamanyo()) {
                     CasillaAgente cs = new CasillaAgente(a.getX() + 1, a.getY());
-                    cAdyacentes.add(cs);
+                    Main.semaforoCueva.release();
+//                    cAdyacentes.add(cs);
+                    return cs;
                 }
             }
         } else {
             if (a.getX() + 1 < this.prog.getCueva().getTamanyo()) {
 
                 CasillaAgente cs = new CasillaAgente(a.getX() + 1, a.getY());
-                cAdyacentes.add(cs);
+//                cAdyacentes.add(cs);
+                Main.semaforoCueva.release();
+                return cs;
             }
         }
+        Main.semaforoCueva.release();
+        return null;
+    }
 
-        if (this.cuevaMemoria.get(a.getX()).containsKey(a.getY() - 1)) {
-            this.cuevaMemoria.get(a.getX()).get(a.getY() - 1).setEstados(Estado.MEMORIZADA);
-            cAdyacentes.add(this.cuevaMemoria.get(a.getX()).get(a.getY() - 1));
-        } else {
-            if (a.getY() - 1 >= 0) {
-                CasillaAgente cw = new CasillaAgente(a.getX(), a.getY() - 1);
-                cAdyacentes.add(cw);
-            }
-        }
-
-        if (this.cuevaMemoria.containsKey(a.getX() - 1)) {
-            if (this.cuevaMemoria.get(a.getX() - 1).containsKey(a.getY())) {
-                this.cuevaMemoria.get(a.getX() - 1).get(a.getY()).setEstados(Estado.MEMORIZADA);
-                cAdyacentes.add(this.cuevaMemoria.get(a.getX() - 1).get(a.getY()));
-            } else {
-                if (a.getX() - 1 >= 0) {
-                    CasillaAgente cn = new CasillaAgente(a.getX() - 1, a.getY());
-                    cAdyacentes.add(cn);
+    private ArrayList<CasillaAgente> getAdyacentes(int orientacion) {
+        ArrayList<CasillaAgente> cAdyacentes = new ArrayList<>();
+        CasillaAgente c;
+        switch (orientacion) {
+            case 0:
+                c = this.getAdyacenteEste();
+                if (c != null) {
+                    cAdyacentes.add(c);
                 }
-            }
-        } else {
-            if (this.casillaActual.getX() - 1 >= 0) {
-                CasillaAgente cn = new CasillaAgente(this.casillaActual.getX() - 1, this.casillaActual.getY());
-                cAdyacentes.add(cn);
-            }
+                c = this.getAdyacenteSur();
+                if (c != null) {
+                    cAdyacentes.add(c);
+                }
+                c = this.getAdyacenteOeste();
+                if (c != null) {
+                    cAdyacentes.add(c);
+                }
+                c = getAdyacenteNorte();
+                if (c != null) {
+                    cAdyacentes.add(c);
+                }
+
+                break;
+            case 1:
+                c = this.getAdyacenteOeste();
+                if (c != null) {
+                    cAdyacentes.add(c);
+                }
+                c = getAdyacenteNorte();
+                if (c != null) {
+                    cAdyacentes.add(c);
+                }
+                c = this.getAdyacenteEste();
+                if (c != null) {
+                    cAdyacentes.add(c);
+                }
+                c = this.getAdyacenteSur();
+                if (c != null) {
+                    cAdyacentes.add(c);
+                }
+
+                break;
+            case 2:
+                c = getAdyacenteNorte();
+                if (c != null) {
+                    cAdyacentes.add(c);
+                }
+                c = this.getAdyacenteEste();
+                if (c != null) {
+                    cAdyacentes.add(c);
+                }
+                c = this.getAdyacenteSur();
+                if (c != null) {
+                    cAdyacentes.add(c);
+                }
+                c = this.getAdyacenteOeste();
+                if (c != null) {
+                    cAdyacentes.add(c);
+                }
+
+                break;
+            case 3:
+                c = this.getAdyacenteSur();
+                if (c != null) {
+                    cAdyacentes.add(c);
+                }
+                c = this.getAdyacenteOeste();
+                if (c != null) {
+                    cAdyacentes.add(c);
+                }
+                c = getAdyacenteNorte();
+                if (c != null) {
+                    cAdyacentes.add(c);
+                }
+                c = this.getAdyacenteEste();
+                if (c != null) {
+                    cAdyacentes.add(c);
+                }
+
+                break;
+        }
+
+        return cAdyacentes;
+    }
+
+    private ArrayList<CasillaAgente> getAdyacentes(CasillaAgente a, int orientacion) {
+        ArrayList<CasillaAgente> cAdyacentes = new ArrayList<>();
+        CasillaAgente c;
+        switch (orientacion) {
+            case 0:
+                c = this.getAdyacenteEste(a);
+                if (c != null) {
+                    cAdyacentes.add(c);
+                }
+                c = this.getAdyacenteSur(a);
+                if (c != null) {
+                    cAdyacentes.add(c);
+                }
+                c = this.getAdyacenteOeste(a);
+                if (c != null) {
+                    cAdyacentes.add(c);
+                }
+                c = getAdyacenteNorte(a);
+                if (c != null) {
+                    cAdyacentes.add(c);
+                }
+
+                break;
+            case 1:
+                c = this.getAdyacenteOeste(a);
+                if (c != null) {
+                    cAdyacentes.add(c);
+                }
+                c = getAdyacenteNorte(a);
+                if (c != null) {
+                    cAdyacentes.add(c);
+                }
+                c = this.getAdyacenteEste(a);
+                if (c != null) {
+                    cAdyacentes.add(c);
+                }
+                c = this.getAdyacenteSur(a);
+                if (c != null) {
+                    cAdyacentes.add(c);
+                }
+
+                break;
+            case 2:
+                c = getAdyacenteNorte(a);
+                if (c != null) {
+                    cAdyacentes.add(c);
+                }
+                c = this.getAdyacenteEste(a);
+                if (c != null) {
+                    cAdyacentes.add(c);
+                }
+                c = this.getAdyacenteSur(a);
+                if (c != null) {
+                    cAdyacentes.add(c);
+                }
+                c = this.getAdyacenteOeste(a);
+                if (c != null) {
+                    cAdyacentes.add(c);
+                }
+
+                break;
+            case 3:
+                c = this.getAdyacenteSur(a);
+                if (c != null) {
+                    cAdyacentes.add(c);
+                }
+                c = this.getAdyacenteOeste(a);
+                if (c != null) {
+                    cAdyacentes.add(c);
+                }
+                c = getAdyacenteNorte(a);
+                if (c != null) {
+                    cAdyacentes.add(c);
+                }
+                c = this.getAdyacenteEste(a);
+                if (c != null) {
+                    cAdyacentes.add(c);
+                }
+
+                break;
         }
 
         return cAdyacentes;
@@ -517,12 +946,13 @@ public class Agente {
 
     public void volver() {
         CasillaAgente cAnterior = this.historial.pop();
-        this.prog.getVista().moverCharmander(this.getDireccion(cAnterior.getX(), cAnterior.getY()));
+        this.apariencia.moverCharmander(this.getDireccion(cAnterior.getX(), cAnterior.getY()));
         this.casillaActual = cAnterior;
     }
 
     public boolean isSalida() {
-        return this.casillaActual.getX() == 0 && this.casillaActual.getY() == 0;
+        return this.casillaActual.getX() == this.prog.getVista().getDimension() - 1
+                && this.casillaActual.getY() == 0;
     }
 
     public void setCharmander(Charmander m) {
@@ -563,6 +993,25 @@ public class Agente {
             }
         }
         return c;
+    }
+
+    public int getFlechas() {
+        return flechas;
+    }
+
+    public void setFlechas(int flechas) {
+        this.flechas = flechas;
+    }
+
+    private void lanzarFlecha() {
+        if (this.flechas > 0) {
+            Random r = new Random();
+            ArrayList<CasillaAgente> cAdyacentes = this.getAdyacentes(this.orientacion);
+//            int decision = r.nextInt(cAdyacentes.size());
+            this.prog.getVista().lanzarFlecha(id, 0);
+            this.flechas--;
+        }
+
     }
 
 }

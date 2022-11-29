@@ -41,7 +41,7 @@ public class Cueva {
                 return 12;
 
             case GRANDE:
-                return 16;
+                return 17;
         }
         return 0;
     }

@@ -10,11 +10,13 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 /**
  *
@@ -22,6 +24,7 @@ import javax.swing.JLabel;
  */
 public class View extends javax.swing.JFrame implements MouseListener {
 
+    private boolean monstruoMuerto;
     private int dimension;
     private boolean manual;
     private Agente a;
@@ -31,12 +34,15 @@ public class View extends javax.swing.JFrame implements MouseListener {
     private boolean selFoso;
     private boolean selCamino;
     private boolean iniciar;
-    private Charmander charmander;
+    private int dormir;
+    private int numMonstruos;
+    private ArrayList<Charmander> charmander;
     private ImageIcon monstruoImg = new ImageIcon("src/img/gyarados.png");
     private ImageIcon charm = new ImageIcon("src/img/charmander.png");
     private ImageIcon verde = new ImageIcon("src/img/foso.png");
     private ImageIcon tesoroimg = new ImageIcon("src/img/tesoro.png");
     private ImageIcon camino = new ImageIcon("src/img/piedra.png");
+    private int numberAgentes;
 
     private ImageIcon charmanderEste = new ImageIcon("src/img/charmanderEste.png");
     private ImageIcon charmanderEstePaso = new ImageIcon("src/img/charmanderEstePaso.png");
@@ -60,14 +66,17 @@ public class View extends javax.swing.JFrame implements MouseListener {
         this.selTesoro = false;
         this.prog = p;
         this.iniciar = false;
+        numberAgentes = 1;
+        monstruoMuerto = false;
 //        teclado= new EventosTeclado();
-
+        dormir = 700;
         this.dimension = tamanyo(dim);
         mapa = new CasillaGrafica[dimension][dimension];
-
+        numMonstruos = 0;
         initComponents();
-        charmander = new Charmander((this.principal.getWidth() / dimension));
+        charmander = new ArrayList();
 
+//        charmander = new Charmander((this.principal.getWidth() / dimension));
     }
 
     public int tamanyo(Tamanyo t) {
@@ -99,10 +108,10 @@ public class View extends javax.swing.JFrame implements MouseListener {
         this.jLabel1.setIcon(icono4);
 
         this.pintarMapa();
-        this.mapa[0][0].add(this.charmander);
-        this.charmander.setPosX(0);
-        this.charmander.setPosY(0);
-        this.charmander.iniciarCharmander();
+//        this.mapa[0][0].add(this.charmander);
+//        this.charmander.setPosX(0);
+//        this.charmander.setPosY(0);
+//        this.charmander.iniciarCharmander();
 
         this.setResizable(false);
         setFocusable(true);
@@ -122,83 +131,82 @@ public class View extends javax.swing.JFrame implements MouseListener {
     }
 
     public void moverCharmander(Direccion dir) {
-        int y, x;
-        int next;
-        boolean llegado;
-
-        y = charmander.getY();
-        x = charmander.getX();
-
-        llegado = false;
-
-        switch (dir) {
-            case NORTE:
-
-                if (charmander.getDireccion() != Direccion.NORTE) {
-                    charmander.setDireccion(Direccion.NORTE);
-
-                    charmander.setIcon(icono = new ImageIcon(charmanderNorte.getImage().getScaledInstance(charmander.getWidth(), charmander.getHeight(), Image.SCALE_DEFAULT)));
-
-                }
-//                if (charmander.getPosY() > 0) {
-                mapa[charmander.getPosY() - 1][charmander.getPosX()].add(charmander);
-                this.charmander.setPosY(charmander.getPosY() - 1);
-//                }else{
-//                    this.prog.getAgente().getCasillaActual().setEstados(Estado.GOLPENORTE);
+//        int y, x;
+//        int next;
+//        boolean llegado;
+//
+//        y = charmander.getY();
+//        x = charmander.getX();
+//
+//        llegado = false;
+//
+//        switch (dir) {
+//            case NORTE:
+//
+//                if (charmander.getDireccion() != Direccion.NORTE) {
+//                    charmander.setDireccion(Direccion.NORTE);
+//
+//                    charmander.setIcon(icono = new ImageIcon(charmanderNorte.getImage().getScaledInstance(charmander.getWidth(), charmander.getHeight(), Image.SCALE_DEFAULT)));
+//
 //                }
-
-                break;
-            case SUR:
-
-                if (charmander.getDireccion() != Direccion.SUR) {
-                    charmander.setDireccion(Direccion.SUR);
-                    charmander.setIcon(icono = new ImageIcon(charmanderSur.getImage().getScaledInstance(charmander.getWidth(), charmander.getHeight(), Image.SCALE_DEFAULT)));
-
-                }
-
-//                if (charmander.getPosY() < mapa.length - 1) {
-                mapa[charmander.getPosY() + 1][charmander.getPosX()].add(charmander);
-                this.charmander.setPosY(charmander.getPosY() + 1);
-//                }else{
-//                    this.prog.getAgente().getCasillaActual().setEstados(Estado.GOLPESUR);
+////                if (charmander.getPosY() > 0) {
+//                mapa[charmander.getPosY() - 1][charmander.getPosX()].add(charmander);
+//                this.charmander.setPosY(charmander.getPosY() - 1);
+////                }else{
+////                    this.prog.getAgente().getCasillaActual().setEstados(Estado.GOLPENORTE);
+////                }
+//
+//                break;
+//            case SUR:
+//
+//                if (charmander.getDireccion() != Direccion.SUR) {
+//                    charmander.setDireccion(Direccion.SUR);
+//                    charmander.setIcon(icono = new ImageIcon(charmanderSur.getImage().getScaledInstance(charmander.getWidth(), charmander.getHeight(), Image.SCALE_DEFAULT)));
+//
 //                }
-
-//                charmander.setIcon(icono = new ImageIcon(charmanderSur.getImage().getScaledInstance(charmander.getWidth(), charmander.getHeight(), Image.SCALE_DEFAULT)));
-                break;
-            case ESTE:
-
-                if (charmander.getDireccion() != Direccion.ESTE) {
-                    charmander.setDireccion(Direccion.ESTE);
-                    charmander.setIcon(icono = new ImageIcon(charmanderEste.getImage().getScaledInstance(charmander.getWidth(), charmander.getHeight(), Image.SCALE_DEFAULT)));
-
-                }
-//                if (charmander.getPosX() < mapa.length - 1) {
-                mapa[charmander.getPosY()][charmander.getPosX() + 1].add(charmander);
-                this.charmander.setPosX(charmander.getPosX() + 1);
-//                }else{
-//                    this.prog.getAgente().getCasillaActual().setEstados(Estado.GOLPEESTE);
+//
+////                if (charmander.getPosY() < mapa.length - 1) {
+//                mapa[charmander.getPosY() + 1][charmander.getPosX()].add(charmander);
+//                this.charmander.setPosY(charmander.getPosY() + 1);
+////                }else{
+////                    this.prog.getAgente().getCasillaActual().setEstados(Estado.GOLPESUR);
+////                }
+//
+////                charmander.setIcon(icono = new ImageIcon(charmanderSur.getImage().getScaledInstance(charmander.getWidth(), charmander.getHeight(), Image.SCALE_DEFAULT)));
+//                break;
+//            case ESTE:
+//
+//                if (charmander.getDireccion() != Direccion.ESTE) {
+//                    charmander.setDireccion(Direccion.ESTE);
+//                    charmander.setIcon(icono = new ImageIcon(charmanderEste.getImage().getScaledInstance(charmander.getWidth(), charmander.getHeight(), Image.SCALE_DEFAULT)));
+//
 //                }
-
-                break;
-            case OESTE:
-
-                if (charmander.getDireccion() != Direccion.OESTE) {
-                    charmander.setDireccion(Direccion.OESTE);
-                    charmander.setIcon(icono = new ImageIcon(charmanderOeste.getImage().getScaledInstance(charmander.getWidth(), charmander.getHeight(), Image.SCALE_DEFAULT)));
-
-                }
-//                if (charmander.getPosX() > 0) {
-                mapa[charmander.getPosY()][charmander.getPosX() - 1].add(charmander);
-                this.charmander.setPosX(charmander.getPosX() - 1);
-//                }else{
-//                    this.prog.getAgente().getCasillaActual().setEstados(Estado.GOLPEOESTE);
+////                if (charmander.getPosX() < mapa.length - 1) {
+//                mapa[charmander.getPosY()][charmander.getPosX() + 1].add(charmander);
+//                this.charmander.setPosX(charmander.getPosX() + 1);
+////                }else{
+////                    this.prog.getAgente().getCasillaActual().setEstados(Estado.GOLPEESTE);
+////                }
+//
+//                break;
+//            case OESTE:
+//
+//                if (charmander.getDireccion() != Direccion.OESTE) {
+//                    charmander.setDireccion(Direccion.OESTE);
+//                    charmander.setIcon(icono = new ImageIcon(charmanderOeste.getImage().getScaledInstance(charmander.getWidth(), charmander.getHeight(), Image.SCALE_DEFAULT)));
+//
 //                }
+////                if (charmander.getPosX() > 0) {
+//                mapa[charmander.getPosY()][charmander.getPosX() - 1].add(charmander);
+//                this.charmander.setPosX(charmander.getPosX() - 1);
+////                }else{
+////                    this.prog.getAgente().getCasillaActual().setEstados(Estado.GOLPEOESTE);
+////                }
+//
+//                break;
 
-                break;
-
-        }
-        this.repaint();
-
+//        }
+//        this.repaint();
     }
 
     /**
@@ -216,7 +224,6 @@ public class View extends javax.swing.JFrame implements MouseListener {
         opciones = new javax.swing.JPanel();
         monstruo = new javax.swing.JLabel();
         tesoroo = new javax.swing.JLabel();
-        fosoo = new javax.swing.JLabel();
         init = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         monster = new javax.swing.JButton();
@@ -228,6 +235,9 @@ public class View extends javax.swing.JFrame implements MouseListener {
         velocidades = new javax.swing.JComboBox<>();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        numAGentes = new javax.swing.JSpinner();
+        jButton2 = new javax.swing.JButton();
         principal = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -254,8 +264,6 @@ public class View extends javax.swing.JFrame implements MouseListener {
         monstruo.setText("jLabel1");
 
         tesoroo.setText("jLabel2");
-
-        fosoo.setText("jLabel3");
 
         init.setText("Iniciar");
         init.addActionListener(new java.awt.event.ActionListener() {
@@ -316,95 +324,114 @@ public class View extends javax.swing.JFrame implements MouseListener {
         jLabel4.setForeground(new java.awt.Color(245, 245, 245));
         jLabel4.setText("Velocidad Agente:");
 
+        jLabel5.setForeground(new java.awt.Color(245, 245, 245));
+        jLabel5.setText("Numero de agentes: ");
+
+        numAGentes.setValue(1);
+        numAGentes.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                numAGentesStateChanged(evt);
+            }
+        });
+
+        jButton2.setText("Reinciar");
+        jButton2.setPreferredSize(new java.awt.Dimension(70, 23));
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout opcionesLayout = new javax.swing.GroupLayout(opciones);
         opciones.setLayout(opcionesLayout);
         opcionesLayout.setHorizontalGroup(
             opcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, opcionesLayout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addGroup(opcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(opcionesLayout.createSequentialGroup()
+                        .addGroup(opcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(foso, javax.swing.GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)
+                            .addGroup(opcionesLayout.createSequentialGroup()
+                                .addGroup(opcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(opcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                        .addComponent(jButton1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(monster, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 93, Short.MAX_VALUE)
+                                        .addComponent(monstruo, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(tesoro, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(0, 0, Short.MAX_VALUE)))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(opcionesLayout.createSequentialGroup()
+                        .addGroup(opcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(opcionesLayout.createSequentialGroup()
+                                .addGap(8, 8, 8)
+                                .addComponent(tesoroo, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(opcionesLayout.createSequentialGroup()
+                                .addGap(11, 11, 11)
+                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
             .addGroup(opcionesLayout.createSequentialGroup()
                 .addGroup(opcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, opcionesLayout.createSequentialGroup()
-                        .addGroup(opcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, opcionesLayout.createSequentialGroup()
-                                .addGap(19, 19, 19)
-                                .addGroup(opcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(monster, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                                    .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addGap(117, 117, 117))
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, opcionesLayout.createSequentialGroup()
-                                .addGap(34, 34, 34)
-                                .addComponent(tesoroo, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, opcionesLayout.createSequentialGroup()
-                                .addGap(20, 20, 20)
-                                .addGroup(opcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(tesoro, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, opcionesLayout.createSequentialGroup()
-                                        .addGap(0, 0, Short.MAX_VALUE)
-                                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(9, 9, 9))
-                                    .addComponent(foso, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addGap(125, 125, 125))
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, opcionesLayout.createSequentialGroup()
-                                .addGap(30, 30, 30)
-                                .addGroup(opcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(opcionesLayout.createSequentialGroup()
-                                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                    .addGroup(opcionesLayout.createSequentialGroup()
-                                        .addGroup(opcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                            .addComponent(velocidades, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(mapas, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(init, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 95, Short.MAX_VALUE))
-                                        .addGap(0, 0, Short.MAX_VALUE)))))
-                        .addComponent(fosoo, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(opcionesLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(opcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel4)
+                            .addGroup(opcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(numAGentes, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel5))))
+                    .addGroup(opcionesLayout.createSequentialGroup()
+                        .addGap(29, 29, 29)
+                        .addComponent(velocidades, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(opcionesLayout.createSequentialGroup()
+                        .addGap(30, 30, 30)
+                        .addComponent(mapas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(opcionesLayout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(opcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel3)
-                            .addComponent(jLabel4))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
-            .addGroup(opcionesLayout.createSequentialGroup()
-                .addGap(37, 37, 37)
-                .addComponent(monstruo, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(opcionesLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(init, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(39, Short.MAX_VALUE))
         );
         opcionesLayout.setVerticalGroup(
             opcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(opcionesLayout.createSequentialGroup()
-                .addGap(26, 26, 26)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(init)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel3)
-                .addGap(5, 5, 5)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(mapas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(4, 4, 4)
                 .addComponent(jLabel4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(velocidades, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel5)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(numAGentes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(4, 4, 4)
+                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
-                .addComponent(monstruo, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(monster, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGroup(opcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(opcionesLayout.createSequentialGroup()
-                        .addGap(103, 103, 103)
-                        .addComponent(fosoo, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(90, 90, 90))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, opcionesLayout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(tesoroo, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(tesoro)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(foso, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(27, 27, 27))))
+                .addComponent(monstruo, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(monster)
+                .addGap(18, 18, 18)
+                .addComponent(tesoroo, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(tesoro)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(foso)
+                .addGap(67, 67, 67))
         );
 
         getContentPane().add(opciones, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 150, 700));
@@ -480,12 +507,23 @@ public class View extends javax.swing.JFrame implements MouseListener {
                 principal.removeAll();
                 principal.setLayout(new java.awt.GridLayout(dimension, dimension));
                 pintarMapa();
+                int tamanyo = this.prog.getNumAgentes();
+                for (int i = 0; i < tamanyo; i++) {
+                    this.prog.getController().get(0).detener();
+                    this.prog.getAgente().remove(0);
+                    this.prog.getController().remove(0);
+                    numberAgentes--;
+                }
+                for (int i = 0; i < tamanyo; i++) {
+                    numberAgentes++;
+                    this.prog.getAgente().add(new Agente(this.prog, numberAgentes - 1, numberAgentes - 1));
+                    this.prog.getController().add(new Controller(this.prog, numberAgentes - 1));
+                    this.prog.setNumAgentes(numberAgentes);
+                    this.prog.getController().get(this.prog.getController().size() - 1).start();
+                }
+
                 principal.revalidate();
-                charmander = new Charmander((this.principal.getWidth() / dimension));
-                this.mapa[0][0].add(this.charmander);
-                this.charmander.setPosX(0);
-                this.charmander.setPosY(0);
-                this.charmander.iniciarCharmander();
+
                 System.out.println("cambiado");
             }
 
@@ -497,12 +535,24 @@ public class View extends javax.swing.JFrame implements MouseListener {
                 principal.removeAll();
                 principal.setLayout(new java.awt.GridLayout(dimension, dimension));
                 pintarMapa();
+
+                int tamanyo = this.prog.getNumAgentes();
+                for (int i = 0; i < tamanyo; i++) {
+                    this.prog.getController().get(0).detener();
+                    this.prog.getAgente().remove(0);
+                    this.prog.getController().remove(0);
+                    numberAgentes--;
+                }
+                for (int i = 0; i < tamanyo; i++) {
+                    numberAgentes++;
+                    this.prog.getAgente().add(new Agente(this.prog, numberAgentes - 1, numberAgentes - 1));
+                    this.prog.getController().add(new Controller(this.prog, numberAgentes - 1));
+                    this.prog.setNumAgentes(numberAgentes);
+                    this.prog.getController().get(this.prog.getController().size() - 1).start();
+                }
+
                 principal.revalidate();
-                charmander = new Charmander((this.principal.getWidth() / dimension));
-                this.mapa[0][0].add(this.charmander);
-                this.charmander.setPosX(0);
-                this.charmander.setPosY(0);
-                this.charmander.iniciarCharmander();
+
                 System.out.println("cambiado");
             }
         } else {
@@ -513,12 +563,24 @@ public class View extends javax.swing.JFrame implements MouseListener {
                 this.principal.removeAll();
                 principal.setLayout(new java.awt.GridLayout(dimension, dimension));
                 pintarMapa();
+                int tamanyo = this.prog.getNumAgentes();
+
+                for (int i = 0; i < tamanyo; i++) {
+                    this.prog.getController().get(0).detener();
+                    this.prog.getAgente().remove(0);
+                    this.prog.getController().remove(0);
+                    numberAgentes--;
+                }
+                for (int i = 0; i < tamanyo; i++) {
+                    numberAgentes++;
+                    this.prog.getAgente().add(new Agente(this.prog, numberAgentes - 1, numberAgentes - 1));
+                    this.prog.getController().add(new Controller(this.prog, numberAgentes - 1));
+                    this.prog.setNumAgentes(numberAgentes);
+                    this.prog.getController().get(this.prog.getController().size() - 1).start();
+                }
+
                 principal.revalidate();
-                charmander = new Charmander((this.principal.getWidth() / dimension));
-                this.mapa[0][0].add(this.charmander);
-                this.charmander.setPosX(0);
-                this.charmander.setPosY(0);
-                this.charmander.iniciarCharmander();
+
                 System.out.println("cambiado");
             }
         }
@@ -589,6 +651,10 @@ public class View extends javax.swing.JFrame implements MouseListener {
 
                     this.prog.getCueva().setMonstruo(xCasilla, yCasilla);
                     mapa[yCasilla][xCasilla].setMonster(true);
+                    this.numMonstruos++;
+                    for (int i = 0; i < this.prog.getAgente().size(); i++) {
+                        this.prog.getAgente().get(i).setFlechas(this.numMonstruos);
+                    }
 
                     break;
 
@@ -757,22 +823,30 @@ public class View extends javax.swing.JFrame implements MouseListener {
     private void principalKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_principalKeyPressed
         // TODO add your handling code here:
         if (evt.getKeyCode() == evt.VK_SPACE) {
-            try {
-                this.prog.getAgente().razonar();
-            } catch (InterruptedException ex) {
-                Logger.getLogger(View.class.getName()).log(Level.SEVERE, null, ex);
+            if (this.numberAgentes == 1) {
+                try {
+
+                    this.prog.getAgente().get(0).razonar();
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(View.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
+
         }
     }//GEN-LAST:event_principalKeyPressed
 
     private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
         // TODO add your handling code here:
         if (evt.getKeyCode() == evt.VK_SPACE) {
-            try {
-                this.prog.getAgente().razonar();
-            } catch (InterruptedException ex) {
-                Logger.getLogger(View.class.getName()).log(Level.SEVERE, null, ex);
+            if (this.numberAgentes == 1) {
+                try {
+
+                    this.prog.getAgente().get(0).razonar();
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(View.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
+
         }
 
     }//GEN-LAST:event_formKeyPressed
@@ -780,14 +854,75 @@ public class View extends javax.swing.JFrame implements MouseListener {
     private void opcionesKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_opcionesKeyPressed
         // TODO add your handling code here:
         if (evt.getKeyCode() == evt.VK_SPACE) {
-            try {
-                this.prog.getAgente().razonar();
-            } catch (InterruptedException ex) {
-                Logger.getLogger(View.class.getName()).log(Level.SEVERE, null, ex);
+            if (this.numberAgentes == 1) {
+                try {
+
+                    this.prog.getAgente().get(0).razonar();
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(View.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
+
         }
 
     }//GEN-LAST:event_opcionesKeyPressed
+
+    private void numAGentesStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_numAGentesStateChanged
+        // TODO add your handling code here:
+        if ((int) this.numAGentes.getValue() > numberAgentes) {
+            numberAgentes++;
+            this.prog.getAgente().add(new Agente(this.prog, numberAgentes - 1, numberAgentes - 1));
+            this.prog.getController().add(new Controller(this.prog, numberAgentes - 1));
+            this.prog.setNumAgentes(numberAgentes);
+            this.prog.getController().get(this.prog.getController().size() - 1).start();
+        } else {
+            numberAgentes--;
+            this.prog.getController().remove(0);
+            this.prog.getAgente().remove(0);
+            this.prog.setNumAgentes(numberAgentes);
+        }
+
+
+    }//GEN-LAST:event_numAGentesStateChanged
+
+    public Tamanyo getTam(int n) {
+        switch (n) {
+            case 8:
+                return Tamanyo.PEQUEÑO;
+
+            case 12:
+                return Tamanyo.MEDIANO;
+
+            case 17:
+                return Tamanyo.GRANDE;
+        }
+        return Tamanyo.PEQUEÑO;
+    }
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        mapa = new CasillaGrafica[dimension][dimension];
+        this.prog.getCueva().setCueva(getTam(dimension));
+        this.principal.removeAll();
+        principal.setLayout(new java.awt.GridLayout(dimension, dimension));
+        pintarMapa();
+        int tamanyo = this.prog.getNumAgentes();
+
+        for (int i = 0; i < tamanyo; i++) {
+            this.prog.getController().get(0).detener();
+            this.prog.getAgente().remove(0);
+            this.prog.getController().remove(0);
+            numberAgentes--;
+        }
+        for (int i = 0; i < tamanyo; i++) {
+            numberAgentes++;
+            this.prog.getAgente().add(new Agente(this.prog, numberAgentes - 1, numberAgentes - 1));
+            this.prog.getController().add(new Controller(this.prog, numberAgentes - 1));
+            this.prog.setNumAgentes(numberAgentes);
+            this.prog.getController().get(this.prog.getController().size() - 1).start();
+        }
+
+        principal.revalidate();
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     public void pintarMapa() {
         for (int i = 0; i < dimension; i++) {
@@ -816,16 +951,18 @@ public class View extends javax.swing.JFrame implements MouseListener {
     private javax.swing.ButtonGroup buttonGroup2;
     private javax.swing.ButtonGroup buttonGroup3;
     private javax.swing.JButton foso;
-    private javax.swing.JLabel fosoo;
     private javax.swing.JButton init;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JComboBox<String> mapas;
     private javax.swing.JButton monster;
     private javax.swing.JLabel monstruo;
+    private javax.swing.JSpinner numAGentes;
     private javax.swing.JPanel opciones;
     private javax.swing.JPanel principal;
     private javax.swing.JButton tesoro;
@@ -874,12 +1011,22 @@ public class View extends javax.swing.JFrame implements MouseListener {
     private void cambiarVelocidad(int vel) {
         switch (vel) {
             case 1:
+                dormir = 700;
+
+                break;
+            case 2:
+                dormir = 400;
+
+                break;
+            case 3:
+                dormir = 200;
+
                 break;
 
         }
     }
 
-    public Charmander getCharmander() {
+    public ArrayList<Charmander> getCharmander() {
         return this.charmander;
     }
 
@@ -897,6 +1044,132 @@ public class View extends javax.swing.JFrame implements MouseListener {
 
     public void setManual(boolean manual) {
         this.manual = manual;
+    }
+
+    public CasillaGrafica[][] getMapa() {
+        return mapa;
+    }
+
+    public void setMapa(CasillaGrafica[][] mapa) {
+        this.mapa = mapa;
+    }
+
+    public int getNumAgentes() {
+        return numberAgentes;
+    }
+
+    public void setNumAgentes(int numAgentes) {
+        this.numberAgentes = numAgentes;
+    }
+
+    public JPanel getPrincipal() {
+        return principal;
+    }
+
+    public void setPrincipal(JPanel principal) {
+        this.principal = principal;
+    }
+
+    public int getDimension() {
+        return dimension;
+    }
+
+    public void setDimension(int dimension) {
+        this.dimension = dimension;
+    }
+
+    public int getDormir() {
+        return dormir;
+    }
+
+    public void setDormir(int dormir) {
+        this.dormir = dormir;
+    }
+
+    public int getNumMonstruos() {
+        return numMonstruos;
+    }
+
+    public void setNumMonstruos(int numMonstruos) {
+        this.numMonstruos = numMonstruos;
+    }
+
+    void lanzarFlecha(int agente, int opcion) {
+        ImageIcon te = new ImageIcon("src/img/tesoro.png");
+
+        int x = this.prog.getAgente().get(agente).getCasillaActual().getX();
+        int y = this.prog.getAgente().get(agente).getCasillaActual().getY();
+        Icon iconotesoro = new ImageIcon(te.getImage().getScaledInstance(mapa[this.prog.getAgente().get(agente).getCasillaActual().getX()][this.prog.getAgente().get(agente).getCasillaActual().getY()].getWidth(), mapa[this.prog.getAgente().get(agente).getCasillaActual().getX()][this.prog.getAgente().get(agente).getCasillaActual().getY()].getHeight(), Image.SCALE_DEFAULT));
+        JLabel fuego = new JLabel();
+        fuego.setSize((mapa[this.prog.getAgente().get(agente).getCasillaActual().getX()][this.prog.getAgente().get(agente).getCasillaActual().getY()].getWidth()), (mapa[this.prog.getAgente().get(agente).getCasillaActual().getX()][this.prog.getAgente().get(agente).getCasillaActual().getY()].getWidth()));
+        fuego.setIcon(iconotesoro);
+        boolean acaba = false;
+        while (!this.monstruoMuerto && !acaba) {
+
+            switch (opcion) {
+                case 0:
+                    if (x < this.dimension - 1) {
+                        mapa[x + 1][y].add(fuego);
+                        x++;
+
+                    } else {
+                        opcion = 1;
+                    }
+                    break;
+
+                case 1:
+                    if (x > 0) {
+                        mapa[x - 1][y].add(fuego);
+                        x--;
+
+                    } else {
+                        opcion = 2;
+                    }
+                    break;
+
+                case 2:
+                    if (y < this.dimension - 1) {
+                        mapa[x][y + 1].add(fuego);
+                        y++;
+
+                    } else {
+                        opcion = 3;
+                    }
+                    break;
+
+                case 3:
+                    if (y > 0) {
+                        mapa[x][y - 1].add(fuego);
+                        y--;
+
+                    } else {
+                        acaba = true;
+                    }
+                    break;
+
+            }
+            this.repaint();
+
+            try {
+                Thread.sleep(this.dormir / 2);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(View.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            if (mapa[x][y].getMonster()) {
+                this.eliminarImagenes(x, y);
+                this.prog.getCueva().eliminarElemento(x, y, Estado.MONSTRUO, Estado.HEDOR);
+                monstruoMuerto = true;
+                fuego.setIcon(null);
+                this.repaint();
+            }
+
+        }
+
+    }
+
+    public boolean isMonstruoMatado() {
+        return this.monstruoMuerto;
     }
 
 }

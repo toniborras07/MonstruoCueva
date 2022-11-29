@@ -28,20 +28,29 @@ public class Charmander extends JLabel {
     Icon icono;
     private int posX;
     private int posY;
-
+    private Main m;
 
     private Direccion direccion;
 
-    public Charmander(int size) {
-        this.size = size;
-        this.setSize(this.size, this.size);
-       
-        direccion = Direccion.SUR;
-        icono = new ImageIcon(charmanderSur.getImage().getScaledInstance(this.getWidth(), this.getHeight(), Image.SCALE_DEFAULT));
+    public Charmander(Main m) {
+        this.size = m.getVista().getPrincipal().getWidth();
+        this.setSize((m.getVista().getPrincipal().getWidth()) / m.getVista().getDimension(),
+                (m.getVista().getPrincipal().getHeight()) / m.getVista().getDimension());
 
+        direccion = Direccion.NORTE;
+        icono = new ImageIcon(charmanderNorte.getImage().getScaledInstance(this.getWidth(), this.getHeight(), Image.SCALE_DEFAULT));
+        this.m = m;
     }
 
-    
+    public void instanciar() {
+        this.m.getVista().getMapa()[this.m.getVista().getDimension() - 1][0].add(this);
+        this.setPosX(this.m.getVista().getDimension() - 1);
+        this.setPosY(0);
+        this.iniciarCharmander();
+        m.getVista().repaint();
+        
+
+    }
 
     public void iniciarCharmander() {
         this.setIcon(icono);
@@ -69,7 +78,6 @@ public class Charmander extends JLabel {
         this.direccion = direccion;
     }
 
-    
     public int getPosX() {
         return posX;
     }
@@ -78,7 +86,6 @@ public class Charmander extends JLabel {
         this.posX = x;
     }
 
-    
     public int getPosY() {
         return posY;
     }
@@ -86,12 +93,67 @@ public class Charmander extends JLabel {
     public void setPosY(int y) {
         this.posY = y;
     }
-    
-    
-    
 
+    public void moverCharmander(Direccion dir) {
+        
+        int next;
+        boolean llegado;
 
-    
-    
+        llegado = false;
+
+        switch (dir) {
+            case NORTE:
+
+                if (this.getDireccion() != Direccion.NORTE) {
+                    this.setDireccion(Direccion.NORTE);
+
+                    this.setIcon(icono = new ImageIcon(charmanderNorte.getImage().getScaledInstance(this.getWidth(), this.getHeight(), Image.SCALE_DEFAULT)));
+
+                }
+                this.m.getVista().getMapa()[this.getPosX() - 1][this.getPosY()].add(this);
+                this.setPosX(this.getPosX() - 1);
+
+                break;
+            case SUR:
+
+                if (this.getDireccion() != Direccion.SUR) {
+                    this.setDireccion(Direccion.SUR);
+                    this.setIcon(icono = new ImageIcon(charmanderSur.getImage().getScaledInstance(this.getWidth(), this.getHeight(), Image.SCALE_DEFAULT)));
+
+                }
+
+                this.m.getVista().getMapa()[this.getPosX() + 1][this.getPosY()].add(this);
+                this.setPosX(this.getPosX() + 1);
+                break;
+            case ESTE:
+
+                if (this.getDireccion() != Direccion.ESTE) {
+                    this.setDireccion(Direccion.ESTE);
+                    this.setIcon(icono = new ImageIcon(charmanderEste.getImage().getScaledInstance(this.getWidth(), this.getHeight(), Image.SCALE_DEFAULT)));
+
+                }
+
+                this.m.getVista().getMapa()[this.getPosX()][this.getPosY() + 1].add(this);
+                this.setPosY(this.getPosY() + 1);
+
+                break;
+            case OESTE:
+
+                if (this.getDireccion() != Direccion.OESTE) {
+                    this.setDireccion(Direccion.OESTE);
+                    this.setIcon(icono = new ImageIcon(charmanderOeste.getImage().getScaledInstance(this.getWidth(), this.getHeight(), Image.SCALE_DEFAULT)));
+
+                }
+
+                this.m.getVista().getMapa()[this.getPosX()][this.getPosY() - 1].add(this);
+                this.setPosY(this.getPosY() - 1);
+           
+
+                break;
+
+        }
+        this.m.getVista().repaint();
+
+    }
 
 }
