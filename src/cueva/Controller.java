@@ -18,6 +18,7 @@ public class Controller extends Thread {
     private boolean acabar = false;
     Agente charmander;
     private int id;
+    private boolean iniciado = false;
     Random r;
     private int init;
     View vista;
@@ -57,47 +58,34 @@ public class Controller extends Thread {
                 charmander.addCasilla(charmander.getCasillaActual());
                 charmander.procesarEstados();
 
-                switch (init) {
-                    case 0:
-                         try {
-                        Thread.sleep(r.nextInt(500) + 400);
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    break;
-                    case 1:
-                         try {
-                        Thread.sleep(r.nextInt(1500) + 400);
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    break;
-                    case 2:
-                         try {
-                        Thread.sleep(r.nextInt(2000) + 400);
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    break;
-                    case 3:
-                         try {
-                        Thread.sleep(r.nextInt(2500) + 400);
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    break;
+                try {
+                    Thread.sleep(r.nextInt(500) + 400);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
                 this.vista.setIniciar(false);
                 dale = true;
-            } else if (charmander.isEncontrado()) {
+
+            } else if (this.prog.getNumTesoros() == 0 && dale) {
                 charmander.volver();
                 try {
                     Thread.sleep(this.vista.getDormir());
                 } catch (InterruptedException ex) {
                     Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                if (charmander.isSalida()) {
+
+                if (charmander.isSalida(id)) {
+                    acabar = true;
+                }
+            } else if(this.prog.getNumTesoros() == 0 && this.vista.isManual() && iniciado) {
+                charmander.volver();
+                try {
+                    Thread.sleep(this.vista.getDormir());
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                if (charmander.isSalida(id)) {
                     acabar = true;
                 }
             } else if (dale) {
@@ -133,6 +121,11 @@ public class Controller extends Thread {
 
     public void detener() {
         acabar = true;
+    }
+
+    
+    public void setIniciado() {
+        this.iniciado = true;
     }
 
 }

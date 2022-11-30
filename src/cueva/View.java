@@ -36,7 +36,7 @@ public class View extends javax.swing.JFrame implements MouseListener {
     private boolean iniciar;
     private int dormir;
     private int numMonstruos;
-    private ArrayList<Charmander> charmander;
+    private ArrayList<Pokemon> charmander;
     private ImageIcon monstruoImg = new ImageIcon("src/img/gyarados.png");
     private ImageIcon charm = new ImageIcon("src/img/charmander.png");
     private ImageIcon verde = new ImageIcon("src/img/foso.png");
@@ -130,84 +130,6 @@ public class View extends javax.swing.JFrame implements MouseListener {
         //Quitar imagen del tesoro y los brillos del lado
     }
 
-    public void moverCharmander(Direccion dir) {
-//        int y, x;
-//        int next;
-//        boolean llegado;
-//
-//        y = charmander.getY();
-//        x = charmander.getX();
-//
-//        llegado = false;
-//
-//        switch (dir) {
-//            case NORTE:
-//
-//                if (charmander.getDireccion() != Direccion.NORTE) {
-//                    charmander.setDireccion(Direccion.NORTE);
-//
-//                    charmander.setIcon(icono = new ImageIcon(charmanderNorte.getImage().getScaledInstance(charmander.getWidth(), charmander.getHeight(), Image.SCALE_DEFAULT)));
-//
-//                }
-////                if (charmander.getPosY() > 0) {
-//                mapa[charmander.getPosY() - 1][charmander.getPosX()].add(charmander);
-//                this.charmander.setPosY(charmander.getPosY() - 1);
-////                }else{
-////                    this.prog.getAgente().getCasillaActual().setEstados(Estado.GOLPENORTE);
-////                }
-//
-//                break;
-//            case SUR:
-//
-//                if (charmander.getDireccion() != Direccion.SUR) {
-//                    charmander.setDireccion(Direccion.SUR);
-//                    charmander.setIcon(icono = new ImageIcon(charmanderSur.getImage().getScaledInstance(charmander.getWidth(), charmander.getHeight(), Image.SCALE_DEFAULT)));
-//
-//                }
-//
-////                if (charmander.getPosY() < mapa.length - 1) {
-//                mapa[charmander.getPosY() + 1][charmander.getPosX()].add(charmander);
-//                this.charmander.setPosY(charmander.getPosY() + 1);
-////                }else{
-////                    this.prog.getAgente().getCasillaActual().setEstados(Estado.GOLPESUR);
-////                }
-//
-////                charmander.setIcon(icono = new ImageIcon(charmanderSur.getImage().getScaledInstance(charmander.getWidth(), charmander.getHeight(), Image.SCALE_DEFAULT)));
-//                break;
-//            case ESTE:
-//
-//                if (charmander.getDireccion() != Direccion.ESTE) {
-//                    charmander.setDireccion(Direccion.ESTE);
-//                    charmander.setIcon(icono = new ImageIcon(charmanderEste.getImage().getScaledInstance(charmander.getWidth(), charmander.getHeight(), Image.SCALE_DEFAULT)));
-//
-//                }
-////                if (charmander.getPosX() < mapa.length - 1) {
-//                mapa[charmander.getPosY()][charmander.getPosX() + 1].add(charmander);
-//                this.charmander.setPosX(charmander.getPosX() + 1);
-////                }else{
-////                    this.prog.getAgente().getCasillaActual().setEstados(Estado.GOLPEESTE);
-////                }
-//
-//                break;
-//            case OESTE:
-//
-//                if (charmander.getDireccion() != Direccion.OESTE) {
-//                    charmander.setDireccion(Direccion.OESTE);
-//                    charmander.setIcon(icono = new ImageIcon(charmanderOeste.getImage().getScaledInstance(charmander.getWidth(), charmander.getHeight(), Image.SCALE_DEFAULT)));
-//
-//                }
-////                if (charmander.getPosX() > 0) {
-//                mapa[charmander.getPosY()][charmander.getPosX() - 1].add(charmander);
-//                this.charmander.setPosX(charmander.getPosX() - 1);
-////                }else{
-////                    this.prog.getAgente().getCasillaActual().setEstados(Estado.GOLPEOESTE);
-////                }
-//
-//                break;
-
-//        }
-//        this.repaint();
-    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -605,11 +527,12 @@ public class View extends javax.swing.JFrame implements MouseListener {
                 case 0:
                     this.eliminarImagenes(yCasilla, xCasilla);
                     if (mapa[yCasilla][xCasilla].getMonster()) {
+
                         this.prog.getCueva().eliminarElemento(yCasilla, xCasilla, Estado.MONSTRUO, Estado.HEDOR);
                     } else if (mapa[yCasilla][xCasilla].getHoyo()) {
-                        this.prog.getCueva().eliminarElemento(yCasilla, xCasilla, Estado.MONSTRUO, Estado.HEDOR);
+                        this.prog.getCueva().eliminarElemento(yCasilla, xCasilla, Estado.PRECIPICIO, Estado.BRISA);
                     } else if (mapa[yCasilla][xCasilla].getTesoro()) {
-                        this.prog.getCueva().eliminarElemento(yCasilla, xCasilla, Estado.MONSTRUO, Estado.HEDOR);
+                        this.prog.getCueva().eliminarElemento(yCasilla, xCasilla, Estado.TESORO, null);
                     }
 
                     this.repaint();
@@ -707,6 +630,7 @@ public class View extends javax.swing.JFrame implements MouseListener {
                     mapa[yCasilla][xCasilla].meterPercepcion(g4);
 
                     this.prog.getCueva().setTesoro(xCasilla, yCasilla);
+                    this.prog.addTesoro();
                     mapa[yCasilla][xCasilla].setTesoro(true);
 
                     break;
@@ -726,6 +650,7 @@ public class View extends javax.swing.JFrame implements MouseListener {
                 founded = true;
             }
         }
+
     }
 
     public void eliminarImagenes(int x, int y) {
@@ -823,6 +748,7 @@ public class View extends javax.swing.JFrame implements MouseListener {
     private void principalKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_principalKeyPressed
         // TODO add your handling code here:
         if (evt.getKeyCode() == evt.VK_SPACE) {
+
             if (this.numberAgentes == 1) {
                 try {
 
@@ -838,6 +764,8 @@ public class View extends javax.swing.JFrame implements MouseListener {
     private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
         // TODO add your handling code here:
         if (evt.getKeyCode() == evt.VK_SPACE) {
+
+            this.prog.getController().forEach((c) -> c.setIniciado());
             if (this.numberAgentes == 1) {
                 try {
 
@@ -869,17 +797,28 @@ public class View extends javax.swing.JFrame implements MouseListener {
 
     private void numAGentesStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_numAGentesStateChanged
         // TODO add your handling code here:
+
         if ((int) this.numAGentes.getValue() > numberAgentes) {
-            numberAgentes++;
-            this.prog.getAgente().add(new Agente(this.prog, numberAgentes - 1, numberAgentes - 1));
-            this.prog.getController().add(new Controller(this.prog, numberAgentes - 1));
-            this.prog.setNumAgentes(numberAgentes);
-            this.prog.getController().get(this.prog.getController().size() - 1).start();
+            if ((int) this.numAGentes.getValue() <= 4) {
+                numberAgentes++;
+                this.prog.getAgente().add(new Agente(this.prog, numberAgentes - 1, numberAgentes - 1));
+                this.prog.getController().add(new Controller(this.prog, numberAgentes - 1));
+                this.prog.setNumAgentes(numberAgentes);
+                this.prog.getController().get(this.prog.getController().size() - 1).start();
+            }
+
         } else {
+            JLabel ag = (JLabel) this.mapa[this.prog.getAgente().get(numberAgentes - 1).getCasillaActual().getX()][this.prog.getAgente().get(numberAgentes - 1).getCasillaActual().getY()].getComponent(0);
+            ag.setIcon(null);
+            this.repaint();
+
+            this.prog.getController().get(numberAgentes - 1).detener();
+            this.prog.getController().remove(numberAgentes - 1);
+            this.prog.getAgente().remove(numberAgentes - 1);
+
             numberAgentes--;
-            this.prog.getController().remove(0);
-            this.prog.getAgente().remove(0);
             this.prog.setNumAgentes(numberAgentes);
+
         }
 
 
@@ -1026,7 +965,7 @@ public class View extends javax.swing.JFrame implements MouseListener {
         }
     }
 
-    public ArrayList<Charmander> getCharmander() {
+    public ArrayList<Pokemon> getCharmander() {
         return this.charmander;
     }
 
@@ -1094,52 +1033,68 @@ public class View extends javax.swing.JFrame implements MouseListener {
         this.numMonstruos = numMonstruos;
     }
 
-    void lanzarFlecha(int agente, int opcion) {
-        ImageIcon te = new ImageIcon("src/img/tesoro.png");
+
+    void lanzarFlecha(int agente, Direccion dir) {
+        ImageIcon te = new ImageIcon();
+        switch (agente) {
+            case 0:
+                te = new ImageIcon("src/img/fuego.png");
+                break;
+            case 1:
+                te = new ImageIcon("src/img/hojas.png");
+                break;
+            case 2:
+                te = new ImageIcon("src/img/agua.png");
+                break;
+            case 3:
+                te = new ImageIcon("src/img/rayo.png");
+                break;
+        }
 
         int x = this.prog.getAgente().get(agente).getCasillaActual().getX();
         int y = this.prog.getAgente().get(agente).getCasillaActual().getY();
-        Icon iconotesoro = new ImageIcon(te.getImage().getScaledInstance(mapa[this.prog.getAgente().get(agente).getCasillaActual().getX()][this.prog.getAgente().get(agente).getCasillaActual().getY()].getWidth(), mapa[this.prog.getAgente().get(agente).getCasillaActual().getX()][this.prog.getAgente().get(agente).getCasillaActual().getY()].getHeight(), Image.SCALE_DEFAULT));
-        JLabel fuego = new JLabel();
-        fuego.setSize((mapa[this.prog.getAgente().get(agente).getCasillaActual().getX()][this.prog.getAgente().get(agente).getCasillaActual().getY()].getWidth()), (mapa[this.prog.getAgente().get(agente).getCasillaActual().getX()][this.prog.getAgente().get(agente).getCasillaActual().getY()].getWidth()));
-        fuego.setIcon(iconotesoro);
+
+        Icon icono = new ImageIcon(te.getImage().getScaledInstance(mapa[this.prog.getAgente().get(agente).getCasillaActual().getX()][this.prog.getAgente().get(agente).getCasillaActual().getY()].getWidth(), mapa[this.prog.getAgente().get(agente).getCasillaActual().getX()][this.prog.getAgente().get(agente).getCasillaActual().getY()].getHeight(), Image.SCALE_DEFAULT));
+        JLabel ataque = new JLabel();
+        ataque.setSize((mapa[this.prog.getAgente().get(agente).getCasillaActual().getX()][this.prog.getAgente().get(agente).getCasillaActual().getY()].getWidth()), (mapa[this.prog.getAgente().get(agente).getCasillaActual().getX()][this.prog.getAgente().get(agente).getCasillaActual().getY()].getWidth()));
+        ataque.setIcon(icono);
         boolean acaba = false;
         while (!this.monstruoMuerto && !acaba) {
 
-            switch (opcion) {
-                case 0:
+            switch (dir) {
+                case NORTE:
                     if (x < this.dimension - 1) {
-                        mapa[x + 1][y].add(fuego);
+                        mapa[x + 1][y].add(ataque);
                         x++;
 
                     } else {
-                        opcion = 1;
+                        acaba = true;
                     }
                     break;
 
-                case 1:
+                case SUR:
                     if (x > 0) {
-                        mapa[x - 1][y].add(fuego);
+                        mapa[x - 1][y].add(ataque);
                         x--;
 
                     } else {
-                        opcion = 2;
+                        acaba = true;
                     }
                     break;
 
-                case 2:
+                case ESTE:
                     if (y < this.dimension - 1) {
-                        mapa[x][y + 1].add(fuego);
+                        mapa[x][y + 1].add(ataque);
                         y++;
 
                     } else {
-                        opcion = 3;
+                        acaba = true;
                     }
                     break;
 
-                case 3:
+                case OESTE:
                     if (y > 0) {
-                        mapa[x][y - 1].add(fuego);
+                        mapa[x][y - 1].add(ataque);
                         y--;
 
                     } else {
@@ -1160,10 +1115,15 @@ public class View extends javax.swing.JFrame implements MouseListener {
                 this.eliminarImagenes(x, y);
                 this.prog.getCueva().eliminarElemento(x, y, Estado.MONSTRUO, Estado.HEDOR);
                 monstruoMuerto = true;
-                fuego.setIcon(null);
+                ataque.setIcon(null);
                 this.repaint();
             }
 
+        }
+
+
+        if (this.monstruoMuerto) {
+            this.monstruoMuerto = false;
         }
 
     }

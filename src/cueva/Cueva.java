@@ -4,8 +4,6 @@
  */
 package cueva;
 
-import java.util.ArrayList;
-
 /**
  *
  * @author XAMAP
@@ -47,67 +45,67 @@ public class Cueva {
     }
 
     public void quitar(int i, int j, Estado e) {
-        this.cueva[j][i].removeEstado(e);
-        if (this.cueva[j][i].getEstados().isEmpty()) {
-            this.cueva[j][i].setEstados(Estado.VACIO);
+        this.cueva[i][j].removeEstado(e);
+        if (this.cueva[i][j].getEstados().isEmpty()) {
+            this.cueva[i][j].setEstados(Estado.VACIO);
         }
         if (j > 0) {
             switch (e) {
                 case MONSTRUO:
-                    this.cueva[j - 1][i].removeEstado(Estado.HEDOR);
+                    this.cueva[i][j - 1].removeEstado(Estado.HEDOR);
                     break;
                 case PRECIPICIO:
-                    this.cueva[j - 1][i].removeEstado(Estado.BRISA);
+                    this.cueva[i][j - 1].removeEstado(Estado.BRISA);
                     break;
             }
 
-            if (this.cueva[j - 1][i].getEstados().isEmpty()) {
-                this.cueva[j - 1][i].setEstados(Estado.VACIO);
+            if (this.cueva[i][j - 1].getEstados().isEmpty()) {
+                this.cueva[i][j - 1].setEstados(Estado.VACIO);
             }
         }
 
         if (j < this.tamaño - 1) {
             switch (e) {
                 case MONSTRUO:
-                    this.cueva[j + 1][i].removeEstado(Estado.HEDOR);
+                    this.cueva[i][j + 1].removeEstado(Estado.HEDOR);
                     break;
                 case PRECIPICIO:
-                    this.cueva[j + 1][i].removeEstado(Estado.BRISA);
+                    this.cueva[i][j + 1].removeEstado(Estado.BRISA);
                     break;
             }
 
-            if (this.cueva[j + 1][i].getEstados().isEmpty()) {
-                this.cueva[j + 1][i].setEstados(Estado.VACIO);
+            if (this.cueva[i][j + 1].getEstados().isEmpty()) {
+                this.cueva[i][j + 1].setEstados(Estado.VACIO);
             }
         }
 
         if (i > 0) {
             switch (e) {
                 case MONSTRUO:
-                    this.cueva[j][i - 1].removeEstado(Estado.HEDOR);
+                    this.cueva[i - 1][j].removeEstado(Estado.HEDOR);
                     break;
                 case PRECIPICIO:
-                    this.cueva[j][i - 1].removeEstado(Estado.BRISA);
+                    this.cueva[i - 1][j].removeEstado(Estado.BRISA);
                     break;
             }
 
-            if (this.cueva[j][i - 1].getEstados().isEmpty()) {
-                this.cueva[j][i - 1].setEstados(Estado.VACIO);
+            if (this.cueva[i - 1][j].getEstados().isEmpty()) {
+                this.cueva[i - 1][j].setEstados(Estado.VACIO);
             }
         }
 
         if (i < this.tamaño - 1) {
             switch (e) {
                 case MONSTRUO:
-                    this.cueva[j][i + 1].removeEstado(Estado.HEDOR);
+                    this.cueva[i + 1][j].removeEstado(Estado.HEDOR);
                     break;
                 case PRECIPICIO:
-                    this.cueva[j][i + 1].removeEstado(Estado.BRISA);
+                    this.cueva[i + 1][j].removeEstado(Estado.BRISA);
                     break;
             }
 
-            if (this.cueva[j][i + 1].getEstados().isEmpty()) {
-                this.cueva[j][i + 1].setEstados(Estado.VACIO);
+            if (this.cueva[i + 1][j].getEstados().isEmpty()) {
+                this.cueva[i + 1][j].setEstados(Estado.VACIO);
             }
         }
     }
@@ -187,56 +185,73 @@ public class Cueva {
                     cueva[x][y].setEstados(Estado.VACIO);
                 }
                 if (x > 0) {
-                    for (int j = 0; j < cueva[x - 1][y].getEstados().size(); j++) {
-                        if (cueva[x - 1][y].getEstados().get(j) == estado2) {
-                            cueva[x - 1][y].getEstados().remove(j);
-
-                            if (cueva[x - 1][y].getEstados().size() == 0) {
-                                cueva[x - 1][y].setEstados(Estado.VACIO);
-                            }
-                        }
-
-                    }
+                    actualizarEstados(x - 1, y, estado2);
                 }
                 if (x < cueva.length - 1) {
-                    for (int j = 0; j < cueva[x + 1][y].getEstados().size(); j++) {
-                        if (cueva[x + 1][y].getEstados().get(j) == estado2) {
-                            cueva[x + 1][y].getEstados().remove(j);
-                            if (cueva[x + 1][y].getEstados().size() == 0) {
-                                cueva[x + 1][y].setEstados(Estado.VACIO);
-                            }
-                        }
-
-                    }
+                    actualizarEstados(x + 1, y, estado2);
                 }
 
                 if (y > 0) {
-                    for (int j = 0; j < cueva[x][y - 1].getEstados().size(); j++) {
-                        if (cueva[x][y - 1].getEstados().get(j) == estado2) {
-                            cueva[x][y - 1].getEstados().remove(j);
-                            if (cueva[x][y - 1].getEstados().size() == 0) {
-                                cueva[x][y - 1].setEstados(Estado.VACIO);
-                            }
-                        }
-
-                    }
+                    actualizarEstados(x, y - 1, estado2);
                 }
                 if (y < cueva.length - 1) {
-                    for (int j = 0; j < cueva[x][y + 1].getEstados().size(); j++) {
-                        if (cueva[x][y + 1].getEstados().get(j) == estado2) {
-                            cueva[x][y + 1].getEstados().remove(j);
-                            if (cueva[x][y + 1].getEstados().size() == 0) {
-                                cueva[x][y + 1].setEstados(Estado.VACIO);
-                            }
-                        }
-
-                    }
-
+                    actualizarEstados(x, y + 1, estado2);
                 }
 
             }
 
         }
 
+    }
+
+    public void actualizarEstados(int x, int y, Estado e) {
+        cueva[x][y].removeEstado(e);
+        if (x > 0) {
+            for (int j = 0; j < cueva[x - 1][y].getEstados().size(); j++) {
+                if (cueva[x - 1][y].getEstados().get(j) == Estado.MONSTRUO) {
+                    cueva[x][y].setEstados(Estado.HEDOR);
+                }
+                if (cueva[x - 1][y].getEstados().get(j) == Estado.PRECIPICIO) {
+                    cueva[x][y].setEstados(Estado.BRISA);
+                }
+
+            }
+        }
+        if (x < cueva.length - 1) {
+            for (int j = 0; j < cueva[x + 1][y].getEstados().size(); j++) {
+                if (cueva[x + 1][y].getEstados().get(j) == Estado.MONSTRUO) {
+                    cueva[x][y].setEstados(Estado.HEDOR);
+                }
+                if (cueva[x + 1][y].getEstados().get(j) == Estado.PRECIPICIO) {
+                    cueva[x][y].setEstados(Estado.BRISA);
+                }
+            }
+        }
+
+        if (y > 0) {
+            for (int j = 0; j < cueva[x][y - 1].getEstados().size(); j++) {
+                if (cueva[x][y - 1].getEstados().get(j) == Estado.MONSTRUO) {
+                    cueva[x][y].setEstados(Estado.HEDOR);
+                }
+                if (cueva[x][y - 1].getEstados().get(j) == Estado.PRECIPICIO) {
+                    cueva[x][y].setEstados(Estado.BRISA);
+                }
+            }
+        }
+        if (y < cueva.length - 1) {
+            for (int j = 0; j < cueva[x][y + 1].getEstados().size(); j++) {
+                if (cueva[x][y + 1].getEstados().get(j) == Estado.MONSTRUO) {
+                    cueva[x][y].setEstados(Estado.HEDOR);
+                }
+                if (cueva[x][y + 1].getEstados().get(j) == Estado.PRECIPICIO) {
+                    cueva[x][y].setEstados(Estado.BRISA);
+                }
+            }
+
+        }
+
+        if (cueva[x][y].getEstados().isEmpty()) {
+            cueva[x][y].setEstados(Estado.VACIO);
+        }
     }
 }

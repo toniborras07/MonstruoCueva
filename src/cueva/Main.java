@@ -12,7 +12,10 @@ import java.util.concurrent.Semaphore;
  * @author toniborras
  */
 public class Main {
+
     static Semaphore semaforoCueva = new Semaphore(1);
+    static Semaphore semaforoTesoros = new Semaphore(1);
+    private int numTesoros;
     private ArrayList<Agente> agentes;    // Punter al Model del patró
     private Cueva cueva;
     private View vis;    // Punter a la Vista del patró
@@ -22,7 +25,7 @@ public class Main {
 
     private void inicio() {
         numAgentes = 1;
-
+        numTesoros = 0;
         controladores = new ArrayList();
         agentes = new ArrayList();
         cueva = new Cueva(this, Tamanyo.PEQUEÑO);
@@ -32,7 +35,6 @@ public class Main {
         controladores.add(new Controller(this, numAgentes - 1));
 //        vis.setNumAgentes(numAgentes++);
         controladores.get(0).start();
-
 
     }
 
@@ -66,7 +68,20 @@ public class Main {
     public void setNumAgentes(int numAgentes) {
         this.numAgentes = numAgentes;
     }
-    
 
+    public int getNumTesoros() {
+        return numTesoros;
+    }
+
+    public void setNumTesoros(int numTesoros) {
+        this.numTesoros = numTesoros;
+    }
+
+    public void addTesoro() {
+        this.numTesoros++;
+    }
     
+    public void quitarTesoro() {
+        this.numTesoros--;
+    }
 }
