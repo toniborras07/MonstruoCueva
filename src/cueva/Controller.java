@@ -67,7 +67,7 @@ public class Controller extends Thread {
                 this.vista.setIniciar(false);
                 dale = true;
 
-            } else if (this.prog.getNumTesoros() == 0 && dale) {
+            } else if (this.prog.getNumTesoros() == 0 && dale && !charmander.getHistorial().isEmpty()) {
                 charmander.volver();
                 try {
                     Thread.sleep(this.vista.getDormir());
@@ -78,7 +78,7 @@ public class Controller extends Thread {
                 if (charmander.isSalida(id)) {
                     acabar = true;
                 }
-            } else if (this.prog.getNumTesoros() == 0 && this.vista.isManual() && iniciado) {
+            } else if (this.prog.getNumTesoros() == 0 && this.vista.isManual() && iniciado && !charmander.getHistorial().isEmpty()) {
                 charmander.volver();
                 try {
                     Thread.sleep(this.vista.getDormir());

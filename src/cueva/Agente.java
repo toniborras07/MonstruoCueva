@@ -993,7 +993,11 @@ public class Agente {
             Logger.getLogger(Agente.class.getName()).log(Level.SEVERE, null, ex);
         }
         CasillaAgente cAnterior = this.historial.pop();
+        try {
         this.apariencia.moverPokemon(this.getDireccion(cAnterior.getX(), cAnterior.getY()));
+        }catch(ArrayIndexOutOfBoundsException e) {
+            
+        }
         this.casillaActual = cAnterior;
     }
 
@@ -1071,6 +1075,10 @@ public class Agente {
 
     public void setFlechas(int flechas) {
         this.flechas = flechas;
+    }
+    
+    public Stack getHistorial() {
+        return this.historial;
     }
 
     private void lanzarFlecha() {

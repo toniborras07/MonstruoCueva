@@ -124,8 +124,7 @@ public class View extends javax.swing.JFrame implements MouseListener {
     }
 
     public void quitarTesoro(int x, int y) {
-        JLabel label = (JLabel) mapa[x][y].getComponent(0);
-        label.setIcon(null);
+        eliminar(mapa[x][y],Estado.TESORO);
         this.repaint();
         //Quitar imagen del tesoro y los brillos del lado
     }
