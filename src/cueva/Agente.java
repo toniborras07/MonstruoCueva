@@ -100,7 +100,6 @@ public class Agente {
         historial.push(this.casillaActual);
 
         this.casillaActual = new CasillaAgente(x, y);
-        System.out.println("ID: " + id + "x: " + x + " y: " + y);
         this.casillaActual.setNumVisitas(this.casillaActual.getNumVisitas() + 1);
         if (this.casillaActual.getNumVisitas() > 1) {
             while (historial.peek().getX() != x && historial.peek().getY() != y) {
@@ -119,7 +118,6 @@ public class Agente {
         }
         historial.push(this.casillaActual);
         this.casillaActual = c;
-        System.out.println("ID: " + id + "x: " + c.getX() + " y: " + c.getY());
         this.casillaActual.setNumVisitas(this.casillaActual.getNumVisitas() + 1);
         if (this.casillaActual.getNumVisitas() > 1 && historial.contains(this.casillaActual)) {
             while (historial.peek() != this.casillaActual) {
@@ -129,7 +127,6 @@ public class Agente {
         percibirCasilla();
         procesarEstados();
         this.addCasilla(casillaActual);
-
     }
 
     public void percibirCasilla() {
@@ -200,21 +197,20 @@ public class Agente {
         }
     }
 
-    public void razonar() throws InterruptedException {
+    public void razonar() {
         if (!this.monstruosEncontrados.isEmpty()) {
             int indice = 0;
-            System.out.println("ID: " + id + "hay un monstruo encontrado");
             for (int i = 0; i < monstruosEncontrados.size(); i++) {
                 if ((this.casillaActual.getX() == this.monstruosEncontrados.get(i)[0])
                         || (this.casillaActual.getY() == this.monstruosEncontrados.get(i)[1])) {
 
-                    Main.semaforoCueva.acquire();
-                    this.cuevaMemoria.get(this.monstruosEncontrados.get(i)[0]).get(this.monstruosEncontrados.get(i)[1]).setEstados(Estado.SEGURO);
-                    Main.semaforoCueva.release();
-
                     if (flechas > 0) {
                         this.flechas--;
-                        System.out.println("Número de flechas del agente " + id + ": " + flechas);
+//                        try {
+//                            Main.semaforoCueva.acquire();
+//                        } catch (InterruptedException ex) {
+//                            Logger.getLogger(Agente.class.getName()).log(Level.SEVERE, null, ex);
+//                        }
                         if (this.casillaActual.getX() == this.monstruosEncontrados.get(i)[0]) {
                             if (this.casillaActual.getY() > this.monstruosEncontrados.get(i)[1]) {
                                 this.prog.getVista().lanzarFlecha(this.id, Direccion.OESTE);
@@ -228,12 +224,16 @@ public class Agente {
                                 this.prog.getVista().lanzarFlecha(this.id, Direccion.NORTE);
                             }
                         }
-
-                        Main.semaforoCueva.acquire();
+//                        Main.semaforoCueva.release();
+                        try {
+                            Thread.sleep(500);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(Agente.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        this.cuevaMemoria.get(this.monstruosEncontrados.get(i)[0]).get(this.monstruosEncontrados.get(i)[1]).setEstados(Estado.SEGURO);
 
                         indice = i;
                         this.casillaActual = this.cuevaMemoria.get(this.casillaActual.getX()).get(this.casillaActual.getY());
-                        Main.semaforoCueva.release();
 
                     }
 
@@ -283,7 +283,11 @@ public class Agente {
             } else if (this.casillaActual.getEstados().contains(Estado.TESORO)) {
                 this.prog.getController().get(id).quitarTesoro(this.casillaActual);
 
-                Main.semaforoTesoros.acquire();
+                try {
+                    Main.semaforoTesoros.acquire();
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(Agente.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 this.prog.quitarTesoro();
                 Main.semaforoTesoros.release();
                 this.encontrado = true;
@@ -332,12 +336,10 @@ public class Agente {
                                 mover(noVerificadas.get(0).getX(), noVerificadas.get(0).getY());
                             } catch (Exception ex) {
                                 if (!noVerificadas.isEmpty()) {
-                                    System.out.println("tamaño no verificadas: " + noVerificadas.size());
                                     while (seguir) {
                                         if (!noVerificadas.isEmpty()) {
                                             if (noVerificadas.get(0).getEstados().contains(Estado.SEGURO)) {
 
-                                                System.out.println("tamaño no verificadas: " + noVerificadas.size());
 
                                                 switch (this.getDireccion(noVerificadas.get(0).getX(), noVerificadas.get(0).getY())) {
                                                     case NORTE:
@@ -404,10 +406,8 @@ public class Agente {
 
                         }
                         mover(c);
-
                     }
                 }
-
             }
         }
     }
@@ -419,7 +419,7 @@ public class Agente {
             Logger.getLogger(Agente.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        if (this.cuevaMemoria.get(casillaActual.getX()).containsKey(casillaActual.getY() + 1)) {
+        if (this.cuevaMemoria.get(casillaActual.getX()) != null && this.cuevaMemoria.get(casillaActual.getX()).containsKey(casillaActual.getY() + 1)) {
             CasillaAgente g = new CasillaAgente(0, 0);
             Cueva cueva = this.prog.getCueva();
             if (this.cuevaMemoria.get(casillaActual.getX()).get(
@@ -465,7 +465,7 @@ public class Agente {
         } catch (InterruptedException ex) {
             Logger.getLogger(Agente.class.getName()).log(Level.SEVERE, null, ex);
         }
-        if (this.cuevaMemoria.get(a.getX()).containsKey(a.getY() + 1)) {
+        if (this.cuevaMemoria.get(a.getX()) != null && this.cuevaMemoria.get(a.getX()).containsKey(a.getY() + 1)) {
             CasillaAgente g = new CasillaAgente(0, 0);
             Cueva cueva = this.prog.getCueva();
             g.setEstados(cueva.getCasilla(a.getX(), a.getY() + 1).getEstados());
@@ -509,7 +509,7 @@ public class Agente {
         } catch (InterruptedException ex) {
             Logger.getLogger(Agente.class.getName()).log(Level.SEVERE, null, ex);
         }
-        if (this.cuevaMemoria.get(casillaActual.getX()).containsKey(casillaActual.getY() - 1)) {
+        if (this.cuevaMemoria.get(casillaActual.getX()) != null && this.cuevaMemoria.get(casillaActual.getX()).containsKey(casillaActual.getY() - 1)) {
             CasillaAgente g = new CasillaAgente(0, 0);
             Cueva cueva = this.prog.getCueva();
             g.setEstados(cueva.getCasilla(this.casillaActual.getX(), this.casillaActual.getY() - 1).getEstados());
@@ -554,7 +554,7 @@ public class Agente {
         } catch (InterruptedException ex) {
             Logger.getLogger(Agente.class.getName()).log(Level.SEVERE, null, ex);
         }
-        if (this.cuevaMemoria.get(a.getX()).containsKey(a.getY() - 1)) {
+        if (this.cuevaMemoria.get(a.getX()) != null && this.cuevaMemoria.get(a.getX()).containsKey(a.getY() - 1)) {
             CasillaAgente g = new CasillaAgente(0, 0);
             Cueva cueva = this.prog.getCueva();
             g.setEstados(cueva.getCasilla(a.getX(), a.getY() - 1).getEstados());
@@ -980,6 +980,11 @@ public class Agente {
     }
 
     public void volver() {
+        try {
+            Thread.sleep(50);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Agente.class.getName()).log(Level.SEVERE, null, ex);
+        }
         CasillaAgente cAnterior = this.historial.pop();
         this.apariencia.moverPokemon(this.getDireccion(cAnterior.getX(), cAnterior.getY()));
         this.casillaActual = cAnterior;
@@ -1067,7 +1072,6 @@ public class Agente {
             ArrayList<CasillaAgente> cAdyacentes = this.getAdyacentes(this.orientacion);
 //            int decision = r.nextInt(cAdyacentes.size());
 //            this.prog.getVista().lanzarFlecha(id, Direccion.NORTE);
-            System.out.println("Número de flechas del agente " + id + ": " + flechas);
             this.flechas--;
         }
 

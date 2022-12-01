@@ -130,7 +130,6 @@ public class View extends javax.swing.JFrame implements MouseListener {
         //Quitar imagen del tesoro y los brillos del lado
     }
 
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -533,6 +532,7 @@ public class View extends javax.swing.JFrame implements MouseListener {
                         this.prog.getCueva().eliminarElemento(yCasilla, xCasilla, Estado.PRECIPICIO, Estado.BRISA);
                     } else if (mapa[yCasilla][xCasilla].getTesoro()) {
                         this.prog.getCueva().eliminarElemento(yCasilla, xCasilla, Estado.TESORO, null);
+                        this.prog.quitarTesoro();
                     }
 
                     this.repaint();
@@ -575,9 +575,6 @@ public class View extends javax.swing.JFrame implements MouseListener {
                     this.prog.getCueva().setMonstruo(xCasilla, yCasilla);
                     mapa[yCasilla][xCasilla].setMonster(true);
                     this.numMonstruos++;
-                    for (int i = 0; i < this.prog.getAgente().size(); i++) {
-                        this.prog.getAgente().get(i).setFlechas(this.numMonstruos);
-                    }
 
                     break;
 
@@ -641,13 +638,13 @@ public class View extends javax.swing.JFrame implements MouseListener {
     }//GEN-LAST:event_principalMouseReleased
 
     private void eliminar(CasillaGrafica g, Estado estado) {
-        boolean founded = false;
-        for (int j = 0; j < g.getPercepciones().size() && !founded; j++) {
+        boolean found = false;
+        for (int j = 0; j < g.getPercepciones().size() && !found; j++) {
             System.out.println(j);
             if (g.getPercepciones().get(j).getEstado() == estado) {
                 g.remove(j);
                 g.getPercepciones().remove(j);
-                founded = true;
+                found = true;
             }
         }
 
@@ -657,6 +654,7 @@ public class View extends javax.swing.JFrame implements MouseListener {
 
         if (mapa[x][y].getMonster()) {
             eliminar(mapa[x][y], Estado.MONSTRUO);
+            mapa[x][y].setMonster(false);
             if (x > 0) {
                 eliminar(mapa[x - 1][y], Estado.HEDOR);
 
@@ -738,6 +736,9 @@ public class View extends javax.swing.JFrame implements MouseListener {
 
     private void initActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_initActionPerformed
         // TODO add your handling code here:
+        for (int i = 0; i < this.prog.getAgente().size(); i++) {
+            this.prog.getAgente().get(i).setFlechas(this.numMonstruos);
+        }
         if (!manual) {
             this.iniciar = true;
         }
@@ -750,12 +751,7 @@ public class View extends javax.swing.JFrame implements MouseListener {
         if (evt.getKeyCode() == evt.VK_SPACE) {
 
             if (this.numberAgentes == 1) {
-                try {
-
-                    this.prog.getAgente().get(0).razonar();
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(View.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                this.prog.getAgente().get(0).razonar();
             }
 
         }
@@ -767,12 +763,7 @@ public class View extends javax.swing.JFrame implements MouseListener {
 
             this.prog.getController().forEach((c) -> c.setIniciado());
             if (this.numberAgentes == 1) {
-                try {
-
-                    this.prog.getAgente().get(0).razonar();
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(View.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                this.prog.getAgente().get(0).razonar();
             }
 
         }
@@ -783,12 +774,7 @@ public class View extends javax.swing.JFrame implements MouseListener {
         // TODO add your handling code here:
         if (evt.getKeyCode() == evt.VK_SPACE) {
             if (this.numberAgentes == 1) {
-                try {
-
-                    this.prog.getAgente().get(0).razonar();
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(View.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                this.prog.getAgente().get(0).razonar();
             }
 
         }
@@ -1033,7 +1019,6 @@ public class View extends javax.swing.JFrame implements MouseListener {
         this.numMonstruos = numMonstruos;
     }
 
-
     void lanzarFlecha(int agente, Direccion dir) {
         ImageIcon te = new ImageIcon();
         switch (agente) {
@@ -1120,7 +1105,6 @@ public class View extends javax.swing.JFrame implements MouseListener {
             }
 
         }
-
 
         if (this.monstruoMuerto) {
             this.monstruoMuerto = false;

@@ -78,7 +78,7 @@ public class Controller extends Thread {
                 if (charmander.isSalida(id)) {
                     acabar = true;
                 }
-            } else if(this.prog.getNumTesoros() == 0 && this.vista.isManual() && iniciado) {
+            } else if (this.prog.getNumTesoros() == 0 && this.vista.isManual() && iniciado) {
                 charmander.volver();
                 try {
                     Thread.sleep(this.vista.getDormir());
@@ -90,13 +90,14 @@ public class Controller extends Thread {
                 }
             } else if (dale) {
                 try {
-//                    if (this.vista.isMonstruoMatado()) {
+                    //                    if (this.vista.isMonstruoMatado()) {
 //                        this.prog.getCueva();
 //                    }
-                    charmander.razonar();
+                    Thread.sleep(50);
                 } catch (InterruptedException ex) {
                     Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
                 }
+                charmander.razonar();
                 try {
                     Thread.sleep(this.vista.getDormir());
                 } catch (InterruptedException ex) {
@@ -123,7 +124,6 @@ public class Controller extends Thread {
         acabar = true;
     }
 
-    
     public void setIniciado() {
         this.iniciado = true;
     }
