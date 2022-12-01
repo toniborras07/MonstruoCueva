@@ -525,7 +525,7 @@ public class View extends javax.swing.JFrame implements MouseListener {
                 case 0:
                     this.eliminarImagenes(yCasilla, xCasilla);
                     if (mapa[yCasilla][xCasilla].getMonster()) {
-
+                        mapa[yCasilla][xCasilla].setMonster(false);
                         this.prog.getCueva().eliminarElemento(yCasilla, xCasilla, Estado.MONSTRUO, Estado.HEDOR);
                     } else if (mapa[yCasilla][xCasilla].getHoyo()) {
                         this.prog.getCueva().eliminarElemento(yCasilla, xCasilla, Estado.PRECIPICIO, Estado.BRISA);
@@ -653,7 +653,6 @@ public class View extends javax.swing.JFrame implements MouseListener {
 
         if (mapa[x][y].getMonster()) {
             eliminar(mapa[x][y], Estado.MONSTRUO);
-            mapa[x][y].setMonster(false);
             if (x > 0) {
                 eliminar(mapa[x - 1][y], Estado.HEDOR);
 

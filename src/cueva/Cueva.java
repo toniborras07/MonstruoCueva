@@ -181,7 +181,7 @@ public class Cueva {
         for (int i = 0; i < cueva[x][y].getEstados().size(); i++) {
             if (cueva[x][y].getEstados().get(i) == estado) {
                 cueva[x][y].getEstados().remove(i);
-                if (cueva[x][y].getEstados().size() == 0) {
+                if (cueva[x][y].getEstados().isEmpty()) {
                     cueva[x][y].setEstados(Estado.VACIO);
                 }
                 if (x > 0) {
