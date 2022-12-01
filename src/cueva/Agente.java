@@ -25,6 +25,7 @@ public class Agente {
     private Stack<CasillaAgente> historial;
     private int id;
     private int flechas;
+    private int tesorosEncontrados;
 
     private int orientacion;
     private boolean encontrado;
@@ -33,6 +34,7 @@ public class Agente {
         this.prog = p;
         encontrado = false;
         cuevaMemoria = new HashMap();
+        tesorosEncontrados = 0;
 
         switch (id) {
             case 0:
@@ -281,6 +283,7 @@ public class Agente {
                 cAdyacentes = this.getAdyacentes(this.orientacion);
 
             } else if (this.casillaActual.getEstados().contains(Estado.TESORO)) {
+                this.tesorosEncontrados++;
                 this.prog.getController().get(id).quitarTesoro(this.casillaActual);
 
                 try {
