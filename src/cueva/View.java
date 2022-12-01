@@ -640,7 +640,7 @@ public class View extends javax.swing.JFrame implements MouseListener {
     private void eliminar(CasillaGrafica g, Estado estado) {
         boolean found = false;
         for (int j = 0; j < g.getPercepciones().size() && !found; j++) {
-            System.out.println(j);
+            
             if (g.getPercepciones().get(j).getEstado() == estado) {
                 g.remove(j);
                 g.getPercepciones().remove(j);

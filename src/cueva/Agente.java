@@ -245,7 +245,7 @@ public class Agente {
 
             ArrayList<CasillaAgente> cAdyacentes = this.getAdyacentes(this.orientacion);
             for (int i = 0; i < cAdyacentes.size(); i++) {
-                if (cAdyacentes.get(i).getEstados().contains(Estado.MEMORIZADA)
+                if (cAdyacentes.get(i).getVerificado()
                         && cAdyacentes.get(i).getEstados().contains(Estado.HEDOR)) {
                     ArrayList<CasillaAgente> cAdyacentesI = this.getAdyacentes(cAdyacentes.get(i), this.orientacion);
                     int posibles = 0;
@@ -339,7 +339,6 @@ public class Agente {
                                     while (seguir) {
                                         if (!noVerificadas.isEmpty()) {
                                             if (noVerificadas.get(0).getEstados().contains(Estado.SEGURO)) {
-
 
                                                 switch (this.getDireccion(noVerificadas.get(0).getX(), noVerificadas.get(0).getY())) {
                                                     case NORTE:
@@ -452,6 +451,7 @@ public class Agente {
                 CasillaAgente ce = new CasillaAgente(this.casillaActual.getX(), this.casillaActual.getY() + 1);
                 Main.semaforoCueva.release();
 //                cAdyacentes.add(ce);
+                ce.setVerificado(false);
                 return ce;
             }
         }
@@ -495,6 +495,7 @@ public class Agente {
             if (a.getY() + 1 < this.prog.getCueva().getTamanyo()) {
                 CasillaAgente ce = new CasillaAgente(a.getX(), a.getY() + 1);
                 Main.semaforoCueva.release();
+                ce.setVerificado(false);
 //                cAdyacentes.add(ce);
                 return ce;
             }
@@ -540,6 +541,7 @@ public class Agente {
                 CasillaAgente cw = new CasillaAgente(this.casillaActual.getX(), this.casillaActual.getY() - 1);
                 Main.semaforoCueva.release();
 //                cAdyacentes.add(cw);
+                cw.setVerificado(false);
                 return cw;
 
             }
@@ -585,6 +587,7 @@ public class Agente {
                 CasillaAgente cw = new CasillaAgente(a.getX(), a.getY() - 1);
                 Main.semaforoCueva.release();
 //                cAdyacentes.add(cw);
+                cw.setVerificado(false);
                 return cw;
             }
         }
@@ -638,6 +641,7 @@ public class Agente {
                 CasillaAgente cn = new CasillaAgente(this.casillaActual.getX() - 1, this.casillaActual.getY());
                 Main.semaforoCueva.release();
 //                cAdyacentes.add(cn);
+                cn.setVerificado(false);
                 return cn;
             }
         }
@@ -692,6 +696,7 @@ public class Agente {
                 CasillaAgente cn = new CasillaAgente(a.getX() - 1, a.getY());
                 Main.semaforoCueva.release();
 //                cAdyacentes.add(cn);
+                cn.setVerificado(false);
                 return cn;
             }
         }
@@ -747,6 +752,7 @@ public class Agente {
                 CasillaAgente cs = new CasillaAgente(this.casillaActual.getX() + 1, this.casillaActual.getY());
 //                cAdyacentes.add(cs);
                 Main.semaforoCueva.release();
+                cs.setVerificado(false);
                 return cs;
             }
         }
@@ -802,6 +808,7 @@ public class Agente {
                 CasillaAgente cs = new CasillaAgente(a.getX() + 1, a.getY());
 //                cAdyacentes.add(cs);
                 Main.semaforoCueva.release();
+                cs.setVerificado(false);
                 return cs;
             }
         }
